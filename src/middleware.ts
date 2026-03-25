@@ -40,8 +40,10 @@ export async function middleware(request: NextRequest) {
 
     // Subdomain routing (Tenant)
     const isIP = /^(?:[0-9]{1,3}\.){3}[0-9]{1,3}(?::\d+)?$/.test(hostname);
+    const isVercelApp = hostname.endsWith('.vercel.app');
     const isSubdomain = hostname.includes('.') &&
         !isIP &&
+        !isVercelApp &&
         !hostname.startsWith('localhost') &&
         !hostname.startsWith('127.0.0.1') &&
         !hostname.startsWith('www');
