@@ -1,0 +1,272 @@
+{
+  "users": [
+    {
+      "id": "usr_bn72fjemb",
+      "whatsappNumber": "128556777",
+      "role": "SELLER",
+      "createdAt": "2026-03-13T01:43:53.092Z"
+    },
+    {
+      "id": "usr_mz632akv2",
+      "whatsappNumber": "12345678",
+      "role": "SELLER",
+      "createdAt": "2026-03-13T02:01:39.680Z"
+    },
+    {
+      "id": "usr_5iau5akns",
+      "whatsappNumber": "123456789",
+      "role": "SELLER",
+      "createdAt": "2026-03-13T02:05:20.867Z",
+      "password": "$2b$10$TWmr08HZb5OrA4dEX1tQSOh8rYOipvcuy2xrO.SEOP9.K1j5fcIV2"
+    },
+    {
+      "id": "usr_5fur9na4u",
+      "whatsappNumber": "123456788",
+      "password": "123456",
+      "name": "Abu Nasi Lemak",
+      "role": "SELLER",
+      "createdAt": "2026-03-13T08:39:22.272Z"
+    },
+    {
+      "id": "usr_8n4fc8tji",
+      "whatsappNumber": "12344444",
+      "password": "123456",
+      "name": "Abu beefreep smoke",
+      "role": "SELLER",
+      "createdAt": "2026-03-16T02:41:52.282Z"
+    },
+    {
+      "id": "usr_tqcy1fdbc",
+      "whatsappNumber": "123456999",
+      "password": "12345678",
+      "name": "Ali Nasi Lemak",
+      "role": "SELLER",
+      "createdAt": "2026-03-16T08:24:12.029Z"
+    },
+    {
+      "id": "usr_j7tt1tm3x",
+      "whatsappNumber": "128554321",
+      "password": "87654321",
+      "name": "Tumpik Gen Z",
+      "role": "SELLER",
+      "createdAt": "2026-03-17T01:34:26.307Z"
+    },
+    {
+      "id": "usr_l1mohwnz1",
+      "whatsappNumber": "128564321",
+      "password": "43218765",
+      "name": "Tumpik segera",
+      "role": "SELLER",
+      "createdAt": "2026-03-17T02:17:22.582Z"
+    },
+    {
+      "id": "usr_uai02v9pl",
+      "whatsappNumber": "128556788",
+      "password": "12345678",
+      "name": "Ali Nasi Lemak",
+      "role": "SELLER",
+      "createdAt": "2026-03-17T02:20:28.141Z"
+    },
+    {
+      "id": "usr_6rfgqvpk6",
+      "whatsappNumber": "108667881",
+      "password": "123456780",
+      "name": "Ayam madu",
+      "role": "SELLER",
+      "createdAt": "2026-03-17T02:35:46.800Z"
+    },
+    {
+      "id": "usr_zvymtqjxq",
+      "whatsappNumber": "105556777",
+      "password": "$2b$10$d1yPUZoQpfxPygzdbZulXed5CT3DdHIcDKS/z2SiSbwdxC24oZVcu",
+      "name": "Nasi Kandar Ibu",
+      "role": "SELLER",
+      "createdAt": "2026-03-17T03:28:01.673Z"
+    }
+  ],
+  "stores": [
+    {
+      "id": "str_4uafgxe8t",
+      "name": "kari kandar",
+      "category": "Food",
+      "whatsappNumber": "128556777",
+      "slug": "kari-kandar",
+      "ownerId": "usr_bn72fjemb",
+      "createdAt": "2026-03-13T01:43:53.105Z",
+      "orders": [],
+      "products": [],
+      "archived": true
+    },
+    {
+      "id": "str_60q2qplr6",
+      "name": "ali nasi lemak",
+      "category": "Food",
+      "whatsappNumber": "12345678",
+      "slug": "ali-nasi-lemak",
+      "ownerId": "usr_mz632akv2",
+      "createdAt": "2026-03-13T02:01:39.683Z",
+      "orders": [],
+      "products": [],
+      "archived": true
+    },
+    {
+      "id": "str_ozkywor4x",
+      "name": "Ali nasi lemak",
+      "category": "Food",
+      "whatsappNumber": "123456789",
+      "slug": "ali-nasi-lemak",
+      "ownerId": "usr_5iau5akns",
+      "createdAt": "2026-03-13T02:05:20.869Z",
+      "orders": [],
+      "products": [],
+      "archived": true
+    },
+    {
+      "id": "str_mgj3zqk5d",
+      "name": "Ali nasi lemak",
+      "category": "Food",
+      "whatsappNumber": "123456789",
+      "slug": "ali-nasi-lemak",
+      "ownerId": "usr_5iau5akns",
+      "createdAt": "2026-03-13T02:54:49.654Z",
+      "orders": [],
+      "products": [],
+      "archived": true
+    },
+    {
+      "id": "str_kpv2nntsv",
+      "name": "Ali Nasi Lemak",
+      "category": "Food",
+      "whatsappNumber": "123456789",
+      "slug": "ali-nasi-lemak",
+      "ownerId": "usr_5iau5akns",
+      "createdAt": "2026-03-13T03:19:09.358Z",
+      "orders": [],
+      "products": []
+    },
+    {
+      "id": "str_mx3yknmao",
+      "name": "Abu Nasi Lemak",
+      "slug": "abu-nasi-lemak",
+      "category": "Food",
+      "whatsappNumber": "123456788",
+      "ownerId": "usr_5fur9na4u",
+      "createdAt": "2026-03-13T08:39:22.277Z",
+      "orders": [],
+      "products": [],
+      "archived": true
+    },
+    {
+      "id": "str_acd6cvlj9",
+      "name": "Abu beefreep smoke",
+      "slug": "abu-beefreep-smoke",
+      "category": "Food",
+      "whatsappNumber": "12344444",
+      "ownerId": "usr_8n4fc8tji",
+      "createdAt": "2026-03-16T02:41:52.286Z",
+      "orders": [],
+      "products": [],
+      "archived": true
+    },
+    {
+      "id": "str_jwqf2juha",
+      "name": "Ali Nasi Lemak",
+      "slug": "ali-nasi-lemak",
+      "category": "Food",
+      "whatsappNumber": "123456999",
+      "ownerId": "usr_tqcy1fdbc",
+      "createdAt": "2026-03-16T08:24:12.034Z",
+      "orders": [],
+      "products": [],
+      "archived": true
+    },
+    {
+      "id": "str_2ncwt4wye",
+      "name": "Tumpik Gen-Z",
+      "slug": "tumpikgenz",
+      "category": "Food",
+      "whatsappNumber": "0128559876",
+      "ownerId": "usr_j7tt1tm3x",
+      "createdAt": "2026-03-17T01:34:26.309Z",
+      "orders": [],
+      "products": [],
+      "archived": true
+    },
+    {
+      "id": "str_wqv304khz",
+      "name": "Tumpik segera",
+      "slug": "tumpik-segera",
+      "category": "Food",
+      "whatsappNumber": "128564321",
+      "ownerId": "usr_l1mohwnz1",
+      "createdAt": "2026-03-17T02:17:22.587Z",
+      "orders": [],
+      "products": [],
+      "archived": true
+    },
+    {
+      "id": "str_13y8i3bpj",
+      "name": "Ali Nasi Lemak",
+      "slug": "ali-nasi-lemak",
+      "category": "Food",
+      "whatsappNumber": "128556788",
+      "ownerId": "usr_uai02v9pl",
+      "createdAt": "2026-03-17T02:20:28.146Z",
+      "orders": [],
+      "products": [],
+      "archived": true
+    },
+    {
+      "id": "str_ybgwo1uq6",
+      "name": "Ayam madu",
+      "slug": "ayam-madu",
+      "category": "Food",
+      "whatsappNumber": "108667881",
+      "ownerId": "usr_6rfgqvpk6",
+      "createdAt": "2026-03-17T02:35:46.804Z",
+      "orders": [],
+      "products": [],
+      "archived": true
+    },
+    {
+      "id": "str_wbh3jl5o2",
+      "name": "Nasi Kandar Ibu",
+      "slug": "nasi-kandar-ibu",
+      "category": "Food",
+      "whatsappNumber": "105556777",
+      "ownerId": "usr_zvymtqjxq",
+      "createdAt": "2026-03-17T03:28:01.678Z",
+      "orders": [],
+      "products": []
+    }
+  ],
+  "subscriptions": [
+    {
+      "id": "sub_omurijn0d",
+      "storeId": "str_4uafgxe8t",
+      "plan": "FREE"
+    },
+    {
+      "id": "sub_fesj4u31z",
+      "storeId": "str_60q2qplr6",
+      "plan": "FREE"
+    },
+    {
+      "id": "sub_8f6cp3j7q",
+      "storeId": "str_ozkywor4x",
+      "plan": "FREE"
+    },
+    {
+      "id": "sub_84wbagklw",
+      "storeId": "str_mgj3zqk5d",
+      "plan": "FREE"
+    },
+    {
+      "id": "sub_xyqizu751",
+      "storeId": "str_kpv2nntsv",
+      "plan": "FREE"
+    }
+  ],
+  "orders": [],
+  "products": []
+}
