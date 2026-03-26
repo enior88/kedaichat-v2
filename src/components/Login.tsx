@@ -36,7 +36,7 @@ export default function Login() {
             const data = await response.json();
             if (data.success) {
                 // Hard redirect to clear any mobile cache
-                window.location.replace(data.role === 'ADMIN' ? '/admin' : '/dashboard');
+                window.location.replace('/dashboard');
             } else {
                 setError(data.error || 'Login failed');
             }
