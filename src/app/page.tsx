@@ -25,8 +25,27 @@ import { Metadata } from 'next';
 
 export default function LandingPage() {
     const { t } = useLanguage();
+
+    const jsonLd = {
+        "@context": "https://schema.org",
+        "@type": "SoftwareApplication",
+        "name": "KedaiChat",
+        "operatingSystem": "Web",
+        "applicationCategory": "BusinessApplication",
+        "description": "WhatsApp-first Business OS. Manage orders, resellers, and group orders via WhatsApp.",
+        "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "MYR"
+        }
+    };
+
     return (
         <div className="min-h-screen bg-white font-inter text-gray-900">
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+            />
             {/* Navigation */}
             <nav className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-100">
                 <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
@@ -70,7 +89,7 @@ export default function LandingPage() {
                     </h1>
 
                     <p className="text-xl text-gray-500 mb-12 max-w-2xl mx-auto font-medium animate-in fade-in slide-in-from-bottom-8 duration-700 delay-200">
-                        {t('hero_desc')}
+                        {t('hero_desc')} The ultimate WhatsApp Business solution for modern sellers.
                     </p>
 
                     <div className="flex flex-col sm:flex-row items-center justify-center gap-4 animate-in fade-in slide-in-from-bottom-10 duration-700 delay-300">
@@ -308,6 +327,34 @@ export default function LandingPage() {
                     </div>
 
                     <p className="text-sm font-bold text-gray-400">© 2026 KedaiChat. {t('all_rights_reserved')}</p>
+                </div>
+
+                {/* SEO Footer Keywords - Hidden but readable by bots */}
+                <div className="max-w-7xl mx-auto mt-12 pt-8 border-t border-gray-50 opacity-40 text-[10px] font-medium text-gray-300 grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <div>
+                        <h4 className="font-black uppercase mb-2">Solutions</h4>
+                        <p>WhatsApp Business Shop</p>
+                        <p>WhatsApp Catalog Link</p>
+                        <p>Social Commerce Malaysia</p>
+                    </div>
+                    <div>
+                        <h4 className="font-black uppercase mb-2">Features</h4>
+                        <p>WhatsApp Order Management</p>
+                        <p>Reseller Network Tools</p>
+                        <p>Group Order System</p>
+                    </div>
+                    <div>
+                        <h4 className="font-black uppercase mb-2">Comparison</h4>
+                        <p>WhatsApp Biz Alternative</p>
+                        <p>Best WhatsApp eCommerce</p>
+                        <p>Free WhatsApp Store</p>
+                    </div>
+                    <div>
+                        <h4 className="font-black uppercase mb-2">Local</h4>
+                        <p>Kedai WhatsApp Malaysia</p>
+                        <p>SME Digitalization Grant</p>
+                        <p>Jual di WhatsApp</p>
+                    </div>
                 </div>
             </footer>
         </div>
