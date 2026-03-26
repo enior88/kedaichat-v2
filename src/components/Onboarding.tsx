@@ -21,6 +21,7 @@ export default function Onboarding() {
         businessName: '',
         category: '',
         whatsapp: '',
+        email: '',
         password: '',
     });
 
@@ -37,6 +38,7 @@ export default function Onboarding() {
                     businessName: formData.businessName,
                     category: formData.category,
                     whatsappNumber: formData.whatsapp,
+                    email: formData.email,
                     password: formData.password,
                     planId,
                     receiptUrl
@@ -45,6 +47,7 @@ export default function Onboarding() {
 
             const data = await response.json();
             if (data.success) {
+                // If it was the admin email, the role will be SELLER initially but we'll promote later
                 window.location.href = '/dashboard';
             } else {
                 alert('Error: ' + data.error);
@@ -68,7 +71,7 @@ export default function Onboarding() {
 
             {/* Progress */}
             <div className="w-full max-w-md h-1.5 bg-gray-100 rounded-full mb-12 flex overflow-hidden shadow-inner">
-                {[1, 2, 3, 4].map((s) => (
+                {[1, 2, 3, 4, 5].map((s) => (
                     <div
                         key={s}
                         className={`flex-1 transition-all duration-500 ${step >= s ? 'bg-[#25D366]' : 'bg-transparent'}`}
@@ -150,6 +153,23 @@ export default function Onboarding() {
 
                 {step === 4 && (
                     <div className="animate-in fade-in slide-in-from-bottom-4">
+                        <h1 className="text-3xl font-black text-gray-900 mb-2">{t('ob_email_title')}</h1>
+                        <p className="text-gray-400 font-bold text-xs uppercase tracking-widest mb-10">{t('ob_email_desc')}</p>
+                        <div className="relative">
+                            <input
+                                type="email"
+                                placeholder={t('ob_email_placeholder')}
+                                className="premium-input pl-6"
+                                value={formData.email}
+                                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                                autoFocus
+                            />
+                        </div>
+                    </div>
+                )}
+
+                {step === 5 && (
+                    <div className="animate-in fade-in slide-in-from-bottom-4">
                         <h1 className="text-3xl font-black text-gray-900 mb-2">{t('ob_password_title')}</h1>
                         <p className="text-gray-400 font-bold text-xs uppercase tracking-widest mb-10">{t('ob_password_desc')}</p>
                         <div className="relative">
@@ -166,7 +186,7 @@ export default function Onboarding() {
                 )}
 
                 <div className="mt-12">
-                    {step < 4 && (
+                    {step < 5 && (
                         <button
                             disabled={(step === 1 && !formData.businessName) || (step === 2 && !formData.category) || (step === 3 && !formData.whatsapp)}
                             onClick={handleNext}
@@ -177,7 +197,7 @@ export default function Onboarding() {
                         </button>
                     )}
 
-                    {step === 4 && (
+                    {step === 5 && (
                         <button
                             disabled={!formData.password || isLoading}
                             onClick={handleFinish}

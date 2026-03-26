@@ -3,16 +3,9 @@
 import React, { useState, useEffect } from 'react';
 import {
     BarChart3,
-    TrendingUp,
-    Users,
-    Share2,
-    ChevronRight,
-    Rocket,
-    Store,
-    Package,
-    Settings,
-    Plus,
-    Archive
+    Search, ShoppingBag, Users, Package,
+    TrendingUp, Share2, ChevronRight, Rocket,
+    Store, Settings, Plus, Archive, ShieldCheck
 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import BottomNav from './BottomNav';
@@ -232,22 +225,37 @@ export default function Dashboard() {
                     </div>
                 )}
 
-                <div className="bg-gray-900 rounded-[32px] p-8 text-white relative overflow-hidden shadow-2xl">
+                {/* Pro Upgrade or Admin Badge */}
+                <div className={`${stats.isAdmin ? 'bg-[#25D366]' : 'bg-gray-900'} rounded-[32px] p-8 text-white relative overflow-hidden shadow-2xl`}>
                     <div className="relative z-10">
-                        <h3 className="text-xl font-bold mb-2">Build your empire.</h3>
-                        <p className="text-gray-400 text-xs mb-6 max-w-[180px] leading-relaxed">Unlock Resellers and Group orders to grow 10x.</p>
-                        <button
-                            onClick={() => router.push('/billing')}
-                            className="bg-[#25D366] px-6 py-3 rounded-xl text-xs font-black flex items-center gap-2 hover:shadow-lg hover:shadow-green-500/20 active:scale-95 transition-all"
-                        >
-                            Go Pro <Rocket size={14} />
-                        </button>
+                        {stats.isAdmin ? (
+                            <>
+                                <h3 className="text-xl font-bold mb-2">Platform Master.</h3>
+                                <p className="text-white/80 text-xs mb-6 max-w-[180px] leading-relaxed">You have full administrative access to manage all stores and platform settings.</p>
+                                <button
+                                    onClick={() => router.push('/admin')}
+                                    className="bg-white text-[#25D366] px-6 py-3 rounded-xl text-xs font-black flex items-center gap-2 hover:shadow-lg active:scale-95 transition-all"
+                                >
+                                    Admin Console <ShieldCheck size={14} />
+                                </button>
+                            </>
+                        ) : (
+                            <>
+                                <h3 className="text-xl font-bold mb-2">Build your empire.</h3>
+                                <p className="text-gray-400 text-xs mb-6 max-w-[180px] leading-relaxed">Unlock Resellers and Group orders to grow 10x.</p>
+                                <button
+                                    onClick={() => router.push('/billing')}
+                                    className="bg-[#25D366] px-6 py-3 rounded-xl text-xs font-black flex items-center gap-2 hover:shadow-lg hover:shadow-green-500/20 active:scale-95 transition-all"
+                                >
+                                    Go Pro <Rocket size={14} />
+                                </button>
+                            </>
+                        )}
                     </div>
-                    <Store className="absolute -right-6 -bottom-6 w-32 h-32 text-white/5 rotate-12" />
-                    {stats.isAdmin && (
-                        <div className="absolute top-4 right-4 bg-white/10 px-3 py-1 rounded-full backdrop-blur-md">
-                            <span className="text-[10px] font-black uppercase tracking-widest text-[#25D366]">Admin Access</span>
-                        </div>
+                    {stats.isAdmin ? (
+                        <ShieldCheck className="absolute -right-6 -bottom-6 w-32 h-32 text-white/10 rotate-12" />
+                    ) : (
+                        <Store className="absolute -right-6 -bottom-6 w-32 h-32 text-white/5 rotate-12" />
                     )}
                 </div>
 

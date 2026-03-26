@@ -5,19 +5,29 @@ import bcrypt from 'bcryptjs';
 
 export async function POST(req: Request) {
     try {
-        const { businessName, category, whatsappNumber, password, planId, receiptUrl } = await req.json();
+        const { businessName, category, whatsappNumber, email, password, planId, receiptUrl } = await req.json();
 
         if (!businessName || !whatsappNumber || !password) {
             return NextResponse.json({ success: false, error: 'Missing required fields' }, { status: 400 });
         }
 
-        // Check if user exists
-        const existingUser = await prisma.user.findFirst({
+        // Check if user exists by WhatsApp
+        const existingByPhone = await prisma.user.findFirst({
             where: { whatsappNumber }
         });
 
-        if (existingUser) {
+        if (existingByPhone) {
             return NextResponse.json({ success: false, error: 'User with this WhatsApp number already exists' }, { status: 400 });
+        }
+
+        // Check if user exists by Email (if provided)
+        if (email) {
+            const existingByEmail = await prisma.user.findFirst({
+                where: { email }
+            });
+            if (existingByEmail) {
+                return NextResponse.json({ success: false, error: 'User with this email already exists' }, { status: 400 });
+            }
         }
 
         // Create user
@@ -25,6 +35,7 @@ export async function POST(req: Request) {
         const user = await prisma.user.create({
             data: {
                 whatsappNumber,
+                email: email || null,
                 password: hashedPassword,
                 name: businessName,
                 role: 'SELLER'
