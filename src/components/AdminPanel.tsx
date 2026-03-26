@@ -2,7 +2,8 @@
 
 import React, { useState, useEffect } from 'react';
 import {
-    TrendingUp, ExternalLink, XCircle, RefreshCw, Trash2, Archive, Key, LogOut
+    TrendingUp, ExternalLink, XCircle, RefreshCw, Trash2, Archive, Key, LogOut,
+    BarChart3, Store, CreditCard, CheckCircle2, Users, ShoppingBag, Search, Package
 } from 'lucide-react';
 
 type Section = 'Overview' | 'Stores' | 'Subscriptions' | 'Payments';
