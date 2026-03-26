@@ -146,9 +146,15 @@ export default function BillingSubscription() {
                 {selectedPlan !== 'FREE' && (
                     <div className="mt-8 bg-white rounded-[32px] p-8 shadow-xl border border-gray-50">
                         <h4 className="text-center font-bold text-gray-900 mb-6">Pay via Bank QR / DuitNow</h4>
-                        <div className="aspect-square bg-gray-50 rounded-[24px] border border-dashed border-gray-200 flex flex-col items-center justify-center p-8 mb-6 text-center">
-                            <QrCode size={120} className="text-gray-900 mb-4" strokeWidth={1} />
-                            <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest text-center">KedaiChat Enterprise<br />(Admin QR Pending)</p>
+                        <div className="aspect-square bg-white rounded-[24px] border border-gray-100 flex flex-col items-center justify-center p-2 mb-6 relative overflow-hidden shadow-inner">
+                            <img
+                                src="/qr-payment.png"
+                                alt="DuitNow QR Payment"
+                                className="w-full h-full object-contain rounded-2xl"
+                                onError={(e) => {
+                                    (e.target as HTMLImageElement).src = 'https://placehold.co/400x400?text=Scan+QR+to+Pay';
+                                }}
+                            />
                         </div>
 
                         <div className="bg-gray-50 rounded-2xl p-4 mb-8">

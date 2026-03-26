@@ -72,10 +72,15 @@ function CheckoutContent() {
                     <p className="text-sm text-gray-400 font-bold uppercase tracking-wider">Pay via Bank QR / DuitNow</p>
                 </div>
 
-                <div className="aspect-square bg-gray-50 rounded-[24px] border border-dashed border-gray-200 flex flex-col items-center justify-center p-8 mb-6 relative">
-                    {/* Placeholder for actual DuitNow QR Code provided by admin */}
-                    <QrCode size={120} className="text-gray-900 mb-4" strokeWidth={1} />
-                    <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest text-center">KedaiChat Enterprise<br />(Admin QR Pending)</p>
+                <div className="aspect-square bg-white rounded-[24px] border border-gray-100 flex flex-col items-center justify-center p-2 mb-6 relative overflow-hidden shadow-inner">
+                    <img
+                        src="/qr-payment.png"
+                        alt="DuitNow QR Payment"
+                        className="w-full h-full object-contain rounded-2xl"
+                        onError={(e) => {
+                            (e.target as HTMLImageElement).src = 'https://placehold.co/400x400?text=Scan+QR+to+Pay';
+                        }}
+                    />
                 </div>
 
                 <div className="bg-green-50 rounded-2xl p-5 mb-8 text-center text-[#128C7E]">
