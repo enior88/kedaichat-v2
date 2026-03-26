@@ -2,9 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import {
-    BarChart3, Store, CreditCard, CheckCircle2,
-    Search, ShoppingBag, Users, Package,
-    TrendingUp, ExternalLink, XCircle, RefreshCw, Trash2, Archive, Key
+    TrendingUp, ExternalLink, XCircle, RefreshCw, Trash2, Archive, Key, LogOut
 } from 'lucide-react';
 
 type Section = 'Overview' | 'Stores' | 'Subscriptions' | 'Payments';
@@ -33,6 +31,15 @@ export default function AdminPanel() {
     const [selectedIds, setSelectedIds] = useState<string[]>([]);
     const [isBulkDeleting, setIsBulkDeleting] = useState(false);
     const [showArchived, setShowArchived] = useState(false);
+
+    const handleLogout = async () => {
+        try {
+            await fetch('/api/logout', { method: 'POST' });
+            window.location.href = '/'; // Redirect admin to landing page
+        } catch (error) {
+            console.error('Logout failed:', error);
+        }
+    };
 
     const fetchData = () => {
         setIsLoading(true);
@@ -222,14 +229,20 @@ export default function AdminPanel() {
                     ))}
                 </nav>
 
-                {/* Refresh button */}
-                <div className="px-4 pb-8">
+                <div className="px-4 pb-8 space-y-1">
                     <button
                         onClick={fetchData}
                         className="w-full flex items-center justify-center gap-2 py-3 text-xs font-bold text-gray-400 hover:text-[#25D366] transition-colors"
                     >
                         <RefreshCw size={14} />
                         Refresh Data
+                    </button>
+                    <button
+                        onClick={handleLogout}
+                        className="w-full flex items-center justify-center gap-2 py-3 text-xs font-bold text-red-400 hover:text-red-500 transition-colors"
+                    >
+                        <LogOut size={14} />
+                        Sign Out
                     </button>
                 </div>
             </aside>

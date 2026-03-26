@@ -5,7 +5,7 @@ import {
     BarChart3,
     Search, ShoppingBag, Users, Package,
     TrendingUp, Share2, ChevronRight, Rocket,
-    Store, Settings, Plus, Archive, ShieldCheck
+    Store, Settings, Plus, Archive, ShieldCheck, LogOut
 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import BottomNav from './BottomNav';
@@ -25,6 +25,15 @@ export default function Dashboard() {
         archived: false
     });
     const [showToast, setShowToast] = useState(false);
+
+    const handleLogout = async () => {
+        try {
+            await fetch('/api/logout', { method: 'POST' });
+            window.location.href = '/login'; // Redirect regular user to login page
+        } catch (error) {
+            console.error('Logout failed:', error);
+        }
+    };
 
     useEffect(() => {
         const fetchDashboard = async () => {
@@ -141,12 +150,21 @@ export default function Dashboard() {
                             <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest">Store Live • {stats.slug}.kedaichat.com</p>
                         </div>
                     </div>
-                    <button
-                        onClick={() => router.push('/settings')}
-                        className="bg-gray-100 p-3 rounded-2xl hover:bg-gray-200 transition-colors"
-                    >
-                        <Settings size={20} className="text-gray-500" />
-                    </button>
+                    <div className="flex gap-2">
+                        <button
+                            onClick={handleLogout}
+                            className="bg-red-50 p-3 rounded-2xl hover:bg-red-100 transition-colors"
+                            title="Sign Out"
+                        >
+                            <LogOut size={20} className="text-red-500" />
+                        </button>
+                        <button
+                            onClick={() => router.push('/settings')}
+                            className="bg-gray-100 p-3 rounded-2xl hover:bg-gray-200 transition-colors"
+                        >
+                            <Settings size={20} className="text-gray-500" />
+                        </button>
+                    </div>
                 </div>
 
                 {/* Stats Grid */}
