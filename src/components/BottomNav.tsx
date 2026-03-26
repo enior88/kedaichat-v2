@@ -10,7 +10,7 @@ export default function BottomNav() {
     const [isAdmin, setIsAdmin] = useState(false);
 
     useEffect(() => {
-        fetch('/api/user/role')
+        fetch(`/api/user/role?t=${Date.now()}`)
             .then(res => res.json())
             .then(data => {
                 if (data.role === 'ADMIN') setIsAdmin(true);
