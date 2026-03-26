@@ -28,7 +28,8 @@ export default function Analytics() {
         );
     }
 
-    const isFree = storeInfo?.plan === 'FREE';
+    const plan = storeInfo?.plan?.toUpperCase() || 'FREE';
+    const isPro = plan === 'PRO' || plan === 'BUSINESS' || storeInfo?.isAdmin;
 
     return (
         <div className="min-h-screen bg-[#F8F9FA] pb-24 font-inter relative">
@@ -56,22 +57,25 @@ export default function Analytics() {
                 </div>
             </div>
 
-            {isFree && !storeInfo.isAdmin && (
-                <div className="absolute inset-0 top-[200px] z-10 flex flex-col items-center justify-center bg-white/80 backdrop-blur-sm pb-24">
-                    <div className="bg-white p-8 rounded-[32px] shadow-2xl text-center max-w-sm border border-gray-100">
+            {!isPro && (
+                <div className="absolute inset-0 top-[200px] z-10 flex flex-col items-center justify-center bg-white/80 backdrop-blur-sm pb-24 text-center px-6">
+                    <div className="bg-white p-8 rounded-[32px] shadow-2xl text-center max-w-sm border border-gray-100 animate-in zoom-in-95 duration-300">
                         <div className="w-16 h-16 bg-blue-50 text-blue-500 rounded-full flex items-center justify-center mx-auto mb-6">
                             <Lock size={32} />
                         </div>
                         <h3 className="text-xl font-bold text-gray-900 mb-2">Pro Feature</h3>
-                        <p className="text-gray-500 text-sm mb-8">Upgrade your plan to unlock deep insights and advanced analytics.</p>
-                        <button className="w-full bg-[#25D366] text-white py-4 rounded-2xl font-bold shadow-lg shadow-green-200 active:scale-95 transition-all">
-                            Upgrade Plan
+                        <p className="text-gray-500 text-sm mb-8 font-medium">Upgrade to Pro to unlock deep insights and advanced analytics for your store.</p>
+                        <button
+                            onClick={() => router.push('/billing')}
+                            className="w-full bg-[#25D366] text-white py-4 rounded-2xl font-bold shadow-lg shadow-green-200 active:scale-95 transition-all"
+                        >
+                            Upgrade to Pro
                         </button>
                     </div>
                 </div>
             )}
 
-            <div className={`p-6 space-y-6 ${isFree ? 'opacity-20 pointer-events-none' : ''}`}>
+            <div className={`p-6 space-y-6 ${!isPro ? 'opacity-20 pointer-events-none' : ''}`}>
                 {/* Performance Chart Placeholder */}
                 <div className="bg-white p-6 rounded-[32px] shadow-sm border border-gray-50">
                     <div className="flex justify-between items-center mb-6">

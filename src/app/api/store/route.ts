@@ -13,7 +13,8 @@ export async function GET(req: Request) {
         include: {
             products: {
                 where: { active: true }
-            }
+            },
+            subscription: true
         }
     });
 

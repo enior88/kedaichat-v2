@@ -21,10 +21,27 @@ export default function CustomerWallet() {
             // Extract store info from the most recent order
             if (parsedOrders.length > 0) {
                 const recent = parsedOrders[0];
+                const slug = recent.storeSlug || '';
                 setLastStore({
                     name: recent.storeName || 'KedaiChat Store',
-                    slug: recent.storeSlug || ''
+                    slug: slug,
+                    plan: 'FREE' // Default
                 });
+
+                // Fetch current plan for the store
+                if (slug) {
+                    fetch(`/api/store?slug=${slug}`)
+                        .then(res => res.json())
+                        .then(data => {
+                            if (!data.error) {
+                                setLastStore((prev: any) => ({
+                                    ...prev,
+                                    plan: data.subscription?.plan?.toUpperCase() || 'FREE'
+                                }));
+                            }
+                        })
+                        .catch(console.error);
+                }
             }
         }
     }, []);
@@ -96,13 +113,15 @@ export default function CustomerWallet() {
                                     </p>
                                 </div>
 
-                                <button
-                                    onClick={() => router.push(`/shop/${order.storeSlug}`)}
-                                    className="w-full h-12 bg-[#25D366]/10 text-[#25D366] font-bold rounded-2xl flex items-center justify-center gap-2 active:scale-95 transition-all text-xs uppercase"
-                                >
-                                    <RotateCcw size={16} />
-                                    {t('repeat_order') || 'Order Again'}
-                                </button>
+                                {lastStore?.plan !== 'FREE' && (
+                                    <button
+                                        onClick={() => router.push(`/shop/${order.storeSlug}`)}
+                                        className="w-full h-12 bg-[#25D366]/10 text-[#25D366] font-bold rounded-2xl flex items-center justify-center gap-2 active:scale-95 transition-all text-xs uppercase"
+                                    >
+                                        <RotateCcw size={16} />
+                                        {t('repeat_order') || 'Order Again'}
+                                    </button>
+                                )}
                             </div>
                         ))
                     )}
@@ -110,7 +129,7 @@ export default function CustomerWallet() {
             </div>
 
             {/* Floating Action Button */}
-            {lastStore?.slug && (
+            {lastStore?.slug && lastStore?.plan !== 'FREE' && (
                 <div className="fixed bottom-10 left-6 right-6 max-w-md mx-auto z-40">
                     <button
                         onClick={handleOrderAgain}

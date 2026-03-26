@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { Copy, Share, ChevronLeft, Calendar, Clock, CheckCircle2, Loader2, Share2 } from 'lucide-react';
+import { Copy, Share, ChevronLeft, Calendar, Clock, CheckCircle2, Loader2, Share2, Lock } from 'lucide-react';
 import BottomNav from './BottomNav';
 import { useRouter } from 'next/navigation';
 
@@ -14,6 +14,9 @@ export default function PosterGenerator() {
     const [pickupTime, setPickupTime] = useState('12:30 PM');
     const [deadline, setDeadline] = useState('11:00 AM');
     const [copyStatus, setCopyStatus] = useState<string | null>(null);
+
+    const plan = storeInfo?.plan?.toUpperCase() || 'FREE';
+    const isPro = plan === 'PRO' || plan === 'BUSINESS' || storeInfo?.isAdmin;
 
     useEffect(() => {
         const loadContent = async () => {
@@ -102,7 +105,25 @@ ${storeUrl}`;
                 <h1 className="text-xl font-bold text-gray-900">Create Group Order</h1>
             </div>
 
-            <div className="p-6 space-y-8 max-w-lg mx-auto">
+            {!isPro && (
+                <div className="absolute inset-0 top-[80px] z-10 flex flex-col items-center justify-center bg-white/80 backdrop-blur-sm pb-24 text-center px-6">
+                    <div className="bg-white p-8 rounded-[32px] shadow-2xl text-center max-w-sm border border-gray-100 animate-in zoom-in-95 duration-300">
+                        <div className="w-16 h-16 bg-purple-50 text-purple-500 rounded-full flex items-center justify-center mx-auto mb-6">
+                            <Lock size={32} />
+                        </div>
+                        <h3 className="text-xl font-bold text-gray-900 mb-2">Pro Feature</h3>
+                        <p className="text-gray-500 text-sm mb-8 font-medium">Capture more sales with group orders! Upgrade to Pro to unlock broadcast tools for your store.</p>
+                        <button
+                            onClick={() => router.push('/billing')}
+                            className="w-full bg-[#25D366] text-white py-4 rounded-2xl font-bold shadow-lg shadow-green-200 active:scale-95 transition-all"
+                        >
+                            Upgrade to Pro
+                        </button>
+                    </div>
+                </div>
+            )}
+
+            <div className={`p-6 space-y-8 max-w-lg mx-auto ${!isPro ? 'opacity-20 pointer-events-none' : ''}`}>
                 {/* Menu Selection */}
                 <section>
                     <div className="flex justify-between items-center mb-4">
