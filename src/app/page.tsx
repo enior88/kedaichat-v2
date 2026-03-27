@@ -301,7 +301,7 @@ export default function LandingPage() {
                     <div className="absolute top-0 right-0 p-12 opacity-10 rotate-12">
                         <MessageSquare size={200} fill="currentColor" />
                     </div>
-                    <h3 className="text-4xl md:text-6xl font-black mb-8 relative z-10">{t('ready_to_grow')}</h3>
+                    <h3 className="text-3xl md:text-5xl leading-tight font-black mb-8 relative z-10">{t('ready_to_grow')}</h3>
                     <p className="text-xl md:text-2xl font-bold mb-12 opacity-90 relative z-10">{t('join_sellers')}</p>
                     <Link href="/onboarding" className="inline-flex items-center gap-3 bg-white text-[#25D366] px-12 py-6 rounded-3xl text-xl font-black hover:bg-gray-50 transition-all shadow-2xl active:scale-95 relative z-10">
                         {t('create_store_now')}

@@ -61,7 +61,7 @@ const translations: Record<Language, Record<string, string>> = {
         problem_3_title: 'Manual Tracking',
         problem_3_desc: "Spreadsheets are a nightmare on mobile. Tracking sales shouldn't be manual work.",
 
-        ready_to_grow: 'Ready to grow your sales?',
+        ready_to_grow: 'Start using KedaiChat today and make your WhatsApp more organized & professional.',
         join_sellers: 'Join 2,000+ Malaysian sellers today.',
         create_store_now: 'Create My Store Now',
 
@@ -242,7 +242,7 @@ const translations: Record<Language, Record<string, string>> = {
         problem_3_title: 'Jejak Manual',
         problem_3_desc: 'Spreedsheet adalah mimpi ngeri di telefon bimbit. Jejak jualan tidak sepatutnya manual.',
 
-        ready_to_grow: 'Sedia untuk tingkatkan jualan anda?',
+        ready_to_grow: 'Mula gunakan KedaiChat hari ini dan jadikan WhatsApp anda lebih teratur & profesional.',
         join_sellers: 'Sertai 2,000+ penjual Malaysia hari ini.',
         create_store_now: 'Bina Kedai Saya Sekarang',
 
