@@ -25,9 +25,9 @@ const translations: Record<Language, Record<string, string>> = {
         back: 'Back',
 
         // Landing Page
-        hero_title: 'Turn your WhatsApp into a',
+        hero_title: 'Start Taking Orders More Organizedly &',
         hero_subtitle: 'simple online shop',
-        hero_desc: 'Organize orders, show your catalog, and track sales from one dashboard. No complex setups, just pure commerce.',
+        hero_desc: 'KedaiChat helps you avoid missing orders, collect more orders, and encourage customers to repeat orders.',
         start_free: 'Start Free',
         how_it_works: 'How it works',
         how_step_1_title: '1. Create Store',
@@ -74,7 +74,7 @@ const translations: Record<Language, Record<string, string>> = {
         pricing_per_month: '/ Month',
         popular: 'Most Popular',
         built_for_smes: 'Built for Malaysian SMEs',
-        hero_shop_highlight: 'simple online shop',
+        hero_shop_highlight: 'Generate More Sales from WhatsApp',
         three_steps_title: '3 steps to live commerce',
         human_speed_title: 'Designed for human speed',
         all_rights_reserved: 'All rights reserved.',
@@ -184,13 +184,13 @@ const translations: Record<Language, Record<string, string>> = {
         back: 'Kembali',
 
         // Landing Page
-        hero_title: 'Tukarkan WhatsApp anda menjadi',
+        hero_title: 'Mula Ambil Pesanan Lebih Teratur &',
         hero_subtitle: 'kedai dalam talian yang mudah',
-        hero_desc: 'Urus pesanan, tunjukkan katalog anda, dan jejak jualan dari satu papan pemuka. Tiada persediaan kompleks, hanya perniagaan tulen.',
+        hero_desc: 'KedaiChat membantu anda mengelak terlepas pesanan, mengumpul lebih banyak pesanan, dan menggalakkan pelanggan untuk membuat pesanan ulangan.',
         start_free: 'Mula Percuma',
         how_it_works: 'Cara ia berfungsi',
         built_for_smes: 'Dibina untuk PKS Malaysia',
-        hero_shop_highlight: 'kedai dalam talian yang mudah',
+        hero_shop_highlight: 'Jana Lebih Jualan dari WhatsApp',
         three_steps_title: '3 langkah untuk perniagaan langsung',
         human_speed_title: 'Direka untuk kelajuan manusia',
         all_rights_reserved: 'Hak cipta terpelihara.',

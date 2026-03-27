@@ -88,8 +88,8 @@ export default function LandingPage() {
                         {t('hero_title')} <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#25D366] to-[#128C7E]">{t('hero_shop_highlight')}</span>
                     </h1>
 
-                    <p className="text-xl text-gray-500 mb-12 max-w-2xl mx-auto font-medium animate-in fade-in slide-in-from-bottom-8 duration-700 delay-200">
-                        {t('hero_desc')} The ultimate WhatsApp Business solution for modern sellers.
+                    <p className="text-xl text-gray-500 mb-12 max-w-3xl mx-auto font-medium animate-in fade-in slide-in-from-bottom-8 duration-700 delay-200">
+                        {t('hero_desc')}
                     </p>
 
                     <div className="flex flex-col sm:flex-row items-center justify-center gap-4 animate-in fade-in slide-in-from-bottom-10 duration-700 delay-300">
