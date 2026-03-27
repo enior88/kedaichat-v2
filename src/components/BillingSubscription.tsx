@@ -1,7 +1,7 @@
 'use client';
 
-import React, { useState } from 'react';
-import { Check, ChevronRight, QrCode, ShieldCheck, Upload, X } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Check, ChevronRight, ShieldCheck, Upload, X } from 'lucide-react';
 import BottomNav from './BottomNav';
 
 export default function BillingSubscription() {
@@ -12,6 +12,7 @@ export default function BillingSubscription() {
     // Receipt Upload State
     const [file, setFile] = useState<File | null>(null);
     const [uploading, setUploading] = useState(false);
+    const [adminBankQrUrl, setAdminBankQrUrl] = useState<string | null>('/qr-payment.png');
     const [receiptUrl, setReceiptUrl] = useState<string | null>(null);
     const fileInputRef = React.useRef<HTMLInputElement>(null);
 
@@ -20,6 +21,21 @@ export default function BillingSubscription() {
         { id: 'BASIC', name: 'Basic', price: '29', features: ['Unlimited orders', 'Group order system', 'Reseller links', 'Repeat order button'] },
         { id: 'PRO', name: 'Pro', price: '49', features: ['Analytics dashboard', 'Broadcast tools', 'Advanced reseller system', 'Priority support'] },
     ];
+
+    useEffect(() => {
+        const fetchAdminBankQr = async () => {
+            try {
+                const res = await fetch('/api/public/settings');
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data.adminBankQrUrl) setAdminBankQrUrl(data.adminBankQrUrl);
+                }
+            } catch (error) {
+                console.error('Failed to fetch admin bank QR:', error);
+            }
+        };
+        fetchAdminBankQr();
+    }, []);
 
     const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files && e.target.files.length > 0) {
@@ -113,8 +129,7 @@ export default function BillingSubscription() {
                                     setReceiptUrl(null);
                                 }
                             }}
-                            className={`premium-card !p-6 cursor-pointer transition-all border-2 ${selectedPlan === plan.id ? 'border-[#25D366] bg-green-50/10' : 'border-transparent'
-                                }`}
+                            className={`premium-card !p-6 cursor-pointer transition-all border-2 ${selectedPlan === plan.id ? 'border-[#25D366] bg-green-50/10' : 'border-transparent'}`}
                         >
                             <div className="flex justify-between items-start mb-4">
                                 <div>
@@ -148,11 +163,11 @@ export default function BillingSubscription() {
                         <h4 className="text-center font-bold text-gray-900 mb-6">Pay via Bank QR / DuitNow</h4>
                         <div className="aspect-square bg-white rounded-[24px] border border-gray-100 flex flex-col items-center justify-center p-2 mb-6 relative overflow-hidden shadow-inner">
                             <img
-                                src="/qr-payment.png"
+                                src={adminBankQrUrl || '/qr-payment.png'}
                                 alt="DuitNow QR Payment"
                                 className="w-full h-full object-contain rounded-2xl"
                                 onError={(e) => {
-                                    (e.target as HTMLImageElement).src = 'https://placehold.co/400x400?text=Scan+QR+to+Pay';
+                                    e.currentTarget.src = 'https://placehold.co/400x400?text=Scan+QR+to+Pay';
                                 }}
                             />
                         </div>
@@ -164,7 +179,7 @@ export default function BillingSubscription() {
                             </div>
                             <p className="text-[10px] text-gray-500 leading-relaxed font-medium">
                                 1. Scan QR with your banking app.<br />
-                                2. Pay <b>RM {plans.find(p => p.id === selectedPlan)?.price}</b>.<br />
+                                2. Pay <b>RM {plans.find(p => p.id === selectedPlan)?.price ?? '0'}</b>.<br />
                                 3. We will approve your account within 1 hour.
                             </p>
                         </div>

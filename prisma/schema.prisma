@@ -118,3 +118,9 @@ model Subscription {
   expiresAt         DateTime?
   store             Store     @relation(fields: [storeId], references: [id])
 }
+
+model PlatformSettings {
+  id             String   @id @default("global")
+  adminBankQrUrl String?
+  updatedAt      DateTime @updatedAt
+}

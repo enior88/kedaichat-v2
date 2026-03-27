@@ -1,13 +1,13 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { TrendingUp, Users, ShoppingBag, ArrowLeft, BarChart2, Loader2, Lock } from 'lucide-react';
+import { TrendingUp, ShoppingBag, ArrowLeft, Loader2, Lock } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import BottomNav from './BottomNav';
 
 export default function Analytics() {
     const router = useRouter();
-    const [storeInfo, setStoreInfo] = useState<any>(null);
+    const [storeInfo, setStoreInfo] = useState<{ plan?: string; isAdmin?: boolean } | null>(null);
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {

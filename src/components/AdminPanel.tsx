@@ -3,10 +3,10 @@
 import React, { useState, useEffect } from 'react';
 import {
     TrendingUp, ExternalLink, XCircle, RefreshCw, Trash2, Archive, Key, LogOut,
-    BarChart3, Store, CreditCard, CheckCircle2, Users, ShoppingBag, Search, Package
+    BarChart3, Store, CreditCard, CheckCircle2, Users, ShoppingBag, Search, Package, Settings, Upload
 } from 'lucide-react';
 
-type Section = 'Overview' | 'Stores' | 'Subscriptions' | 'Payments';
+type Section = 'Overview' | 'Stores' | 'Subscriptions' | 'Payments' | 'Settings';
 
 const PLAN_COLORS: Record<string, string> = {
     Free: 'bg-gray-100 text-gray-500',
@@ -32,6 +32,8 @@ export default function AdminPanel() {
     const [selectedIds, setSelectedIds] = useState<string[]>([]);
     const [isBulkDeleting, setIsBulkDeleting] = useState(false);
     const [showArchived, setShowArchived] = useState(false);
+    const [adminSettings, setAdminSettings] = useState<any>({ adminBankQrUrl: null });
+    const [isSavingSettings, setIsSavingSettings] = useState(false);
 
     const handleLogout = async () => {
         try {
@@ -44,19 +46,17 @@ export default function AdminPanel() {
 
     const fetchData = () => {
         setIsLoading(true);
-        fetch('/api/admin')
-            .then(res => {
-                if (res.status === 401) {
-                    window.location.href = '/login';
-                    return;
-                }
+        Promise.all([
+            fetch('/api/admin').then(res => {
+                if (res.status === 401) { window.location.href = '/login'; return null; }
                 return res.json();
-            })
-            .then(data => {
-                if (data && !data.error) setAdminData(data);
-                setIsLoading(false);
-            })
-            .catch(() => setIsLoading(false));
+            }),
+            fetch('/api/admin/settings').then(res => res.ok ? res.json() : null)
+        ]).then(([data, settingsData]) => {
+            if (data && !data.error) setAdminData(data);
+            if (settingsData && !settingsData.error) setAdminSettings(settingsData);
+            setIsLoading(false);
+        }).catch(() => setIsLoading(false));
     };
 
     const handleDeleteStore = async (id: string) => {
@@ -139,6 +139,34 @@ export default function AdminPanel() {
         );
     };
 
+    const handleSettingsUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (!e.target.files?.length) return;
+        const file = e.target.files[0];
+        const formData = new FormData();
+        formData.append('file', file);
+
+        setIsSavingSettings(true);
+        try {
+            const res = await fetch('/api/upload', { method: 'POST', body: formData });
+            if (res.ok) {
+                const data = await res.json();
+                const newUrl = data.fileUrl;
+                setAdminSettings((prev: any) => ({ ...prev, adminBankQrUrl: newUrl }));
+                await fetch('/api/admin/settings', {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ adminBankQrUrl: newUrl })
+                });
+                alert('Bank QR updated successfully!');
+            }
+        } catch (error) {
+            console.error('Upload failed', error);
+            alert('Upload failed');
+        } finally {
+            setIsSavingSettings(false);
+        }
+    };
+
     useEffect(() => { fetchData(); }, []);
 
     // reset search on section change
@@ -152,6 +180,7 @@ export default function AdminPanel() {
         { name: 'Stores' as Section, icon: Store },
         { name: 'Subscriptions' as Section, icon: CreditCard },
         { name: 'Payments' as Section, icon: CheckCircle2 },
+        { name: 'Settings' as Section, icon: Settings },
     ];
 
     const stats = [
@@ -189,6 +218,7 @@ export default function AdminPanel() {
         Stores: 'All Stores',
         Subscriptions: 'Subscriptions',
         Payments: 'Payments & Orders',
+        Settings: 'Admin Settings',
     };
 
     const searchPlaceholders: Record<Section, string> = {
@@ -196,6 +226,7 @@ export default function AdminPanel() {
         Stores: 'Search by name, slug or owner...',
         Subscriptions: 'Search by email, store or plan...',
         Payments: 'Search by store, customer or status...',
+        Settings: 'Search settings...',
     };
 
     return (
@@ -561,6 +592,56 @@ export default function AdminPanel() {
                                         </tbody>
                                     </table>
                                 )}
+                            </section>
+                        )}
+
+                        {/* ── SETTINGS ── */}
+                        {activeSection === 'Settings' && (
+                            <section className="bg-white rounded-[36px] shadow-sm border border-gray-50 overflow-hidden">
+                                <div className="p-8 border-b border-gray-50">
+                                    <h3 className="text-lg font-bold text-gray-900">Platform Settings</h3>
+                                </div>
+                                <div className="p-8 max-w-2xl">
+                                    <div className="mb-8">
+                                        <h4 className="text-sm font-bold text-gray-900 mb-2">Admin Bank QR Code</h4>
+                                        <p className="text-xs text-gray-500 mb-4">
+                                            This QR code will be displayed to all users when they upgrade their plan on the billing page.
+                                        </p>
+
+                                        <div className="flex items-center gap-6">
+                                            {adminSettings?.adminBankQrUrl ? (
+                                                <div className="w-40 h-40 rounded-2xl border-2 border-gray-100 p-2 overflow-hidden shadow-sm relative group bg-white">
+                                                    <img src={adminSettings.adminBankQrUrl} alt="Admin QR" className="w-full h-full object-contain" />
+                                                    <div className="absolute inset-0 bg-black/50 hidden group-hover:flex items-center justify-center transition-all z-10">
+                                                        <label className="text-white text-[10px] font-black uppercase tracking-widest bg-[#25D366] px-4 py-2 rounded-xl cursor-pointer hover:bg-green-600 transition-colors shadow-lg">
+                                                            Replace
+                                                            <input type="file" onChange={handleSettingsUpload} className="hidden" accept="image/*" disabled={isSavingSettings} />
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                            ) : (
+                                                <div className="w-40 h-40 rounded-2xl border-2 border-dashed border-gray-200 flex flex-col items-center justify-center bg-gray-50 text-gray-400">
+                                                    <label className="cursor-pointer text-center flex flex-col items-center group p-4 w-full h-full justify-center">
+                                                        <Upload size={24} className="mb-2 group-hover:text-[#25D366] transition-colors" />
+                                                        <span className="text-[10px] font-bold uppercase tracking-widest group-hover:text-[#25D366] transition-colors">Upload QR</span>
+                                                        <input type="file" onChange={handleSettingsUpload} className="hidden" accept="image/*" disabled={isSavingSettings} />
+                                                    </label>
+                                                </div>
+                                            )}
+
+                                            <div>
+                                                <p className="text-sm font-bold text-gray-900 mb-1">Upload New QR</p>
+                                                <p className="text-xs text-gray-500 max-w-xs leading-relaxed mb-4">
+                                                    Square images work best. Supported formats: .png, .jpg (Max 5MB).
+                                                </p>
+                                                <label className={`inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl text-sm font-bold transition-all shadow-sm ${isSavingSettings ? 'bg-gray-100 text-gray-400 cursor-not-allowed' : 'bg-gray-900 text-white hover:opacity-90 cursor-pointer shadow-xl shadow-gray-900/10 active:scale-95'}`}>
+                                                    {isSavingSettings ? 'Saving...' : 'Select Image'}
+                                                    <input type="file" onChange={handleSettingsUpload} className="hidden" accept="image/*" disabled={isSavingSettings} />
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </section>
                         )}
                     </>
