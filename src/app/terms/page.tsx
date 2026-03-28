@@ -78,6 +78,14 @@ export default function TermsPage() {
                             <p className="font-medium leading-relaxed">In no event shall KedaiChat or its suppliers be liable for any damages (including, without limitation, damages for loss of data or profit, or due to business interruption) arising out of the use or inability to use the materials on KedaiChat's website, even if KedaiChat or a KedaiChat authorized representative has been notified orally or in writing of the possibility of such damage.</p>
                         </section>
 
+                        <section className="bg-red-50 p-8 rounded-3xl border border-red-100">
+                            <h2 className="text-2xl font-black text-red-900 mb-4 flex items-center gap-3">
+                                <span className="w-8 h-8 rounded-full bg-red-200 text-red-800 flex items-center justify-center text-sm">5</span>
+                                Prohibited Items & Activities
+                            </h2>
+                            <p className="font-medium leading-relaxed text-red-800">Selling prohibited items such as drugs, alcohol and anything that can be harmful is strictly prohibited. KedaiChat will take action to deactivate your shop and legal action will be taken against the perpetrators.</p>
+                        </section>
+
                         <section className="bg-gradient-to-r from-[#25D366] to-[#128C7E] text-white p-10 rounded-3xl border border-green-800 shadow-xl mt-12 text-center">
                             <Mail size={40} className="mx-auto mb-6 text-white" />
                             <h2 className="text-3xl font-black mb-4">Contact Us</h2>
