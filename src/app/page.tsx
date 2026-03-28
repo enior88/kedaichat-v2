@@ -104,24 +104,37 @@ export default function LandingPage() {
                         </a>
                     </div>
 
-                    {/* Dashboard Preview / Visual */}
-                    <div className="mt-20 relative animate-in fade-in zoom-in duration-1000 delay-500">
-                        <div className="bg-gray-50 rounded-[40px] p-4 border border-gray-100 shadow-2xl max-w-5xl mx-auto overflow-hidden">
+                    {/* Hero Illustration / Visual */}
+                    <div className="mt-20 relative animate-in fade-in zoom-in duration-1000 delay-500 max-w-4xl mx-auto">
+                        <div className="relative rounded-[40px] overflow-visible">
+                            <div className="absolute inset-0 bg-green-100/50 blur-3xl -z-10 rounded-[100px] scale-90" />
                             <img
-                                src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=80&w=2426&ixlib=rb-4.0.3"
-                                alt="Dashboard Preview"
-                                className="rounded-[32px] w-full h-auto shadow-inner"
+                                src="/hero_illustration.png"
+                                alt="Successful Business Owner using KedaiChat"
+                                className="w-full h-auto drop-shadow-2xl rounded-[32px] object-cover"
                             />
                         </div>
-                        {/* Floating Stats */}
-                        <div className="absolute top-1/2 -right-10 bg-white p-6 rounded-[28px] shadow-2xl border border-gray-50 hidden lg:block animate-bounce duration-[3000ms]">
+                        {/* Floating Stats 1: New Order */}
+                        <div className="absolute top-1/4 -right-10 bg-white/90 backdrop-blur-xl p-5 rounded-[24px] shadow-2xl border border-white/50 hidden lg:block animate-bounce" style={{ animationDuration: '3s' }}>
                             <div className="flex items-center gap-4">
-                                <div className="w-12 h-12 bg-green-50 rounded-2xl flex items-center justify-center">
-                                    <ShoppingBag className="text-[#25D366]" size={24} />
+                                <div className="w-10 h-10 bg-green-100/50 rounded-xl flex items-center justify-center">
+                                    <ShoppingBag className="text-[#25D366]" size={20} />
                                 </div>
                                 <div className="text-left">
-                                    <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest">{t('new_order')}</p>
-                                    <p className="text-xl font-black">RM 124.00</p>
+                                    <p className="text-[10px] text-gray-500 font-bold uppercase tracking-widest">{t('new_order')}</p>
+                                    <p className="text-lg font-black text-gray-900">+ RM 1,240.00</p>
+                                </div>
+                            </div>
+                        </div>
+                        {/* Floating Stats 2: Customers Online */}
+                        <div className="absolute bottom-1/4 -left-10 bg-white/90 backdrop-blur-xl p-5 rounded-[24px] shadow-2xl border border-white/50 hidden lg:block animate-bounce" style={{ animationDuration: '4s', animationDelay: '1s' }}>
+                            <div className="flex items-center gap-4">
+                                <div className="w-10 h-10 bg-blue-100/50 rounded-xl flex items-center justify-center">
+                                    <Users className="text-blue-500" size={20} />
+                                </div>
+                                <div className="text-left">
+                                    <p className="text-[10px] text-gray-500 font-bold uppercase tracking-widest">Active Buyers</p>
+                                    <p className="text-lg font-black text-gray-900">+42 This Hour</p>
                                 </div>
                             </div>
                         </div>
