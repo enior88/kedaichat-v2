@@ -321,9 +321,9 @@ export default function LandingPage() {
                     </div>
 
                     <div className="flex items-center gap-8 text-sm font-bold text-gray-400">
-                        <a href="#" className="hover:text-gray-900 transition-colors">{t('privacy')}</a>
-                        <a href="#" className="hover:text-gray-900 transition-colors">{t('terms')}</a>
-                        <a href="#" className="hover:text-gray-900 transition-colors">{t('contact')}</a>
+                        <Link href="/privacy" className="hover:text-gray-900 transition-colors">{t('privacy')}</Link>
+                        <Link href="/terms" className="hover:text-gray-900 transition-colors">{t('terms')}</Link>
+                        <a href="mailto:enginenior@gmail.com" className="hover:text-gray-900 transition-colors">{t('contact')}</a>
                     </div>
 
                     <p className="text-sm font-bold text-gray-400">© 2026 KedaiChat. {t('all_rights_reserved')}</p>
