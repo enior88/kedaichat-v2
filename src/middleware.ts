@@ -9,7 +9,7 @@ export async function middleware(request: NextRequest) {
     const hostname = request.headers.get('host') || '';
 
     const path = url.pathname;
-    const reservedPaths = ['admin', 'api', 'billing', 'dashboard', 'login', 'onboarding', 'orders', 'products', 'reseller', 'wallet', 'tools', 'shop', 'analytics', 'settings', 'checkout', 'privacy', 'terms', '_next', 'favicon.ico', 'logo.png', 'favicon.png'];
+    const reservedPaths = ['admin', 'api', 'billing', 'dashboard', 'login', 'onboarding', 'orders', 'products', 'reseller', 'wallet', 'tools', 'shop', 'analytics', 'settings', 'checkout', 'privacy', 'terms', '_next', 'favicon.ico', 'logo.png', 'favicon.png', 'hero_illustration.png'];
     const pathParts = path.split('/').filter(Boolean);
 
     // Reserved path check
