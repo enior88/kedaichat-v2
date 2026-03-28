@@ -17,7 +17,8 @@ import {
     ArrowRight,
     Play,
     Store,
-    Package
+    Package,
+    Mail
 } from 'lucide-react';
 import { useLanguage } from '@/lib/LanguageContext';
 import LanguageToggle from '@/components/LanguageToggle';
@@ -320,10 +321,16 @@ export default function LandingPage() {
                         <span className="text-lg font-black tracking-tighter">KedaiChat</span>
                     </div>
 
-                    <div className="flex items-center gap-8 text-sm font-bold text-gray-400">
-                        <Link href="/privacy" className="hover:text-gray-900 transition-colors">{t('privacy')}</Link>
-                        <Link href="/terms" className="hover:text-gray-900 transition-colors">{t('terms')}</Link>
-                        <a href="mailto:enginenior@gmail.com" className="hover:text-gray-900 transition-colors">{t('contact')}</a>
+                    <div className="flex flex-col md:flex-row items-center gap-6 md:gap-8 text-sm font-bold text-gray-400">
+                        <Link href="/privacy" className="hover:text-[#25D366] transition-colors">{t('privacy')}</Link>
+                        <Link href="/terms" className="hover:text-[#25D366] transition-colors">{t('terms')}</Link>
+                        <div className="flex items-center gap-2">
+                            <span>{t('contact')}:</span>
+                            <a href="mailto:enginenior@gmail.com" className="text-gray-900 hover:text-[#25D366] bg-green-50 px-3 py-1.5 rounded-full transition-colors flex items-center gap-2">
+                                <Mail size={14} className="text-[#25D366]" />
+                                enginenior@gmail.com
+                            </a>
+                        </div>
                     </div>
 
                     <p className="text-sm font-bold text-gray-400">© 2026 KedaiChat. {t('all_rights_reserved')}</p>
