@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 
 export const dynamic = 'force-dynamic';
+export const revalidate = 0;
 
 export async function GET() {
     try {
@@ -17,7 +18,10 @@ export async function GET() {
             });
         }
 
-        return NextResponse.json({ adminBankQrUrl: settings.adminBankQrUrl || null });
+        return NextResponse.json({
+            adminBankQrUrl: settings.adminBankQrUrl || null,
+            _debug: { id: settings.id, updatedAt: settings.updatedAt }
+        });
     } catch (error: any) {
         console.error('Error fetching public settings:', error);
         return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
