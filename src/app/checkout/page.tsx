@@ -91,21 +91,28 @@ function CheckoutContent() {
                     <p className="text-sm text-gray-400 font-bold uppercase tracking-wider">Pay via Bank QR / DuitNow</p>
                 </div>
 
-                <div className="aspect-square bg-white rounded-[24px] border border-gray-100 flex flex-col items-center justify-center p-2 mb-6 relative overflow-hidden shadow-inner">
+                <div
+                    onClick={() => {
+                        if (!adminBankQrUrl) {
+                            alert('Administrator has not uploaded a QR code yet. Please upload it in your Admin Panel > Settings.');
+                        }
+                    }}
+                    className="aspect-square bg-white rounded-[24px] border border-gray-100 flex flex-col items-center justify-center p-2 mb-6 relative overflow-hidden shadow-inner cursor-pointer hover:border-[#25D366] transition-all group"
+                >
                     {isLoadingQr ? (
                         <div className="flex flex-col items-center justify-center gap-3">
                             <div className="w-8 h-8 border-4 border-[#25D366] border-t-transparent rounded-full animate-spin" />
                             <p className="text-xs text-gray-400 font-medium">Loading QR...</p>
                         </div>
-                    ) : adminBankQrUrl ? (
+                    ) : (adminBankQrUrl || receiptUrl) ? (
                         <img
-                            src={adminBankQrUrl}
+                            src={adminBankQrUrl || 'https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=Please%20Upload%20QR%20in%20Admin'}
                             alt="DuitNow QR Payment"
-                            className="w-full h-full object-contain rounded-2xl"
+                            className="w-full h-full object-contain rounded-2xl transition-transform group-hover:scale-105"
                         />
                     ) : (
                         <div className="text-center p-4">
-                            <QrCode size={48} className="mx-auto text-gray-200 mb-2" />
+                            <QrCode size={48} className="mx-auto text-gray-200 mb-2 group-hover:text-[#25D366] transition-colors" />
                             <p className="text-sm font-bold text-gray-400">Scan QR to Pay</p>
                             <p className="text-[10px] text-gray-400 mt-1">Please contact admin for QR</p>
                         </div>
