@@ -6,15 +6,28 @@ export const revalidate = 0;
 
 export async function GET() {
     try {
-        // Use upsert to ensure the record exists, or findFirst as a fallback
+        // First try the 'global' record
         let settings = await prisma.platformSettings.findUnique({
             where: { id: 'global' },
         });
 
+        // Fallback: If 'global' is missing or has NO QR, try to find ANY record in the table
+        if (!settings || !settings.adminBankQrUrl) {
+            const anySettings = await prisma.platformSettings.findFirst({
+                where: { adminBankQrUrl: { not: null } },
+                orderBy: { updatedAt: 'desc' }
+            });
+            if (anySettings) {
+                settings = anySettings;
+            }
+        }
+
+        // Final Fallback: Self-heal if NO records exist at all
         if (!settings) {
-            // Self-heal: create the global record if missing
-            settings = await prisma.platformSettings.create({
-                data: { id: 'global' }
+            settings = await prisma.platformSettings.upsert({
+                where: { id: 'global' },
+                update: {},
+                create: { id: 'global' }
             });
         }
 
