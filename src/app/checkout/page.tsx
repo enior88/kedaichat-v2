@@ -1,0 +1,186 @@
+'use client';
+
+import React, { useState, useRef, Suspense } from 'react';
+import { ShieldCheck, QrCode, Upload, Check, ChevronRight, X, ArrowLeft } from 'lucide-react';
+import { useSearchParams, useRouter } from 'next/navigation';
+
+function CheckoutContent() {
+    const searchParams = useSearchParams();
+    const router = useRouter();
+    const planId = searchParams?.get('plan') || 'BASIC';
+
+    const [file, setFile] = useState<File | null>(null);
+    const [uploading, setUploading] = useState(false);
+    const [receiptUrl, setReceiptUrl] = useState<string | null>(null);
+    const [adminBankQrUrl, setAdminBankQrUrl] = useState<string | null>(null);
+    const [isLoadingQr, setIsLoadingQr] = useState(true);
+    const fileInputRef = useRef<HTMLInputElement>(null);
+
+    const plans = {
+        BASIC: { name: 'Basic Plan', price: '29' },
+        PRO: { name: 'Pro Plan', price: '49' },
+    };
+
+    const currentPlan = plans[planId as keyof typeof plans] || plans.BASIC;
+
+    const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files && e.target.files.length > 0) {
+            const selectedFile = e.target.files[0];
+            setFile(selectedFile);
+            await uploadReceipt(selectedFile);
+        }
+    };
+
+    const uploadReceipt = async (selectedFile: File) => {
+        setUploading(true);
+        try {
+            const formData = new FormData();
+            formData.append('file', selectedFile);
+
+            const res = await fetch('/api/upload', {
+                method: 'POST',
+                body: formData,
+            });
+
+            if (res.ok) {
+                const data = await res.json();
+                setReceiptUrl(data.fileUrl); // Store reference for later
+            } else {
+                alert('Failed to upload receipt. Please try again.');
+                setFile(null);
+            }
+        } catch (error) {
+            console.error(error);
+            alert('Upload error.');
+            setFile(null);
+        } finally {
+            setUploading(false);
+        }
+    };
+
+    const handleContinue = () => {
+        if (!receiptUrl) return;
+        router.push(`/onboarding?plan=${planId}&receipt=${encodeURIComponent(receiptUrl)}`);
+    };
+
+    React.useEffect(() => {
+        const fetchAdminBankQr = async () => {
+            try {
+                const res = await fetch('/api/public/settings');
+                if (res.ok) {
+                    const data = await res.json();
+                    setAdminBankQrUrl(data.adminBankQrUrl || null);
+                }
+            } catch (error) {
+                console.error('Failed to fetch admin bank QR:', error);
+            } finally {
+                setIsLoadingQr(false);
+            }
+        };
+        fetchAdminBankQr();
+    }, []);
+
+    return (
+        <div className="min-h-screen bg-[#F8F9FA] p-6 font-inter flex flex-col items-center justify-center py-12">
+            <button onClick={() => router.back()} className="absolute top-6 left-6 p-2 text-gray-400 hover:text-gray-900 transition-colors">
+                <ArrowLeft size={20} />
+            </button>
+            <div className="w-full max-w-md bg-white rounded-[32px] p-8 shadow-xl border border-gray-50">
+                <div className="text-center mb-8">
+                    <h1 className="text-2xl font-black text-gray-900 mb-2">Upgrade to {currentPlan.name}</h1>
+                    <p className="text-sm text-gray-400 font-bold uppercase tracking-wider">Pay via Bank QR / DuitNow</p>
+                </div>
+
+                <div className="aspect-square bg-white rounded-[24px] border border-gray-100 flex flex-col items-center justify-center p-2 mb-6 relative overflow-hidden shadow-inner">
+                    {isLoadingQr ? (
+                        <div className="flex flex-col items-center justify-center gap-3">
+                            <div className="w-8 h-8 border-4 border-[#25D366] border-t-transparent rounded-full animate-spin" />
+                            <p className="text-xs text-gray-400 font-medium">Loading QR...</p>
+                        </div>
+                    ) : adminBankQrUrl ? (
+                        <img
+                            src={adminBankQrUrl}
+                            alt="DuitNow QR Payment"
+                            className="w-full h-full object-contain rounded-2xl"
+                        />
+                    ) : (
+                        <div className="text-center p-4">
+                            <QrCode size={48} className="mx-auto text-gray-200 mb-2" />
+                            <p className="text-sm font-bold text-gray-400">Scan QR to Pay</p>
+                            <p className="text-[10px] text-gray-400 mt-1">Please contact admin for QR</p>
+                        </div>
+                    )}
+                </div>
+
+                <div className="bg-green-50 rounded-2xl p-5 mb-8 text-center text-[#128C7E]">
+                    <p className="text-sm font-bold mb-1">Total to Pay</p>
+                    <p className="text-3xl font-black">RM {currentPlan.price}<span className="text-sm text-[#25D366]">.00</span></p>
+                </div>
+
+                {/* Upload Section */}
+                <div className="mb-8">
+                    <h3 className="text-xs font-bold text-gray-900 uppercase tracking-wider mb-3">Upload Receipt proof</h3>
+
+                    {!file ? (
+                        <div
+                            onClick={() => fileInputRef.current?.click()}
+                            className="h-24 bg-gray-50 border-2 border-dashed border-gray-200 rounded-2xl flex flex-col items-center justify-center cursor-pointer hover:bg-gray-100 hover:border-gray-300 transition-all"
+                        >
+                            <input
+                                type="file"
+                                accept="image/*,.pdf"
+                                className="hidden"
+                                ref={fileInputRef}
+                                onChange={handleFileChange}
+                            />
+                            <Upload size={24} className="text-gray-400 mb-2" />
+                            <p className="text-[10px] font-bold text-gray-500 uppercase">Tap to upload proof</p>
+                        </div>
+                    ) : (
+                        <div className="h-24 bg-green-50 border-2 border-[#25D366] rounded-2xl flex items-center justify-between px-4 relative">
+                            <div className="flex items-center gap-4">
+                                <div className="w-10 h-10 bg-[#25D366] rounded-xl flex items-center justify-center flex-shrink-0">
+                                    <Check size={20} className="text-white" />
+                                </div>
+                                <div className="truncate pr-8">
+                                    <p className="font-bold text-gray-900 text-sm truncate">{file.name}</p>
+                                    <p className="text-xs text-gray-500">{uploading ? 'Uploading...' : 'Upload complete'}</p>
+                                </div>
+                            </div>
+                            {!uploading && (
+                                <button
+                                    onClick={() => { setFile(null); setReceiptUrl(null); }}
+                                    className="p-2 text-gray-400 hover:text-red-500 transition-colors absolute right-2"
+                                >
+                                    <X size={16} />
+                                </button>
+                            )}
+                        </div>
+                    )}
+                </div>
+
+                <button
+                    disabled={!receiptUrl || uploading}
+                    onClick={handleContinue}
+                    className="w-full h-14 bg-[#25D366] text-white font-bold rounded-[2xl] flex items-center justify-center gap-2 active:scale-95 transition-all disabled:opacity-50 disabled:bg-gray-300"
+                >
+                    I've Paid - Continue
+                    <ChevronRight size={18} />
+                </button>
+            </div>
+
+            <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest mt-6 text-center">
+                <ShieldCheck size={14} className="inline mr-1" />
+                Payments are securely processed and automatically verified
+            </p>
+        </div>
+    );
+}
+
+export default function CheckoutPage() {
+    return (
+        <Suspense fallback={<div className="min-h-screen flex items-center justify-center">Loading...</div>}>
+            <CheckoutContent />
+        </Suspense>
+    );
+}

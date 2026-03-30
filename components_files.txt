@@ -1,0 +1,16 @@
+D:\KC v2\src\components\AdminPanel.tsx
+D:\KC v2\src\components\Analytics.tsx
+D:\KC v2\src\components\BillingSubscription.tsx
+D:\KC v2\src\components\BottomNav.tsx
+D:\KC v2\src\components\Checkout.tsx
+D:\KC v2\src\components\CustomerWallet.tsx
+D:\KC v2\src\components\Dashboard.tsx
+D:\KC v2\src\components\LanguageToggle.tsx
+D:\KC v2\src\components\Login.tsx
+D:\KC v2\src\components\Onboarding.tsx
+D:\KC v2\src\components\OrdersManagement.tsx
+D:\KC v2\src\components\PosterGenerator.tsx
+D:\KC v2\src\components\ProductManager.tsx
+D:\KC v2\src\components\ResellerGroupDashboard.tsx
+D:\KC v2\src\components\Settings.tsx
+D:\KC v2\src\components\StoreCatalog.tsx

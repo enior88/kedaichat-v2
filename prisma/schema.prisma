@@ -1,0 +1,126 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id             String   @id @default(cuid())
+  email          String?  @unique
+  whatsappNumber String?  @unique
+  name           String?
+  password       String?
+  role           String   @default("SELLER")
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  stores         Store[]
+}
+
+model Store {
+  id             String        @id @default(cuid())
+  name           String
+  slug           String        @unique
+  category       String?
+  whatsappNumber String
+  logoUrl        String?
+  paymentQrUrl   String?
+  ownerId        String
+  archived       Boolean       @default(false)
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+  groupOrders    GroupOrder[]
+  orders         Order[]
+  products       Product[]
+  resellers      Reseller[]
+  owner          User          @relation(fields: [ownerId], references: [id])
+  subscription   Subscription?
+}
+
+model Product {
+  id          String      @id @default(cuid())
+  name        String
+  price       Float
+  description String?
+  category    String?
+  imageUrl    String?
+  stock       Int?
+  active      Boolean     @default(true)
+  storeId     String
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  orderItems  OrderItem[]
+  store       Store       @relation(fields: [storeId], references: [id])
+}
+
+model Order {
+  id              String      @id @default(cuid())
+  orderNumber     String      @unique
+  customerName    String
+  customerPhone   String?
+  total           Float
+  status          String      @default("PENDING")
+  paymentStatus   String      @default("UNPAID")
+  paymentProofUrl String?
+  storeId         String
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+  store           Store       @relation(fields: [storeId], references: [id])
+  items           OrderItem[]
+}
+
+model OrderItem {
+  id        String  @id @default(cuid())
+  quantity  Int
+  price     Float
+  orderId   String
+  productId String
+  product   Product @relation(fields: [productId], references: [id])
+  order     Order   @relation(fields: [orderId], references: [id])
+}
+
+model Reseller {
+  id          String       @id @default(cuid())
+  name        String
+  refCode     String       @unique
+  storeId     String
+  createdAt   DateTime     @default(now())
+  commissions Commission[]
+  store       Store        @relation(fields: [storeId], references: [id])
+}
+
+model Commission {
+  id         String   @id @default(cuid())
+  amount     Float
+  orderId    String
+  resellerId String
+  reseller   Reseller @relation(fields: [resellerId], references: [id])
+}
+
+model GroupOrder {
+  id         String   @id @default(cuid())
+  title      String
+  deadline   DateTime
+  pickupTime String
+  storeId    String
+  createdAt  DateTime @default(now())
+  store      Store    @relation(fields: [storeId], references: [id])
+}
+
+model Subscription {
+  id                String    @id @default(cuid())
+  plan              String    @default("FREE")
+  status            String    @default("ACTIVE")
+  paymentReceiptUrl String?
+  storeId           String    @unique
+  expiresAt         DateTime?
+  store             Store     @relation(fields: [storeId], references: [id])
+}
+
+model PlatformSettings {
+  id             String   @id @default("global")
+  adminBankQrUrl String?
+  updatedAt      DateTime @updatedAt
+}
