@@ -90,39 +90,39 @@ export default function LandingPage() {
             <main className="relative">
                 {/* 1. Hero Section Filler & Wrapper */}
                 <div className="relative h-[200vh] z-[50] snap-start">
-                    <section className="sticky top-0 h-screen bg-white flex flex-col items-center justify-start px-4 md:px-6 pt-24 md:pt-48 pb-8 overflow-hidden">
+                    <section className="sticky top-0 h-screen bg-white flex flex-col items-center justify-start px-4 md:px-6 pt-20 md:pt-32 pb-4 overflow-hidden">
                         <div className="max-w-7xl mx-auto text-center w-full">
-                            <div className="inline-flex items-center gap-2 bg-green-50 text-[#25D366] px-3 py-1.5 rounded-full mb-4 md:mb-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
+                            <div className="inline-flex items-center gap-2 bg-green-50 text-[#25D366] px-3 py-1.5 rounded-full mb-3 md:mb-6 animate-in fade-in slide-in-from-bottom-4 duration-700">
                                 <Zap size={14} fill="currentColor" />
                                 <span className="text-[10px] md:text-xs font-black uppercase tracking-widest">{t('built_for_smes')}</span>
                             </div>
 
-                            <h1 className="text-2xl md:text-7xl font-black text-gray-900 mb-3 md:mb-6 leading-[1.1] tracking-tight animate-in fade-in slide-in-from-bottom-6 duration-700 delay-100 px-2">
+                            <h1 className="text-2xl md:text-6xl font-black text-gray-900 mb-2 md:mb-4 leading-[1.1] tracking-tight animate-in fade-in slide-in-from-bottom-6 duration-700 delay-100 px-2">
                                 {t('hero_title')} <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#25D366] to-[#128C7E]">{t('hero_shop_highlight')}</span>
                             </h1>
 
-                            <p className="text-sm md:text-xl text-gray-500 mb-6 md:mb-10 max-w-2xl mx-auto font-medium animate-in fade-in slide-in-from-bottom-8 duration-700 delay-200 px-4">
+                            <p className="text-xs md:text-lg text-gray-500 mb-4 md:mb-8 max-w-2xl mx-auto font-medium animate-in fade-in slide-in-from-bottom-8 duration-700 delay-200 px-4">
                                 {t('hero_desc')}
                             </p>
 
-                            <div className="flex flex-col sm:flex-row items-center justify-center gap-3 md:gap-4 animate-in fade-in slide-in-from-bottom-10 duration-700 delay-300 px-4">
-                                <Link href="/onboarding" className="w-full sm:w-auto bg-gradient-to-r from-[#25D366] to-[#128C7E] text-white px-8 md:px-10 h-14 md:h-16 flex items-center justify-center rounded-2xl text-base md:text-lg font-black hover:opacity-90 transition-all shadow-2xl shadow-green-200 active:scale-95 gap-2">
+                            <div className="flex flex-col sm:flex-row items-center justify-center gap-2 md:gap-4 animate-in fade-in slide-in-from-bottom-10 duration-700 delay-300 px-4">
+                                <Link href="/onboarding" className="w-full sm:w-auto bg-gradient-to-r from-[#25D366] to-[#128C7E] text-white px-6 md:px-10 h-12 md:h-16 flex items-center justify-center rounded-2xl text-sm md:text-lg font-black hover:opacity-90 transition-all shadow-2xl shadow-green-200 active:scale-95 gap-2">
                                     {t('start_free')}
-                                    <ArrowRight size={20} />
+                                    <ArrowRight size={18} />
                                 </Link>
-                                <a href="#how-it-works" className="w-full sm:w-auto bg-white border-2 border-gray-100 text-gray-900 px-8 md:px-10 h-14 md:h-16 flex items-center justify-center rounded-2xl text-base md:text-lg font-black hover:bg-gray-50 transition-all active:scale-95 gap-2">
-                                    <Play size={20} fill="currentColor" />
+                                <a href="#how-it-works" className="w-full sm:w-auto bg-white border-2 border-gray-100 text-gray-900 px-6 md:px-10 h-12 md:h-16 flex items-center justify-center rounded-2xl text-sm md:text-lg font-black hover:bg-gray-50 transition-all active:scale-95 gap-2">
+                                    <Play size={18} fill="currentColor" />
                                     {t('how_it_works')}
                                 </a>
                             </div>
 
-                            <div className="mt-6 md:mt-12 relative animate-in fade-in zoom-in duration-1000 delay-500 max-w-3xl mx-auto px-4">
-                                <div className="relative rounded-[24px] md:rounded-[40px] overflow-visible group">
+                            <div className="mt-4 md:mt-8 relative animate-in fade-in zoom-in duration-1000 delay-500 max-w-2xl mx-auto px-4">
+                                <div className="relative rounded-[20px] md:rounded-[40px] overflow-visible group">
                                     <div className="absolute inset-0 bg-green-100/50 blur-3xl -z-10 rounded-[100px] scale-90" />
                                     <img
                                         src="/hero_illustration.png"
                                         alt="Successful Business Owner using KedaiChat"
-                                        className="w-[70%] md:w-full mx-auto h-auto drop-shadow-2xl rounded-[20px] md:rounded-[32px] object-cover transition-transform duration-700 group-hover:scale-[1.02]"
+                                        className="w-auto max-h-[40vh] md:max-h-[45vh] mx-auto h-auto drop-shadow-2xl rounded-[16px] md:rounded-[32px] object-contain transition-transform duration-700 group-hover:scale-[1.02]"
                                     />
                                 </div>
                             </div>
