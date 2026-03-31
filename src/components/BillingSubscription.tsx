@@ -105,7 +105,7 @@ export default function BillingSubscription() {
     };
 
     return (
-        <div className="min-h-screen bg-[#F8F9FA] pb-24 font-inter">
+        <div className="min-h-screen bg-[#F8F9FA] pb-24 font-inter max-w-md mx-auto relative shadow-2xl overflow-hidden border-x border-gray-100">
             <div className="p-6">
                 <h1 className="text-2xl font-black text-gray-900 mb-2">Subscription</h1>
                 <p className="text-sm text-gray-400 font-bold uppercase tracking-wider mb-8">Choose your power plan</p>
@@ -160,83 +160,81 @@ export default function BillingSubscription() {
                     ))}
                 </div>
 
-                {/* Payment Logic (Simple Bank QR for MVP) */}
-                {selectedPlan !== 'FREE' && (
-                    <div className="mt-8 bg-white rounded-[32px] p-8 shadow-xl border border-gray-50">
-                        <h4 className="text-center font-bold text-gray-900 mb-6">Pay via Bank QR / DuitNow</h4>
-                        <div className="aspect-square bg-white rounded-[24px] border border-gray-100 flex flex-col items-center justify-center p-2 mb-6 relative overflow-hidden shadow-inner">
-                            {isLoadingQr ? (
-                                <div className="flex flex-col items-center justify-center gap-3">
-                                    <div className="w-8 h-8 border-4 border-[#25D366] border-t-transparent rounded-full animate-spin" />
-                                    <p className="text-xs text-gray-400 font-medium">Loading QR...</p>
-                                </div>
-                            ) : adminBankQrUrl ? (
-                                <img
-                                    src={adminBankQrUrl}
-                                    alt="DuitNow QR Payment"
-                                    className="w-full h-full object-contain rounded-2xl"
-                                />
-                            ) : (
-                                <div className="flex flex-col items-center justify-center gap-2 text-center p-4">
-                                    <p className="text-sm font-bold text-gray-400">QR Not Available</p>
-                                    <p className="text-[10px] text-gray-400 leading-relaxed">Please contact admin to set up the payment QR code.</p>
-                                </div>
-                            )}
-                        </div>
-
-                        <div className="bg-gray-50 rounded-2xl p-4 mb-8">
-                            <div className="flex items-center gap-3 mb-2">
-                                <ShieldCheck size={16} className="text-[#25D366]" />
-                                <p className="text-xs font-bold text-gray-900">How to pay?</p>
+                <div className="mt-8 bg-white rounded-[40px] p-8 shadow-xl border border-gray-50 flex flex-col items-center">
+                    <h4 className="text-center font-bold text-gray-900 mb-6 uppercase tracking-widest text-[10px]">{t('pay_via_qr')}</h4>
+                    <div className="aspect-square bg-white rounded-[32px] border-2 border-gray-50 flex flex-col items-center justify-center p-4 mb-8 relative overflow-hidden shadow-inner w-full max-w-[280px]">
+                        {isLoadingQr ? (
+                            <div className="flex flex-col items-center justify-center gap-3">
+                                <div className="w-8 h-8 border-4 border-[#25D366] border-t-transparent rounded-full animate-spin" />
+                                <p className="text-xs text-gray-400 font-medium">Loading QR...</p>
                             </div>
-                            <p className="text-[10px] text-gray-500 leading-relaxed font-medium">
-                                1. Scan QR with your banking app.<br />
-                                2. Pay <b>RM {plans.find(p => p.id === selectedPlan)?.price ?? '0'}</b>.<br />
-                                3. We will approve your account within 1 hour.
-                            </p>
-                        </div>
-
-                        {/* Upload Proof */}
-                        <div className="mb-8">
-                            <h3 className="text-xs font-bold text-gray-900 uppercase tracking-wider mb-3">Upload Receipt proof</h3>
-                            {!file ? (
-                                <div
-                                    onClick={() => fileInputRef.current?.click()}
-                                    className="h-24 bg-gray-50 border-2 border-dashed border-gray-200 rounded-2xl flex flex-col items-center justify-center cursor-pointer hover:bg-gray-100 hover:border-gray-300 transition-all text-center"
-                                >
-                                    <input type="file" className="hidden" ref={fileInputRef} onChange={handleFileChange} accept="image/*,.pdf" />
-                                    <Upload size={24} className="text-gray-400 mb-2" />
-                                    <p className="text-[10px] font-bold text-gray-500 uppercase">Tap to upload proof</p>
-                                </div>
-                            ) : (
-                                <div className="h-24 bg-green-50 border-2 border-[#25D366] rounded-2xl flex items-center justify-between px-4 relative">
-                                    <div className="flex items-center gap-4">
-                                        <div className="w-10 h-10 bg-[#25D366] rounded-xl flex items-center justify-center flex-shrink-0">
-                                            <Check size={20} className="text-white" />
-                                        </div>
-                                        <div className="truncate pr-8 text-left">
-                                            <p className="font-bold text-gray-900 text-sm truncate">{file.name}</p>
-                                            <p className="text-xs text-gray-500">{uploading ? 'Uploading...' : 'Upload complete'}</p>
-                                        </div>
-                                    </div>
-                                    {!uploading && (
-                                        <button onClick={() => { setFile(null); setReceiptUrl(null); }} className="p-2 text-gray-400 hover:text-red-500 transition-colors absolute right-2">
-                                            <X size={16} />
-                                        </button>
-                                    )}
-                                </div>
-                            )}
-                        </div>
-
-                        <button
-                            onClick={handleVerify}
-                            disabled={isSubmitting || !receiptUrl || uploading}
-                            className="w-full h-14 bg-gray-900 text-white font-bold rounded-[2xl] flex items-center justify-center gap-2 active:scale-95 transition-all disabled:opacity-50"
-                        >
-                            {isSubmitting ? 'Upgrading...' : "I've Paid - Verify My Payment"}
-                            {!isSubmitting && <ChevronRight size={18} />}
-                        </button>
+                        ) : adminBankQrUrl ? (
+                            <img
+                                src={adminBankQrUrl}
+                                alt="DuitNow QR Payment"
+                                className="w-full h-full object-contain rounded-2xl"
+                            />
+                        ) : (
+                            <div className="flex flex-col items-center justify-center gap-2 text-center p-4">
+                                <p className="text-sm font-bold text-gray-400">QR Not Available</p>
+                                <p className="text-[10px] text-gray-400 leading-relaxed">Please contact admin to set up the payment QR code.</p>
+                            </div>
+                        )}
                     </div>
+
+                    <div className="bg-gray-50 rounded-2xl p-4 mb-8">
+                        <div className="flex items-center gap-3 mb-2">
+                            <ShieldCheck size={16} className="text-[#25D366]" />
+                            <p className="text-xs font-bold text-gray-900">How to pay?</p>
+                        </div>
+                        <p className="text-[10px] text-gray-500 leading-relaxed font-medium">
+                            1. Scan QR with your banking app.<br />
+                            2. Pay <b>RM {plans.find(p => p.id === selectedPlan)?.price ?? '0'}</b>.<br />
+                            3. We will approve your account within 1 hour.
+                        </p>
+                    </div>
+
+                    {/* Upload Proof */}
+                    <div className="mb-8">
+                        <h3 className="text-xs font-bold text-gray-900 uppercase tracking-wider mb-3">Upload Receipt proof</h3>
+                        {!file ? (
+                            <div
+                                onClick={() => fileInputRef.current?.click()}
+                                className="h-24 bg-gray-50 border-2 border-dashed border-gray-200 rounded-2xl flex flex-col items-center justify-center cursor-pointer hover:bg-gray-100 hover:border-gray-300 transition-all text-center"
+                            >
+                                <input type="file" className="hidden" ref={fileInputRef} onChange={handleFileChange} accept="image/*,.pdf" />
+                                <Upload size={24} className="text-gray-400 mb-2" />
+                                <p className="text-[10px] font-bold text-gray-500 uppercase">Tap to upload proof</p>
+                            </div>
+                        ) : (
+                            <div className="h-24 bg-green-50 border-2 border-[#25D366] rounded-2xl flex items-center justify-between px-4 relative">
+                                <div className="flex items-center gap-4">
+                                    <div className="w-10 h-10 bg-[#25D366] rounded-xl flex items-center justify-center flex-shrink-0">
+                                        <Check size={20} className="text-white" />
+                                    </div>
+                                    <div className="truncate pr-8 text-left">
+                                        <p className="font-bold text-gray-900 text-sm truncate">{file.name}</p>
+                                        <p className="text-xs text-gray-500">{uploading ? 'Uploading...' : 'Upload complete'}</p>
+                                    </div>
+                                </div>
+                                {!uploading && (
+                                    <button onClick={() => { setFile(null); setReceiptUrl(null); }} className="p-2 text-gray-400 hover:text-red-500 transition-colors absolute right-2">
+                                        <X size={16} />
+                                    </button>
+                                )}
+                            </div>
+                        )}
+                    </div>
+
+                    <button
+                        onClick={handleVerify}
+                        disabled={isSubmitting || !receiptUrl || uploading}
+                        className="w-full h-14 bg-gray-900 text-white font-bold rounded-[2xl] flex items-center justify-center gap-2 active:scale-95 transition-all disabled:opacity-50"
+                    >
+                        {isSubmitting ? 'Upgrading...' : "I've Paid - Verify My Payment"}
+                        {!isSubmitting && <ChevronRight size={18} />}
+                    </button>
+                </div>
                 )}
             </div>
 
