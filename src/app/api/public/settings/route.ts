@@ -36,7 +36,7 @@ export async function GET() {
             _debug: { id: settings.id, updatedAt: settings.updatedAt }
         });
     } catch (error: any) {
-        console.error('Error fetching public settings:', error);
+        console.error('[PUBLIC_SETTINGS_GET_ERROR]', error);
         return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
     }
 }

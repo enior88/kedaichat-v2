@@ -151,17 +151,28 @@ export default function AdminPanel() {
             if (res.ok) {
                 const data = await res.json();
                 const newUrl = data.fileUrl;
+
                 setAdminSettings((prev: any) => ({ ...prev, adminBankQrUrl: newUrl }));
-                await fetch('/api/admin/settings', {
+
+                const saveRes = await fetch('/api/admin/settings', {
                     method: 'PUT',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ adminBankQrUrl: newUrl })
                 });
-                alert('Bank QR updated successfully!');
+
+                if (saveRes.ok) {
+                    alert('Bank QR updated successfully!');
+                    fetchData(); // Sync with DB to be sure
+                } else {
+                    const errorMsg = await saveRes.json();
+                    alert(`Failed to save to database: ${errorMsg.error || 'Unknown error'}`);
+                }
+            } else {
+                alert('Upload to storage failed. Please try again.');
             }
         } catch (error) {
-            console.error('Upload failed', error);
-            alert('Upload failed');
+            console.error('Upload process failed', error);
+            alert('An unexpected error occurred during upload.');
         } finally {
             setIsSavingSettings(false);
         }

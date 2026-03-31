@@ -18,6 +18,7 @@ export async function GET() {
 
         return NextResponse.json({ adminBankQrUrl: settings?.adminBankQrUrl || null });
     } catch (error: any) {
+        console.error('[ADMIN_SETTINGS_GET_ERROR]', error);
         return NextResponse.json({ error: error.message }, { status: 500 });
     }
 }
@@ -30,7 +31,12 @@ export async function PUT(req: Request) {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         }
 
-        const { adminBankQrUrl } = await req.json();
+        const body = await req.json();
+        const { adminBankQrUrl } = body;
+
+        if (adminBankQrUrl === undefined) {
+            return NextResponse.json({ error: 'adminBankQrUrl is required' }, { status: 400 });
+        }
 
         // Upsert the global setting
         const settings = await prisma.platformSettings.upsert({
@@ -44,6 +50,7 @@ export async function PUT(req: Request) {
 
         return NextResponse.json({ success: true, settings });
     } catch (error: any) {
+        console.error('[ADMIN_SETTINGS_PUT_ERROR]', error);
         return NextResponse.json({ error: error.message }, { status: 500 });
     }
 }
