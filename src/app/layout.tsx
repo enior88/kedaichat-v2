@@ -23,7 +23,7 @@ export const metadata: Metadata = {
     openGraph: {
         title: "KedaiChat - WhatsApp-first Business OS",
         description: "Manage orders, resellers, and group orders via WhatsApp.",
-        url: "https://kedaichat.com",
+        url: "https://kedaichat.online",
         siteName: "KedaiChat",
         images: [
             {

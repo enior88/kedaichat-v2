@@ -70,7 +70,7 @@ export default function Dashboard() {
             const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
             const url = isLocal
                 ? `${window.location.origin}/shop/${stats.slug}`
-                : `https://${stats.slug}.kedaichat.com`;
+                : `https://${stats.slug}.kedaichat.online`;
 
             const copyToClipboard = async () => {
                 try {
@@ -147,7 +147,7 @@ export default function Dashboard() {
                         <h1 className="text-2xl font-black text-gray-900 tracking-tight">{stats.businessName}</h1>
                         <div className="flex items-center gap-1.5 mt-1">
                             <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
-                            <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest">Store Live • {stats.slug}.kedaichat.com</p>
+                            <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest">Store Live • {stats.slug}.kedaichat.online</p>
                         </div>
                     </div>
                     <div className="flex gap-2">

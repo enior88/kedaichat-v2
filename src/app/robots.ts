@@ -7,6 +7,6 @@ export default function robots(): MetadataRoute.Robots {
             allow: '/',
             disallow: ['/admin', '/api'],
         },
-        sitemap: 'https://kedaichat.com/sitemap.xml',
+        sitemap: 'https://kedaichat.online/sitemap.xml',
     };
 }
