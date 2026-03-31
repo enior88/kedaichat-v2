@@ -65,13 +65,13 @@ export default function LandingPage() {
                     </div>
 
                     <div className="flex items-center gap-2 md:gap-4">
-                        <div className="scale-75 md:scale-100">
+                        <div className="scale-90 md:scale-100">
                             <LanguageToggle />
                         </div>
-                        <Link href="/login" className="hidden sm:block text-sm font-bold text-gray-900 hover:text-[#25D366] transition-colors px-2 md:px-4 py-2">
+                        <Link href="/login" className="hidden lg:block text-sm font-bold text-gray-900 hover:text-[#25D366] transition-colors px-2 md:px-4 py-2">
                             {t('login')}
                         </Link>
-                        <Link href="/onboarding" className="bg-gray-900 text-white px-4 py-2.5 md:px-6 md:py-3 rounded-full text-xs md:text-sm font-black hover:bg-gray-800 transition-all shadow-xl shadow-gray-200 active:scale-95 whitespace-nowrap">
+                        <Link href="/onboarding" className="hidden sm:block bg-gray-900 text-white px-4 py-2.5 md:px-6 md:py-3 rounded-full text-xs md:text-sm font-black hover:bg-gray-800 transition-all shadow-xl shadow-gray-200 active:scale-95 whitespace-nowrap">
                             {t('start_free')}
                         </Link>
                     </div>
@@ -79,10 +79,10 @@ export default function LandingPage() {
             </nav>
 
             {/* Floating Mobile CTA */}
-            <div className="md:hidden fixed bottom-8 left-1/2 -translate-x-1/2 z-[100] w-[90%] max-w-sm">
-                <Link href="/onboarding" className="flex items-center justify-center gap-3 bg-gradient-to-r from-[#25D366] to-[#128C7E] text-white h-16 rounded-2xl text-lg font-black shadow-2xl shadow-green-200 active:scale-95 transition-all">
+            <div className="md:hidden fixed bottom-6 left-1/2 -translate-x-1/2 z-[100] w-[85%] max-w-sm">
+                <Link href="/onboarding" className="flex items-center justify-center gap-2 bg-gradient-to-r from-[#25D366] to-[#128C7E] text-white h-14 rounded-2xl text-base font-black shadow-[0_20px_50px_rgba(37,211,102,0.3)] active:scale-95 transition-all outline outline-4 outline-white/20">
                     {t('start_free')}
-                    <ArrowRight size={20} />
+                    <ArrowRight size={18} />
                 </Link>
             </div>
 
@@ -139,18 +139,18 @@ export default function LandingPage() {
                                 <h3 className="text-3xl md:text-5xl font-black leading-tight">{t('three_steps_title')}</h3>
                             </div>
 
-                            <div className="grid md:grid-cols-3 gap-6 md:gap-12 relative">
+                            <div className="grid md:grid-cols-3 gap-4 md:gap-12 relative">
                                 {[
-                                    { title: t('how_step_1_title'), desc: t('how_step_1_desc'), icon: <Store size={32} /> },
-                                    { title: t('how_step_2_title'), desc: t('how_step_2_desc'), icon: <Package size={32} /> },
-                                    { title: t('how_step_3_title'), desc: t('how_step_3_desc'), icon: <ArrowRight size={32} /> }
+                                    { title: t('how_step_1_title'), desc: t('how_step_1_desc'), icon: <Store size={24} className="md:w-8 md:h-8" /> },
+                                    { title: t('how_step_2_title'), desc: t('how_step_2_desc'), icon: <Package size={24} className="md:w-8 md:h-8" /> },
+                                    { title: t('how_step_3_title'), desc: t('how_step_3_desc'), icon: <ArrowRight size={24} className="md:w-8 md:h-8" /> }
                                 ].map((item, idx) => (
-                                    <div key={idx} className="bg-white p-8 md:p-10 rounded-[32px] md:rounded-[40px] border border-gray-100 shadow-xl relative z-10 hover:shadow-2xl hover:-translate-y-2 transition-all duration-500">
-                                        <div className="w-14 h-14 md:w-16 md:h-16 bg-[#25D366] text-white rounded-2xl flex items-center justify-center mb-6 md:mb-8 shadow-lg shadow-green-200">
+                                    <div key={idx} className="bg-white p-6 md:p-10 rounded-[24px] md:rounded-[40px] border border-gray-100 shadow-lg relative z-10 hover:shadow-2xl transition-all duration-500">
+                                        <div className="w-12 h-12 md:w-16 md:h-16 bg-[#25D366] text-white rounded-xl md:rounded-2xl flex items-center justify-center mb-4 md:mb-8 shadow-lg shadow-green-200/50">
                                             {item.icon}
                                         </div>
-                                        <h4 className="text-xl md:text-2xl font-black mb-4">{item.title}</h4>
-                                        <p className="text-gray-500 font-medium leading-relaxed text-sm md:base">{item.desc}</p>
+                                        <h4 className="text-lg md:text-2xl font-black mb-2 md:mb-4">{item.title}</h4>
+                                        <p className="text-gray-500 font-medium leading-relaxed text-xs md:text-base">{item.desc}</p>
                                     </div>
                                 ))}
                             </div>
@@ -168,33 +168,33 @@ export default function LandingPage() {
                                 <p className="text-gray-500 mt-4 text-base md:text-lg font-medium">{t('problem_desc')}</p>
                             </div>
 
-                            <div className="grid md:grid-cols-3 gap-6 md:gap-8">
+                            <div className="grid md:grid-cols-3 gap-4 md:gap-8">
                                 {[
                                     {
-                                        icon: <AlertCircle size={32} className="text-red-500" />,
+                                        icon: <AlertCircle size={24} className="text-red-500 md:w-8 md:h-8" />,
                                         title: t('problem_1_title'),
                                         desc: t('problem_1_desc'),
                                         bgColor: "bg-red-50"
                                     },
                                     {
-                                        icon: <Clock size={32} className="text-orange-500" />,
+                                        icon: <Clock size={24} className="text-orange-500 md:w-8 md:h-8" />,
                                         title: t('problem_2_title'),
                                         desc: t('problem_2_desc'),
                                         bgColor: "bg-orange-50"
                                     },
                                     {
-                                        icon: <ClipboardList size={32} className="text-blue-500" />,
+                                        icon: <ClipboardList size={24} className="text-blue-500 md:w-8 md:h-8" />,
                                         title: t('problem_3_title'),
                                         desc: t('problem_3_desc'),
                                         bgColor: "bg-blue-50"
                                     }
                                 ].map((item, idx) => (
-                                    <div key={idx} className="bg-white p-8 md:p-10 rounded-[32px] md:rounded-[40px] shadow-xl border border-gray-50 hover:translate-y-[-8px] transition-all group duration-500">
-                                        <div className={`${item.bgColor} w-16 h-16 md:w-20 md:h-20 rounded-[24px] md:rounded-[28px] flex items-center justify-center mb-6 md:mb-8 group-hover:scale-110 transition-transform`}>
+                                    <div key={idx} className="bg-white p-6 md:p-10 rounded-[24px] md:rounded-[40px] shadow-lg border border-gray-50 transition-all duration-500">
+                                        <div className={`${item.bgColor} w-12 h-12 md:w-20 md:h-20 rounded-[16px] md:rounded-[28px] flex items-center justify-center mb-4 md:mb-8`}>
                                             {item.icon}
                                         </div>
-                                        <h4 className="text-xl md:text-2xl font-black mb-4">{item.title}</h4>
-                                        <p className="text-gray-500 leading-relaxed font-medium text-sm md:base">{item.desc}</p>
+                                        <h4 className="text-lg md:text-2xl font-black mb-2 md:mb-4">{item.title}</h4>
+                                        <p className="text-gray-500 leading-relaxed font-medium text-xs md:text-base">{item.desc}</p>
                                     </div>
                                 ))}
                             </div>
