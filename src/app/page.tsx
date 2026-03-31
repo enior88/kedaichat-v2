@@ -42,7 +42,7 @@ export default function LandingPage() {
     };
 
     return (
-        <div className="bg-black font-inter text-gray-900 h-screen overflow-y-auto snap-y snap-mandatory scroll-smooth overflow-x-hidden">
+        <div className="bg-black font-inter text-gray-900 md:h-screen md:overflow-y-auto md:snap-y md:snap-mandatory scroll-smooth overflow-x-hidden min-h-screen">
             <script
                 type="application/ld+json"
                 dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
@@ -78,13 +78,6 @@ export default function LandingPage() {
                 </div>
             </nav>
 
-            {/* Floating Mobile CTA */}
-            <div className="md:hidden fixed bottom-6 left-1/2 -translate-x-1/2 z-[100] w-[85%] max-w-sm">
-                <Link href="/onboarding" className="flex items-center justify-center gap-2 bg-gradient-to-r from-[#25D366] to-[#128C7E] text-white h-14 rounded-2xl text-base font-black shadow-[0_20px_50px_rgba(37,211,102,0.3)] active:scale-95 transition-all outline outline-4 outline-white/20">
-                    {t('start_free')}
-                    <ArrowRight size={18} />
-                </Link>
-            </div>
 
             {/* Main Content with Reveal Effect */}
             <main className="relative">
@@ -131,8 +124,8 @@ export default function LandingPage() {
                 </div>
 
                 {/* 2. How it Works Reveal Wrapper */}
-                <div className="relative h-[200vh] -mt-[100vh] z-[40] snap-start">
-                    <section id="how-it-works" className="sticky top-0 h-screen bg-gray-50 flex flex-col justify-center px-6 py-24 overflow-hidden shadow-[0_-20px_40px_rgba(0,0,0,0.05)]">
+                <div className="relative md:h-[200vh] md:-mt-[100vh] h-auto z-[40] md:snap-start">
+                    <section id="how-it-works" className="md:sticky md:top-0 md:h-screen relative h-auto bg-gray-50 flex flex-col justify-center px-6 py-24 md:py-24 overflow-hidden md:shadow-[0_-20px_40px_rgba(0,0,0,0.05)] border-t border-gray-100 md:border-none">
                         <div className="max-w-7xl mx-auto w-full">
                             <div className="text-center mb-12 md:mb-20">
                                 <h2 className="text-[10px] md:text-xs font-black text-[#25D366] uppercase tracking-[0.4em] mb-4">{t('how_it_works')}</h2>
@@ -159,8 +152,8 @@ export default function LandingPage() {
                 </div>
 
                 {/* 3. Problem Reveal Wrapper */}
-                <div className="relative h-[200vh] -mt-[100vh] z-[30] snap-start">
-                    <section id="problem" className="sticky top-0 h-screen bg-white flex flex-col justify-center px-6 py-24 overflow-hidden shadow-[0_-20px_40px_rgba(0,0,0,0.08)]">
+                <div className="relative md:h-[200vh] md:-mt-[100vh] h-auto z-[30] md:snap-start">
+                    <section id="problem" className="md:sticky md:top-0 md:h-screen relative h-auto bg-white flex flex-col justify-center px-6 py-24 md:py-24 overflow-hidden md:shadow-[0_-20px_40px_rgba(0,0,0,0.08)] border-t border-gray-100 md:border-none">
                         <div className="max-w-7xl mx-auto w-full">
                             <div className="text-center mb-12 md:mb-20">
                                 <h2 className="text-[10px] md:text-xs font-black text-[#25D366] uppercase tracking-[0.4em] mb-4">{t('problem_title')}</h2>
@@ -203,8 +196,8 @@ export default function LandingPage() {
                 </div>
 
                 {/* 4. Features Reveal Wrapper */}
-                <div className="relative h-[200vh] -mt-[100vh] z-[20] snap-start">
-                    <section id="features" className="sticky top-0 h-screen bg-gray-50 flex flex-col justify-center px-6 py-24 overflow-hidden shadow-[0_-20px_40px_rgba(0,0,0,0.08)]">
+                <div className="relative md:h-[200vh] md:-mt-[100vh] h-auto z-[20] md:snap-start">
+                    <section id="features" className="md:sticky md:top-0 md:h-screen relative h-auto bg-gray-50 flex flex-col justify-center px-6 py-24 md:py-24 overflow-hidden md:shadow-[0_-20px_40px_rgba(0,0,0,0.08)] border-t border-gray-100 md:border-none">
                         <div className="max-w-7xl mx-auto w-full">
                             <div className="text-center mb-12 md:mb-20">
                                 <h2 className="text-[10px] md:text-xs font-black text-[#25D366] uppercase tracking-[0.4em] mb-4">{t('features')}</h2>
@@ -236,8 +229,8 @@ export default function LandingPage() {
                 </div>
 
                 {/* 5. Pricing Reveal Wrapper */}
-                <div className="relative h-[200vh] -mt-[100vh] z-[10] snap-start">
-                    <section id="pricing" className="sticky top-0 h-screen bg-gray-900 text-white flex flex-col justify-center px-6 py-24 overflow-hidden">
+                <div className="relative md:h-[200vh] md:-mt-[100vh] h-auto z-[10] md:snap-start">
+                    <section id="pricing" className="md:sticky md:top-0 md:h-screen relative h-auto bg-gray-900 text-white flex flex-col justify-center px-6 py-24 md:py-24 overflow-hidden border-t border-gray-800 md:border-none">
                         <div className="max-w-7xl mx-auto w-full">
                             <div className="text-center mb-12 md:mb-20">
                                 <h2 className="text-[10px] md:text-xs font-black text-[#25D366] uppercase tracking-[0.4em] mb-4">{t('pricing_title')}</h2>
@@ -279,7 +272,7 @@ export default function LandingPage() {
                 </div>
 
                 {/* 6. Final CTA & Footer Layer (Normal Flow) */}
-                <div className="relative z-[0] bg-white snap-start">
+                <div className="relative z-[0] bg-white md:snap-start">
                     <section className="py-24 md:py-32 px-6">
                         <div className="max-w-4xl mx-auto bg-gradient-to-br from-[#25D366] to-[#128C7E] rounded-[40px] md:rounded-[60px] p-10 md:p-24 text-center text-white relative overflow-hidden shadow-2xl shadow-green-900/20">
                             <div className="absolute top-0 right-0 p-12 opacity-10 rotate-12">
