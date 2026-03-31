@@ -90,18 +90,18 @@ export default function LandingPage() {
             <main className="relative">
                 {/* 1. Hero Section Filler & Wrapper */}
                 <div className="relative h-[200vh] z-[50] snap-start">
-                    <section className="sticky top-0 h-screen bg-white flex flex-col items-center justify-start px-4 md:px-6 pt-32 md:pt-48 pb-12">
+                    <section className="sticky top-0 h-screen bg-white flex flex-col items-center justify-start px-4 md:px-6 pt-24 md:pt-48 pb-8 overflow-hidden">
                         <div className="max-w-7xl mx-auto text-center w-full">
-                            <div className="inline-flex items-center gap-2 bg-green-50 text-[#25D366] px-4 py-2 rounded-full mb-6 md:mb-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
-                                <Zap size={16} fill="currentColor" />
+                            <div className="inline-flex items-center gap-2 bg-green-50 text-[#25D366] px-3 py-1.5 rounded-full mb-4 md:mb-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
+                                <Zap size={14} fill="currentColor" />
                                 <span className="text-[10px] md:text-xs font-black uppercase tracking-widest">{t('built_for_smes')}</span>
                             </div>
 
-                            <h1 className="text-3xl md:text-7xl font-black text-gray-900 mb-4 md:mb-6 leading-[1.1] tracking-tight animate-in fade-in slide-in-from-bottom-6 duration-700 delay-100 px-2">
+                            <h1 className="text-2xl md:text-7xl font-black text-gray-900 mb-3 md:mb-6 leading-[1.1] tracking-tight animate-in fade-in slide-in-from-bottom-6 duration-700 delay-100 px-2">
                                 {t('hero_title')} <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#25D366] to-[#128C7E]">{t('hero_shop_highlight')}</span>
                             </h1>
 
-                            <p className="text-base md:text-xl text-gray-500 mb-8 md:mb-10 max-w-2xl mx-auto font-medium animate-in fade-in slide-in-from-bottom-8 duration-700 delay-200 px-4">
+                            <p className="text-sm md:text-xl text-gray-500 mb-6 md:mb-10 max-w-2xl mx-auto font-medium animate-in fade-in slide-in-from-bottom-8 duration-700 delay-200 px-4">
                                 {t('hero_desc')}
                             </p>
 
@@ -116,13 +116,13 @@ export default function LandingPage() {
                                 </a>
                             </div>
 
-                            <div className="mt-8 md:mt-12 relative animate-in fade-in zoom-in duration-1000 delay-500 max-w-3xl mx-auto px-4">
+                            <div className="mt-6 md:mt-12 relative animate-in fade-in zoom-in duration-1000 delay-500 max-w-3xl mx-auto px-4">
                                 <div className="relative rounded-[24px] md:rounded-[40px] overflow-visible group">
                                     <div className="absolute inset-0 bg-green-100/50 blur-3xl -z-10 rounded-[100px] scale-90" />
                                     <img
                                         src="/hero_illustration.png"
                                         alt="Successful Business Owner using KedaiChat"
-                                        className="w-[85%] md:w-full mx-auto h-auto drop-shadow-2xl rounded-[20px] md:rounded-[32px] object-cover transition-transform duration-700 group-hover:scale-[1.02]"
+                                        className="w-[70%] md:w-full mx-auto h-auto drop-shadow-2xl rounded-[20px] md:rounded-[32px] object-cover transition-transform duration-700 group-hover:scale-[1.02]"
                                     />
                                 </div>
                             </div>
