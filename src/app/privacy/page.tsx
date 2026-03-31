@@ -92,7 +92,8 @@ export default function PrivacyPage() {
                             <Mail size={40} className="mx-auto mb-6 text-[#25D366]" />
                             <h2 className="text-3xl font-black mb-4">Contact Us</h2>
                             <p className="font-medium text-gray-400 mb-8">If you have any questions about this privacy policy, please reach out to us at our dedicated support email.</p>
-                            <a href="mailto:enginenior@gmail.com" className="inline-flex items-center gap-2 bg-[#25D366] hover:bg-[#1fb855] text-white px-8 py-4 rounded-xl font-black transition-all shadow-lg shadow-green-900/50 active:scale-95 text-lg">
+                            <a href="mailto:enginenior@gmail.com" className="inline-flex w-full md:w-auto items-center justify-center gap-2 bg-[#25D366] hover:bg-[#1fb855] text-white px-4 md:px-8 py-4 rounded-xl font-black transition-all shadow-lg shadow-green-900/50 active:scale-95 text-sm md:text-lg overflow-hidden whitespace-nowrap overflow-ellipsis">
+                                <Mail size={18} />
                                 enginenior@gmail.com
                             </a>
                         </section>
