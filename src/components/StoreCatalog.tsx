@@ -18,7 +18,8 @@ export default function StoreCatalog({ slug }: { slug?: string }) {
         { id: 'Rice Items', label: t('cat_rice') },
         { id: 'Noodles', label: t('cat_noodles') },
         { id: 'Drinks', label: t('cat_drinks') },
-        { id: 'Desserts', label: t('cat_desserts') }
+        { id: 'Desserts', label: t('cat_desserts') },
+        { id: 'Others', label: t('cat_others') }
     ];
 
     useEffect(() => {

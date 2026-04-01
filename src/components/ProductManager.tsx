@@ -184,6 +184,7 @@ export default function ProductManager() {
                                     <option value="Desserts">Desserts</option>
                                     <option value="Snacks">Snacks</option>
                                     <option value="Add-ons">Add-ons</option>
+                                    <option value="Others">Others</option>
                                 </select>
                             </div>
                         </div>
