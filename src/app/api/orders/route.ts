@@ -32,7 +32,7 @@ export async function POST(req: Request) {
             where: { storeId }
         });
 
-        const plan = subscription ? subscription.plan : 'FREE';
+        const plan = subscription?.status === 'ACTIVE' ? subscription.plan : 'FREE';
 
         // Check if owner is an administrator (full access)
         const ownerStore = await prisma.store.findUnique({

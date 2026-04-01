@@ -29,13 +29,13 @@ export async function POST(req: Request) {
             where: { storeId: store.id },
             update: {
                 plan: planId,
-                status: 'ACTIVE',
+                status: 'PENDING',
                 paymentReceiptUrl: receiptUrl,
             },
             create: {
                 storeId: store.id,
                 plan: planId,
-                status: 'ACTIVE',
+                status: 'PENDING',
                 paymentReceiptUrl: receiptUrl,
             }
         });

@@ -33,7 +33,7 @@ export async function GET(req: Request) {
         });
 
         const revenueToday = store.orders.reduce((sum: number, order: any) => sum + (order.total || 0), 0);
-        const plan = store.subscription?.plan || 'FREE';
+        const plan = store.subscription?.status === 'ACTIVE' ? store.subscription.plan : 'FREE';
 
         return NextResponse.json({
             businessName: store.name,

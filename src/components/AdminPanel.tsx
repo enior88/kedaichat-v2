@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import {
     TrendingUp, ExternalLink, XCircle, RefreshCw, Trash2, Archive, Key, LogOut,
-    BarChart3, Store, CreditCard, CheckCircle2, Users, ShoppingBag, Search, Package, Settings, Upload
+    BarChart3, Store, CreditCard, CheckCircle2, Users, ShoppingBag, Search, Package, Settings, Upload, Menu, AlertCircle
 } from 'lucide-react';
 
 type Section = 'Overview' | 'Stores' | 'Subscriptions' | 'Payments' | 'Settings';
@@ -25,6 +25,7 @@ const STATUS_COLORS: Record<string, string> = {
 
 export default function AdminPanel() {
     const [activeSection, setActiveSection] = useState<Section>('Overview');
+    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const [adminData, setAdminData] = useState<any>(null);
     const [isLoading, setIsLoading] = useState(true);
     const [search, setSearch] = useState('');
@@ -34,6 +35,11 @@ export default function AdminPanel() {
     const [showArchived, setShowArchived] = useState(false);
     const [adminSettings, setAdminSettings] = useState<any>({ adminBankQrUrl: null });
     const [isSavingSettings, setIsSavingSettings] = useState(false);
+
+    // Subscription Edit Modal State
+    const [editingSubscription, setEditingSubscription] = useState<any>(null);
+    const [subForm, setSubForm] = useState({ plan: '', status: '', expiresAt: '' });
+    const [isSavingSub, setIsSavingSub] = useState(false);
 
     const handleLogout = async () => {
         try {
@@ -178,12 +184,51 @@ export default function AdminPanel() {
         }
     };
 
+    const handleEditSubscription = (sub: any) => {
+        setEditingSubscription(sub);
+        setSubForm({
+            plan: sub.plan || 'FREE',
+            status: sub.status || 'ACTIVE',
+            expiresAt: sub.renewalDate ? new Date(sub.renewalDate).toISOString().split('T')[0] : ''
+        });
+    };
+
+    const saveSubscription = async () => {
+        if (!editingSubscription) return;
+        setIsSavingSub(true);
+        try {
+            const res = await fetch('/api/admin/subscriptions', {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    storeId: editingSubscription.id,
+                    plan: subForm.plan,
+                    status: subForm.status,
+                    expiresAt: subForm.expiresAt || null
+                })
+            });
+            if (res.ok) {
+                setEditingSubscription(null);
+                fetchData();
+            } else {
+                const data = await res.json();
+                alert(`Failed to save subscription: ${data.error}`);
+            }
+        } catch (error) {
+            console.error('Save failed:', error);
+            alert('An unexpected error occurred.');
+        } finally {
+            setIsSavingSub(false);
+        }
+    };
+
     useEffect(() => { fetchData(); }, []);
 
     // reset search on section change
     const switchSection = (s: Section) => {
         setActiveSection(s);
         setSearch('');
+        setIsMobileMenuOpen(false); // Close mobile menu on section change
     };
 
     const navItems = [
@@ -240,11 +285,39 @@ export default function AdminPanel() {
         Settings: 'Search settings...',
     };
 
+    const pendingCount = (adminData?.subscriptions || []).filter((s: any) => s.status === 'PENDING').length;
+
     return (
-        <div className="flex min-h-screen bg-[#F8F9FA] font-inter">
+        <div className="flex min-h-screen bg-[#F8F9FA] font-inter relative">
+            {/* Mobile Header */}
+            <div className="md:hidden fixed top-0 w-full bg-white border-b border-gray-100 z-40 px-4 py-4 flex items-center justify-between shadow-sm">
+                <div className="flex items-center gap-2">
+                    <h1 className="text-lg font-black text-gray-900 tracking-tight">KedaiChat</h1>
+                    <span className="bg-[#25D366]/10 text-[#25D366] text-[10px] font-black px-2 py-0.5 rounded-full uppercase">Admin</span>
+                </div>
+                <button onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} className="p-2 text-gray-600 hover:bg-gray-50 rounded-xl">
+                    {isMobileMenuOpen ? <XCircle size={24} /> : (
+                        <div className="relative">
+                            <Menu size={24} />
+                            {pendingCount > 0 && (
+                                <span className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full animate-pulse border-2 border-white"></span>
+                            )}
+                        </div>
+                    )}
+                </button>
+            </div>
+
+            {/* Mobile Menu Backdrop */}
+            {isMobileMenuOpen && (
+                <div
+                    className="md:hidden fixed inset-0 bg-black/50 z-30"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                />
+            )}
+
             {/* Sidebar */}
-            <aside className="w-64 bg-white border-r border-gray-100 flex flex-col pt-8 shrink-0">
-                <div className="px-8 mb-10">
+            <aside className={`w-64 bg-white border-r border-gray-100 flex flex-col pt-8 shrink-0 fixed md:sticky top-0 h-screen z-40 transition-transform duration-300 md:translate-x-0 ${isMobileMenuOpen ? 'translate-x-0 pt-20' : '-translate-x-full'}`}>
+                <div className="px-8 mb-10 hidden md:block">
                     <h1 className="text-xl font-black text-gray-900 tracking-tight">
                         KedaiChat <span className="text-[#25D366]">Admin</span>
                     </h1>
@@ -263,9 +336,9 @@ export default function AdminPanel() {
                         >
                             <item.icon size={20} />
                             {item.name}
-                            {item.name === 'Payments' && (adminData?.payments?.length || 0) > 0 && (
-                                <span className="ml-auto bg-orange-100 text-orange-600 text-[10px] font-black rounded-full px-2 py-0.5">
-                                    {adminData.payments.length}
+                            {item.name === 'Subscriptions' && pendingCount > 0 && (
+                                <span className="ml-auto bg-red-100 text-red-600 text-[10px] font-black rounded-full px-2 py-0.5 animate-pulse">
+                                    {pendingCount} New
                                 </span>
                             )}
                         </button>
@@ -291,9 +364,9 @@ export default function AdminPanel() {
             </aside>
 
             {/* Main */}
-            <main className="flex-1 p-10 overflow-y-auto">
+            <main className="flex-1 p-4 pt-24 md:p-10 md:pt-10 overflow-y-auto w-full md:w-auto">
                 {/* Header */}
-                <header className="flex justify-between items-center mb-10">
+                <header className="flex flex-col md:flex-row md:justify-between items-start md:items-center gap-4 mb-8 md:mb-10">
                     <div>
                         <h2 className="text-2xl font-bold text-gray-900">{sectionTitles[activeSection]}</h2>
                         <p className="text-xs text-gray-400 font-medium mt-1">
@@ -303,18 +376,18 @@ export default function AdminPanel() {
                             {activeSection === 'Payments' && `${filteredPayments.length} transactions`}
                         </p>
                     </div>
-                    <div className="flex items-center gap-4">
-                        <div className="relative">
+                    <div className="flex items-center gap-4 w-full md:w-auto">
+                        <div className="relative flex-1 md:flex-none">
                             <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
                             <input
                                 type="text"
                                 value={search}
                                 onChange={e => setSearch(e.target.value)}
                                 placeholder={searchPlaceholders[activeSection]}
-                                className="bg-white border border-gray-100 rounded-xl pl-10 pr-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#25D366] w-72 shadow-sm"
+                                className="bg-white border border-gray-100 rounded-xl pl-10 pr-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#25D366] w-full md:w-72 shadow-sm"
                             />
                         </div>
-                        <div className="w-10 h-10 bg-[#25D366] rounded-full flex items-center justify-center text-white font-bold text-sm">A</div>
+                        <div className="hidden md:flex w-10 h-10 bg-[#25D366] rounded-full flex items-center justify-center text-white font-bold text-sm shrink-0">A</div>
                     </div>
                 </header>
 
@@ -327,7 +400,25 @@ export default function AdminPanel() {
                         {/* ── OVERVIEW ── */}
                         {activeSection === 'Overview' && (
                             <>
-                                <div className="grid grid-cols-2 xl:grid-cols-5 gap-5 mb-10">
+                                {pendingCount > 0 && (
+                                    <div className="mb-8 bg-red-50 border border-red-100 p-6 rounded-[28px] animate-in fade-in slide-in-from-top-4 shadow-sm flex items-start gap-4">
+                                        <div className="w-10 h-10 bg-red-100 rounded-2xl flex items-center justify-center shrink-0">
+                                            <AlertCircle size={20} className="text-red-500" />
+                                        </div>
+                                        <div>
+                                            <h3 className="font-bold text-red-700 text-sm mb-1">Action Required: Pending Upgrades!</h3>
+                                            <p className="text-xs text-red-600 font-medium mb-3">You have {pendingCount} user(s) waiting for plan approval. Please review their payment receipts and activate their accounts.</p>
+                                            <button
+                                                onClick={() => switchSection('Subscriptions')}
+                                                className="bg-red-500 text-white px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest shadow-lg shadow-red-200 active:scale-95 transition-all"
+                                            >
+                                                Review Now
+                                            </button>
+                                        </div>
+                                    </div>
+                                )}
+
+                                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-5 mb-10">
                                     {stats.map((stat) => (
                                         <div key={stat.label} className="bg-white p-6 rounded-[28px] shadow-sm border border-gray-50">
                                             <div className={`${stat.bg} ${stat.color} w-11 h-11 rounded-2xl flex items-center justify-center mb-4`}>
@@ -371,112 +462,115 @@ export default function AdminPanel() {
                                         <button
                                             onClick={handleBulkDelete}
                                             disabled={isBulkDeleting}
-                                            className="bg-red-50 text-red-500 px-4 py-2 rounded-xl text-xs font-black uppercase tracking-widest hover:bg-red-500 hover:text-white transition-all flex items-center gap-2"
+                                            className="bg-red-50 text-red-500 px-4 py-2 rounded-xl text-[10px] md:text-xs font-black uppercase tracking-widest hover:bg-red-500 hover:text-white transition-all flex items-center gap-2 mt-4 md:mt-0"
                                         >
                                             <Trash2 size={14} />
-                                            {isBulkDeleting ? 'Deleting...' : `Delete Selected (${selectedIds.length})`}
+                                            <span className="md:inline hidden">{isBulkDeleting ? 'Deleting...' : `Delete Selected (${selectedIds.length})`}</span>
+                                            <span className="inline md:hidden">{selectedIds.length}</span>
                                         </button>
                                     )}
                                 </div>
                                 {filteredStores.length === 0 ? (
                                     <Empty message={search ? 'No stores match your search.' : 'No stores registered yet.'} />
                                 ) : (
-                                    <table className="w-full text-left">
-                                        <thead>
-                                            <tr className="text-gray-400 text-[10px] font-black uppercase tracking-widest border-b border-gray-50">
-                                                <th className="px-8 py-4 w-10">
-                                                    <input
-                                                        type="checkbox"
-                                                        checked={selectedIds.length === filteredStores.length && filteredStores.length > 0}
-                                                        onChange={toggleSelectAll}
-                                                        className="rounded border-gray-300 text-[#25D366] focus:ring-[#25D366]"
-                                                    />
-                                                </th>
-                                                <th className="px-8 py-4">Store</th>
-                                                <th className="px-8 py-4">Owner</th>
-                                                <th className="px-8 py-4">Plan</th>
-                                                <th className="px-8 py-4">Products</th>
-                                                <th className="px-8 py-4">Orders</th>
-                                                <th className="px-8 py-4">Revenue</th>
-                                                <th className="px-8 py-4">Status</th>
-                                                <th className="px-8 py-4 text-right">Delete</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody className="divide-y divide-gray-50 text-sm text-gray-700">
-                                            {filteredStores.map((s: any) => (
-                                                <tr key={s.id} className={`hover:bg-gray-50/50 transition-colors ${selectedIds.includes(s.id) ? 'bg-[#25D366]/5' : ''}`}>
-                                                    <td className="px-8 py-5">
+                                    <div className="overflow-x-auto w-full">
+                                        <table className="w-full text-left min-w-[800px]">
+                                            <thead>
+                                                <tr className="text-gray-400 text-[10px] font-black uppercase tracking-widest border-b border-gray-50">
+                                                    <th className="px-8 py-4 w-10">
                                                         <input
                                                             type="checkbox"
-                                                            checked={selectedIds.includes(s.id)}
-                                                            onChange={() => toggleSelect(s.id)}
+                                                            checked={selectedIds.length === filteredStores.length && filteredStores.length > 0}
+                                                            onChange={toggleSelectAll}
                                                             className="rounded border-gray-300 text-[#25D366] focus:ring-[#25D366]"
                                                         />
-                                                    </td>
-                                                    <td className="px-8 py-5">
-                                                        <div className="flex items-center gap-3">
-                                                            <div className="w-9 h-9 bg-green-50 rounded-full flex items-center justify-center text-[#25D366] text-xs font-black shrink-0">
-                                                                {s.name?.[0] || '?'}
-                                                            </div>
-                                                            <div>
-                                                                <p className="font-bold text-gray-900">{s.name}</p>
-                                                                <p className="text-[11px] text-gray-400">/shop/{s.slug}</p>
-                                                            </div>
-                                                        </div>
-                                                    </td>
-                                                    <td className="px-8 py-5 text-gray-500 font-medium text-xs">{s.ownerEmail}</td>
-                                                    <td className="px-8 py-5">
-                                                        <span className={`text-[11px] font-black px-3 py-1 rounded-full ${PLAN_COLORS[s.plan] || 'bg-gray-100 text-gray-500'}`}>{s.plan}</span>
-                                                    </td>
-                                                    <td className="px-8 py-5 font-bold">{s.productCount}</td>
-                                                    <td className="px-8 py-5 font-bold">{s.orderCount}</td>
-                                                    <td className="px-8 py-5 font-bold text-[#25D366]">RM {s.revenue.toFixed(2)}</td>
-                                                    <td className="px-8 py-5">
-                                                        <span className={`text-[11px] font-black px-3 py-1 rounded-full ${s.status === 'Active' ? 'bg-green-50 text-[#25D366]' : 'bg-red-50 text-red-500'}`}>{s.status}</span>
-                                                    </td>
-                                                    <td className="px-8 py-5 text-right">
-                                                        <div className="flex items-center justify-end gap-2">
-                                                            {deletingId === s.id ? (
-                                                                <>
-                                                                    <button onClick={() => handleDeleteStore(s.id)} className="bg-red-500 text-white px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-widest shadow-lg shadow-red-100 active:scale-95 transition-all">Burn Permanent</button>
-                                                                    <button onClick={() => setDeletingId(null)} className="text-gray-400 hover:text-gray-900 text-[10px] font-bold underline">Cancel</button>
-                                                                </>
-                                                            ) : (
-                                                                <>
-                                                                    {s.archived ? (
-                                                                        <>
-                                                                            <button
-                                                                                onClick={() => handleArchiveStore(s.id, false)}
-                                                                                className="p-3 text-green-500 hover:bg-green-50 rounded-xl transition-all flex items-center gap-2 text-xs font-bold"
-                                                                                title="Restore Store"
-                                                                            >
-                                                                                <RefreshCw size={16} /> Restore
-                                                                            </button>
-                                                                            <button
-                                                                                onClick={() => setDeletingId(s.id)}
-                                                                                className="p-3 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all"
-                                                                                title="Permanent Delete"
-                                                                            >
-                                                                                <Trash2 size={16} />
-                                                                            </button>
-                                                                        </>
-                                                                    ) : (
-                                                                        <button
-                                                                            onClick={() => handleArchiveStore(s.id, true)}
-                                                                            className="p-3 text-gray-400 hover:text-orange-500 hover:bg-orange-50 rounded-xl transition-all flex items-center gap-2 text-xs font-bold"
-                                                                            title="Archive Store"
-                                                                        >
-                                                                            <Archive size={16} /> Archive
-                                                                        </button>
-                                                                    )}
-                                                                </>
-                                                            )}
-                                                        </div>
-                                                    </td>
+                                                    </th>
+                                                    <th className="px-8 py-4">Store</th>
+                                                    <th className="px-8 py-4">Owner</th>
+                                                    <th className="px-8 py-4">Plan</th>
+                                                    <th className="px-8 py-4">Products</th>
+                                                    <th className="px-8 py-4">Orders</th>
+                                                    <th className="px-8 py-4">Revenue</th>
+                                                    <th className="px-8 py-4">Status</th>
+                                                    <th className="px-8 py-4 text-right">Delete</th>
                                                 </tr>
-                                            ))}
-                                        </tbody>
-                                    </table>
+                                            </thead>
+                                            <tbody className="divide-y divide-gray-50 text-sm text-gray-700">
+                                                {filteredStores.map((s: any) => (
+                                                    <tr key={s.id} className={`hover:bg-gray-50/50 transition-colors ${selectedIds.includes(s.id) ? 'bg-[#25D366]/5' : ''}`}>
+                                                        <td className="px-8 py-5">
+                                                            <input
+                                                                type="checkbox"
+                                                                checked={selectedIds.includes(s.id)}
+                                                                onChange={() => toggleSelect(s.id)}
+                                                                className="rounded border-gray-300 text-[#25D366] focus:ring-[#25D366]"
+                                                            />
+                                                        </td>
+                                                        <td className="px-8 py-5">
+                                                            <div className="flex items-center gap-3">
+                                                                <div className="w-9 h-9 bg-green-50 rounded-full flex items-center justify-center text-[#25D366] text-xs font-black shrink-0">
+                                                                    {s.name?.[0] || '?'}
+                                                                </div>
+                                                                <div>
+                                                                    <p className="font-bold text-gray-900">{s.name}</p>
+                                                                    <p className="text-[11px] text-gray-400">/shop/{s.slug}</p>
+                                                                </div>
+                                                            </div>
+                                                        </td>
+                                                        <td className="px-8 py-5 text-gray-500 font-medium text-xs">{s.ownerEmail}</td>
+                                                        <td className="px-8 py-5">
+                                                            <span className={`text-[11px] font-black px-3 py-1 rounded-full ${PLAN_COLORS[s.plan] || 'bg-gray-100 text-gray-500'}`}>{s.plan}</span>
+                                                        </td>
+                                                        <td className="px-8 py-5 font-bold">{s.productCount}</td>
+                                                        <td className="px-8 py-5 font-bold">{s.orderCount}</td>
+                                                        <td className="px-8 py-5 font-bold text-[#25D366]">RM {s.revenue.toFixed(2)}</td>
+                                                        <td className="px-8 py-5">
+                                                            <span className={`text-[11px] font-black px-3 py-1 rounded-full ${s.status === 'Active' ? 'bg-green-50 text-[#25D366]' : 'bg-red-50 text-red-500'}`}>{s.status}</span>
+                                                        </td>
+                                                        <td className="px-8 py-5 text-right">
+                                                            <div className="flex items-center justify-end gap-2">
+                                                                {deletingId === s.id ? (
+                                                                    <>
+                                                                        <button onClick={() => handleDeleteStore(s.id)} className="bg-red-500 text-white px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-widest shadow-lg shadow-red-100 active:scale-95 transition-all">Burn Permanent</button>
+                                                                        <button onClick={() => setDeletingId(null)} className="text-gray-400 hover:text-gray-900 text-[10px] font-bold underline">Cancel</button>
+                                                                    </>
+                                                                ) : (
+                                                                    <>
+                                                                        {s.archived ? (
+                                                                            <>
+                                                                                <button
+                                                                                    onClick={() => handleArchiveStore(s.id, false)}
+                                                                                    className="p-3 text-green-500 hover:bg-green-50 rounded-xl transition-all flex items-center gap-2 text-xs font-bold"
+                                                                                    title="Restore Store"
+                                                                                >
+                                                                                    <RefreshCw size={16} /> Restore
+                                                                                </button>
+                                                                                <button
+                                                                                    onClick={() => setDeletingId(s.id)}
+                                                                                    className="p-3 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all"
+                                                                                    title="Permanent Delete"
+                                                                                >
+                                                                                    <Trash2 size={16} />
+                                                                                </button>
+                                                                            </>
+                                                                        ) : (
+                                                                            <button
+                                                                                onClick={() => handleArchiveStore(s.id, true)}
+                                                                                className="p-3 text-gray-400 hover:text-orange-500 hover:bg-orange-50 rounded-xl transition-all flex items-center gap-2 text-xs font-bold"
+                                                                                title="Archive Store"
+                                                                            >
+                                                                                <Archive size={16} /> Archive
+                                                                            </button>
+                                                                        )}
+                                                                    </>
+                                                                )}
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                ))}
+                                            </tbody>
+                                        </table>
+                                    </div>
                                 )}
                             </section>
                         )}
@@ -490,57 +584,71 @@ export default function AdminPanel() {
                                 {filteredSubs.length === 0 ? (
                                     <Empty message={search ? 'No accounts match your search.' : 'No users registered yet.'} />
                                 ) : (
-                                    <table className="w-full text-left">
-                                        <thead>
-                                            <tr className="text-gray-400 text-[10px] font-black uppercase tracking-widest border-b border-gray-50">
-                                                <th className="px-8 py-4">Account</th>
-                                                <th className="px-8 py-4">Store</th>
-                                                <th className="px-8 py-4">Plan</th>
-                                                <th className="px-8 py-4">Status</th>
-                                                <th className="px-8 py-4">Proof</th>
-                                                <th className="px-8 py-4">Renewal</th>
-                                                <th className="px-8 py-4">Joined</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody className="divide-y divide-gray-50 text-sm text-gray-700">
-                                            {filteredSubs.map((s: any) => (
-                                                <tr key={s.id} className="hover:bg-gray-50/50 transition-colors">
-                                                    <td className="px-8 py-5">
-                                                        <div className="flex items-center gap-3">
-                                                            <div className="w-9 h-9 bg-purple-50 rounded-full flex items-center justify-center text-purple-500 text-xs font-black shrink-0">
-                                                                {s.ownerEmail?.[0]?.toUpperCase() || 'U'}
-                                                            </div>
-                                                            <span className="font-bold text-gray-900">{s.ownerEmail}</span>
-                                                        </div>
-                                                    </td>
-                                                    <td className="px-8 py-5 font-medium">{s.storeName}</td>
-                                                    <td className="px-8 py-5">
-                                                        <span className={`text-[11px] font-black px-3 py-1 rounded-full ${PLAN_COLORS[s.plan] || 'bg-gray-100 text-gray-500'}`}>{s.plan}</span>
-                                                    </td>
-                                                    <td className="px-8 py-5">
-                                                        <span className={`text-[11px] font-black px-3 py-1 rounded-full ${s.status === 'Active' ? 'bg-green-50 text-[#25D366]' : 'bg-red-50 text-red-500'}`}>
-                                                            {s.status}
-                                                        </span>
-                                                    </td>
-                                                    <td className="px-8 py-5">
-                                                        {s.paymentReceiptUrl ? (
-                                                            <a href={s.paymentReceiptUrl} target="_blank" className="text-blue-500 hover:underline text-xs font-bold flex items-center gap-1">
-                                                                View Proof <ExternalLink size={12} />
-                                                            </a>
-                                                        ) : (
-                                                            <span className="text-gray-300 text-xs">—</span>
-                                                        )}
-                                                    </td>
-                                                    <td className="px-8 py-5 text-gray-400 text-xs font-medium">
-                                                        {s.renewalDate ? new Date(s.renewalDate).toLocaleDateString() : '—'}
-                                                    </td>
-                                                    <td className="px-8 py-5 text-gray-400 text-xs font-medium">
-                                                        {s.createdAt ? new Date(s.createdAt).toLocaleDateString() : '—'}
-                                                    </td>
+                                    <div className="overflow-x-auto w-full">
+                                        <table className="w-full text-left min-w-[800px]">
+                                            <thead>
+                                                <tr className="text-gray-400 text-[10px] font-black uppercase tracking-widest border-b border-gray-50">
+                                                    <th className="px-8 py-4">Account</th>
+                                                    <th className="px-8 py-4">Store</th>
+                                                    <th className="px-8 py-4">Plan</th>
+                                                    <th className="px-8 py-4">Status</th>
+                                                    <th className="px-8 py-4">Proof</th>
+                                                    <th className="px-8 py-4">Renewal</th>
+                                                    <th className="px-8 py-4">Joined</th>
+                                                    <th className="px-8 py-4 text-right">Actions</th>
                                                 </tr>
-                                            ))}
-                                        </tbody>
-                                    </table>
+                                            </thead>
+                                            <tbody className="divide-y divide-gray-50 text-sm text-gray-700">
+                                                {filteredSubs.map((s: any) => (
+                                                    <tr key={s.id} className={`hover:bg-gray-50/50 transition-colors ${s.status === 'PENDING' ? 'bg-yellow-50/50' : ''}`}>
+                                                        <td className="px-8 py-5">
+                                                            <div className="flex items-center gap-3">
+                                                                <div className="w-9 h-9 bg-purple-50 rounded-full flex items-center justify-center text-purple-500 text-xs font-black shrink-0">
+                                                                    {s.ownerEmail?.[0]?.toUpperCase() || 'U'}
+                                                                </div>
+                                                                <span className="font-bold text-gray-900">{s.ownerEmail}</span>
+                                                            </div>
+                                                        </td>
+                                                        <td className="px-8 py-5 font-medium">{s.storeName}</td>
+                                                        <td className="px-8 py-5">
+                                                            <span className={`text-[11px] font-black px-3 py-1 rounded-full ${PLAN_COLORS[s.plan] || 'bg-gray-100 text-gray-500'}`}>{s.plan}</span>
+                                                        </td>
+                                                        <td className="px-8 py-5">
+                                                            <span className={`text-[11px] font-black px-3 py-1 rounded-full ${s.status === 'ACTIVE' ? 'bg-green-50 text-[#25D366]'
+                                                                : s.status === 'PENDING' ? 'bg-yellow-400 text-yellow-900 border border-yellow-500 animate-pulse shadow-sm shadow-yellow-200'
+                                                                    : 'bg-red-50 text-red-500'
+                                                                }`}>
+                                                                {s.status}
+                                                            </span>
+                                                        </td>
+                                                        <td className="px-8 py-5">
+                                                            {s.paymentReceiptUrl ? (
+                                                                <a href={s.paymentReceiptUrl} target="_blank" className="text-blue-500 hover:underline text-xs font-bold flex items-center gap-1">
+                                                                    View Proof <ExternalLink size={12} />
+                                                                </a>
+                                                            ) : (
+                                                                <span className="text-gray-300 text-xs">—</span>
+                                                            )}
+                                                        </td>
+                                                        <td className="px-8 py-5 text-gray-400 text-xs font-medium">
+                                                            {s.renewalDate ? new Date(s.renewalDate).toLocaleDateString() : '—'}
+                                                        </td>
+                                                        <td className="px-8 py-5 text-gray-400 text-xs font-medium">
+                                                            {s.createdAt ? new Date(s.createdAt).toLocaleDateString() : '—'}
+                                                        </td>
+                                                        <td className="px-8 py-5 text-right">
+                                                            <button
+                                                                onClick={() => handleEditSubscription(s)}
+                                                                className="text-gray-400 hover:text-blue-500 hover:bg-blue-50 p-2 rounded-lg transition-colors font-bold text-[10px] uppercase tracking-wider"
+                                                            >
+                                                                Edit
+                                                            </button>
+                                                        </td>
+                                                    </tr>
+                                                ))}
+                                            </tbody>
+                                        </table>
+                                    </div>
                                 )}
                             </section>
                         )}
@@ -548,9 +656,9 @@ export default function AdminPanel() {
                         {/* ── PAYMENTS ── */}
                         {activeSection === 'Payments' && (
                             <section className="bg-white rounded-[36px] shadow-sm border border-gray-50 overflow-hidden">
-                                <div className="p-8 border-b border-gray-50 flex justify-between items-center">
+                                <div className="p-8 border-b border-gray-50 flex flex-col md:flex-row md:justify-between md:items-center gap-4">
                                     <span className="text-sm font-bold text-gray-400">{filteredPayments.length} transactions</span>
-                                    <div className="flex gap-2">
+                                    <div className="flex flex-wrap gap-2">
                                         {['PAID', 'PREPARING', 'DELIVERING', 'COMPLETED', 'PENDING'].map(status => (
                                             <button
                                                 key={status}
@@ -565,43 +673,45 @@ export default function AdminPanel() {
                                 {filteredPayments.length === 0 ? (
                                     <Empty message={search ? 'No payments match your search.' : 'No orders placed yet.'} />
                                 ) : (
-                                    <table className="w-full text-left">
-                                        <thead>
-                                            <tr className="text-gray-400 text-[10px] font-black uppercase tracking-widest border-b border-gray-50">
-                                                <th className="px-8 py-4">Order ID</th>
-                                                <th className="px-8 py-4">Store</th>
-                                                <th className="px-8 py-4">Customer</th>
-                                                <th className="px-8 py-4">Amount</th>
-                                                <th className="px-8 py-4">Status</th>
-                                                <th className="px-8 py-4">Date</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody className="divide-y divide-gray-50 text-sm text-gray-700">
-                                            {filteredPayments.map((p: any) => (
-                                                <tr key={p.id} className="hover:bg-gray-50/50 transition-colors">
-                                                    <td className="px-8 py-5">
-                                                        <span className="font-mono text-xs font-bold text-gray-500 bg-gray-50 px-2 py-1 rounded-lg">
-                                                            {p.id.slice(0, 10)}...
-                                                        </span>
-                                                    </td>
-                                                    <td className="px-8 py-5">
-                                                        <div className="font-bold text-gray-900">{p.storeName}</div>
-                                                        <div className="text-[11px] text-gray-400">/shop/{p.storeSlug}</div>
-                                                    </td>
-                                                    <td className="px-8 py-5 font-medium text-gray-600">{p.customerName}</td>
-                                                    <td className="px-8 py-5 font-black text-gray-900">RM {p.total.toFixed(2)}</td>
-                                                    <td className="px-8 py-5">
-                                                        <span className={`text-[11px] font-black px-3 py-1 rounded-full ${STATUS_COLORS[p.paymentStatus] || 'bg-gray-100 text-gray-500'}`}>
-                                                            {p.paymentStatus}
-                                                        </span>
-                                                    </td>
-                                                    <td className="px-8 py-5 text-gray-400 text-xs font-medium">
-                                                        {p.createdAt ? new Date(p.createdAt).toLocaleString([], { dateStyle: 'short', timeStyle: 'short' }) : '—'}
-                                                    </td>
+                                    <div className="overflow-x-auto w-full">
+                                        <table className="w-full text-left min-w-[700px]">
+                                            <thead>
+                                                <tr className="text-gray-400 text-[10px] font-black uppercase tracking-widest border-b border-gray-50">
+                                                    <th className="px-8 py-4">Order ID</th>
+                                                    <th className="px-8 py-4">Store</th>
+                                                    <th className="px-8 py-4">Customer</th>
+                                                    <th className="px-8 py-4">Amount</th>
+                                                    <th className="px-8 py-4">Status</th>
+                                                    <th className="px-8 py-4">Date</th>
                                                 </tr>
-                                            ))}
-                                        </tbody>
-                                    </table>
+                                            </thead>
+                                            <tbody className="divide-y divide-gray-50 text-sm text-gray-700">
+                                                {filteredPayments.map((p: any) => (
+                                                    <tr key={p.id} className="hover:bg-gray-50/50 transition-colors">
+                                                        <td className="px-8 py-5">
+                                                            <span className="font-mono text-xs font-bold text-gray-500 bg-gray-50 px-2 py-1 rounded-lg">
+                                                                {p.id.slice(0, 10)}...
+                                                            </span>
+                                                        </td>
+                                                        <td className="px-8 py-5">
+                                                            <div className="font-bold text-gray-900">{p.storeName}</div>
+                                                            <div className="text-[11px] text-gray-400">/shop/{p.storeSlug}</div>
+                                                        </td>
+                                                        <td className="px-8 py-5 font-medium text-gray-600">{p.customerName}</td>
+                                                        <td className="px-8 py-5 font-black text-gray-900">RM {p.total.toFixed(2)}</td>
+                                                        <td className="px-8 py-5">
+                                                            <span className={`text-[11px] font-black px-3 py-1 rounded-full ${STATUS_COLORS[p.paymentStatus] || 'bg-gray-100 text-gray-500'}`}>
+                                                                {p.paymentStatus}
+                                                            </span>
+                                                        </td>
+                                                        <td className="px-8 py-5 text-gray-400 text-xs font-medium">
+                                                            {p.createdAt ? new Date(p.createdAt).toLocaleString([], { dateStyle: 'short', timeStyle: 'short' }) : '—'}
+                                                        </td>
+                                                    </tr>
+                                                ))}
+                                            </tbody>
+                                        </table>
+                                    </div>
                                 )}
                             </section>
                         )}
@@ -619,9 +729,9 @@ export default function AdminPanel() {
                                             This QR code will be displayed to all users when they upgrade their plan on the billing page.
                                         </p>
 
-                                        <div className="flex items-center gap-6">
+                                        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-6">
                                             {adminSettings?.adminBankQrUrl ? (
-                                                <div className="w-40 h-40 rounded-2xl border-2 border-gray-100 p-2 overflow-hidden shadow-sm relative group bg-white">
+                                                <div className="w-40 h-40 rounded-2xl border-2 border-gray-100 p-2 overflow-hidden shadow-sm relative group bg-white shrink-0">
                                                     <img src={adminSettings.adminBankQrUrl} alt="Admin QR" className="w-full h-full object-contain" />
                                                     <div className="absolute inset-0 bg-black/50 hidden group-hover:flex items-center justify-center transition-all z-10">
                                                         <label className="text-white text-[10px] font-black uppercase tracking-widest bg-[#25D366] px-4 py-2 rounded-xl cursor-pointer hover:bg-green-600 transition-colors shadow-lg">
@@ -658,7 +768,70 @@ export default function AdminPanel() {
                     </>
                 )}
             </main>
-        </div >
+
+            {/* Edit Subscription Modal */}
+            {editingSubscription && (
+                <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4">
+                    <div className="bg-white rounded-[32px] shadow-2xl w-full max-w-md overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+                        <div className="p-8 border-b border-gray-50 flex justify-between items-center">
+                            <div>
+                                <h3 className="text-xl font-black text-gray-900">Edit Subscription</h3>
+                                <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mt-1">
+                                    {editingSubscription.storeName}
+                                </p>
+                            </div>
+                            <button onClick={() => setEditingSubscription(null)} className="text-gray-400 hover:bg-gray-100 p-2 rounded-full transition-colors">
+                                <XCircle size={20} />
+                            </button>
+                        </div>
+                        <div className="p-8 space-y-6">
+                            <div>
+                                <label className="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2">Plan Type</label>
+                                <select
+                                    value={subForm.plan}
+                                    onChange={e => setSubForm({ ...subForm, plan: e.target.value })}
+                                    className="w-full bg-gray-50 border border-gray-100 rounded-xl px-4 py-3 text-sm font-bold text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#25D366]"
+                                >
+                                    <option value="FREE">Free</option>
+                                    <option value="BASIC">Basic</option>
+                                    <option value="PRO">Pro</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label className="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2">Status</label>
+                                <select
+                                    value={subForm.status}
+                                    onChange={e => setSubForm({ ...subForm, status: e.target.value })}
+                                    className="w-full bg-gray-50 border border-gray-100 rounded-xl px-4 py-3 text-sm font-bold text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#25D366]"
+                                >
+                                    <option value="ACTIVE">Active</option>
+                                    <option value="PENDING">Pending Approval</option>
+                                    <option value="EXPIRED">Expired</option>
+                                    <option value="CANCELLED">Cancelled</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label className="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2">Expiration Date</label>
+                                <input
+                                    type="date"
+                                    value={subForm.expiresAt}
+                                    onChange={e => setSubForm({ ...subForm, expiresAt: e.target.value })}
+                                    className="w-full bg-gray-50 border border-gray-100 rounded-xl px-4 py-3 text-sm font-bold text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#25D366]"
+                                />
+                                <p className="text-[10px] text-gray-400 mt-2 font-medium">Leave blank if the plan does not expire.</p>
+                            </div>
+                            <button
+                                onClick={saveSubscription}
+                                disabled={isSavingSub}
+                                className="w-full bg-[#25D366] text-white py-4 rounded-xl font-black uppercase tracking-widest text-sm shadow-xl shadow-green-100 hover:bg-green-500 disabled:opacity-50 transition-all active:scale-95"
+                            >
+                                {isSavingSub ? 'Saving...' : 'Save Changes'}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+        </div>
     );
 }
 
@@ -666,37 +839,39 @@ export default function AdminPanel() {
 function StoresTable({ stores, emptyMessage }: { stores: any[], emptyMessage: string }) {
     if (stores.length === 0) return <Empty message={emptyMessage} />;
     return (
-        <table className="w-full text-left">
-            <thead>
-                <tr className="text-gray-400 text-[10px] font-black uppercase tracking-widest border-b border-gray-50">
-                    <th className="px-8 py-4">Store</th>
-                    <th className="px-8 py-4">Slug</th>
-                    <th className="px-8 py-4">Orders</th>
-                    <th className="px-8 py-4">Created</th>
-                </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-50 text-sm font-bold text-gray-700">
-                {stores.map((store: any) => (
-                    <tr key={store.id} className="hover:bg-gray-50/50 transition-colors">
-                        <td className="px-8 py-5">
-                            <div className="flex items-center gap-3">
-                                <div className="w-8 h-8 bg-green-50 rounded-full flex items-center justify-center text-[#25D366] text-xs font-black">
-                                    {store.name?.[0] || '?'}
-                                </div>
-                                {store.name || 'Unnamed'}
-                            </div>
-                        </td>
-                        <td className="px-8 py-5 text-gray-400 font-medium">/shop/{store.slug}</td>
-                        <td className="px-8 py-5">
-                            <span className="bg-green-50 text-[#25D366] text-xs font-black px-3 py-1 rounded-full">{store.orderCount} orders</span>
-                        </td>
-                        <td className="px-8 py-5 text-gray-400 font-medium text-xs">
-                            {store.createdAt ? new Date(store.createdAt).toLocaleDateString() : '—'}
-                        </td>
+        <div className="overflow-x-auto w-full">
+            <table className="w-full text-left min-w-[500px]">
+                <thead>
+                    <tr className="text-gray-400 text-[10px] font-black uppercase tracking-widest border-b border-gray-50">
+                        <th className="px-8 py-4">Store</th>
+                        <th className="px-8 py-4">Slug</th>
+                        <th className="px-8 py-4">Orders</th>
+                        <th className="px-8 py-4">Created</th>
                     </tr>
-                ))}
-            </tbody>
-        </table>
+                </thead>
+                <tbody className="divide-y divide-gray-50 text-sm font-bold text-gray-700">
+                    {stores.map((store: any) => (
+                        <tr key={store.id} className="hover:bg-gray-50/50 transition-colors">
+                            <td className="px-8 py-5">
+                                <div className="flex items-center gap-3">
+                                    <div className="w-8 h-8 bg-green-50 rounded-full flex items-center justify-center text-[#25D366] text-xs font-black">
+                                        {store.name?.[0] || '?'}
+                                    </div>
+                                    {store.name || 'Unnamed'}
+                                </div>
+                            </td>
+                            <td className="px-8 py-5 text-gray-400 font-medium">/shop/{store.slug}</td>
+                            <td className="px-8 py-5">
+                                <span className="bg-green-50 text-[#25D366] text-xs font-black px-3 py-1 rounded-full">{store.orderCount} orders</span>
+                            </td>
+                            <td className="px-8 py-5 text-gray-400 font-medium text-xs">
+                                {store.createdAt ? new Date(store.createdAt).toLocaleDateString() : '—'}
+                            </td>
+                        </tr>
+                    ))}
+                </tbody>
+            </table>
+        </div>
     );
 }
 
