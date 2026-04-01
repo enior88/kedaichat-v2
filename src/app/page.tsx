@@ -128,10 +128,10 @@ export default function LandingPage() {
                         <div className="scale-90 md:scale-100">
                             <LanguageToggle />
                         </div>
-                        <Link href="/login" className="hidden lg:block text-sm font-bold text-gray-900 hover:text-[#25D366] transition-colors px-2 md:px-4 py-2">
+                        <Link href="/login" className="text-sm font-bold text-gray-900 hover:text-[#25D366] transition-colors px-2 md:px-4 py-2">
                             {t('login')}
                         </Link>
-                        <Link href="/onboarding" className="hidden sm:block bg-gray-900 text-white px-4 py-2.5 md:px-6 md:py-3 rounded-full text-xs md:text-sm font-black hover:bg-gray-800 transition-all shadow-xl shadow-gray-200 active:scale-95 whitespace-nowrap">
+                        <Link href="/onboarding" className="bg-gray-900 text-white px-4 py-2.5 md:px-6 md:py-3 rounded-full text-[10px] md:text-sm font-black hover:bg-gray-800 transition-all shadow-xl shadow-gray-200 active:scale-95 whitespace-nowrap">
                             {t('start_free')}
                         </Link>
                     </div>
