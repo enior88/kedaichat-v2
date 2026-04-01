@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import {
     TrendingUp, ExternalLink, XCircle, RefreshCw, Trash2, Archive, Key, LogOut,
-    BarChart3, Store, CreditCard, CheckCircle2, Users, ShoppingBag, Search, Package, Settings, Upload, Menu, AlertCircle, FileText, Download, Eye
+    BarChart3, Store, CreditCard, CheckCircle2, Users, ShoppingBag, Search, Package, Settings, Upload, Menu, AlertCircle, FileText, Download, Eye, ShieldCheck
 } from 'lucide-react';
 
 type Section = 'Overview' | 'Stores' | 'Subscriptions' | 'Payments' | 'Settings';
@@ -835,57 +835,6 @@ export default function AdminPanel() {
                     </div>
                 </div>
             )}
-        </div>
-    );
-}
-
-// Shared sub-components
-function StoresTable({ stores, emptyMessage }: { stores: any[], emptyMessage: string }) {
-    if (stores.length === 0) return <Empty message={emptyMessage} />;
-    return (
-        <div className="overflow-x-auto w-full">
-            <table className="w-full text-left min-w-[500px]">
-                <thead>
-                    <tr className="text-gray-400 text-[10px] font-black uppercase tracking-widest border-b border-gray-50">
-                        <th className="px-8 py-4">Store</th>
-                        <th className="px-8 py-4">Slug</th>
-                        <th className="px-8 py-4">Orders</th>
-                        <th className="px-8 py-4">Created</th>
-                    </tr>
-                </thead>
-                <tbody className="divide-y divide-gray-50 text-sm font-bold text-gray-700">
-                    {stores.map((store: any) => (
-                        <tr key={store.id} className="hover:bg-gray-50/50 transition-colors">
-                            <td className="px-8 py-5">
-                                <div className="flex items-center gap-3">
-                                    <div className="w-8 h-8 bg-green-50 rounded-full flex items-center justify-center text-[#25D366] text-xs font-black">
-                                        {store.name?.[0] || '?'}
-                                    </div>
-                                    {store.name || 'Unnamed'}
-                                </div>
-                            </td>
-                            <td className="px-8 py-5 text-gray-400 font-medium">/shop/{store.slug}</td>
-                            <td className="px-8 py-5">
-                                <span className="bg-green-50 text-[#25D366] text-xs font-black px-3 py-1 rounded-full">{store.orderCount} orders</span>
-                            </td>
-                            <td className="px-8 py-5 text-gray-400 font-medium text-xs">
-                                {store.createdAt ? new Date(store.createdAt).toLocaleDateString() : '—'}
-                            </td>
-                        </tr>
-                    ))}
-                </tbody>
-            </table>
-        </div>
-    );
-}
-
-function Empty({ message }: { message: string }) {
-    return (
-        <div className="p-16 text-center text-gray-400 font-medium">
-            <div className="w-14 h-14 bg-gray-50 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                <XCircle size={24} className="text-gray-300" />
-            </div>
-            {message}
             {/* ── MODALS ── */}
             {/* Receipt Viewer Modal */}
             {viewingReceipt && (
@@ -946,6 +895,57 @@ function Empty({ message }: { message: string }) {
                     </div>
                 </div>
             )}
+        </div>
+    );
+}
+
+// Shared sub-components
+function StoresTable({ stores, emptyMessage }: { stores: any[], emptyMessage: string }) {
+    if (stores.length === 0) return <Empty message={emptyMessage} />;
+    return (
+        <div className="overflow-x-auto w-full">
+            <table className="w-full text-left min-w-[500px]">
+                <thead>
+                    <tr className="text-gray-400 text-[10px] font-black uppercase tracking-widest border-b border-gray-50">
+                        <th className="px-8 py-4">Store</th>
+                        <th className="px-8 py-4">Slug</th>
+                        <th className="px-8 py-4">Orders</th>
+                        <th className="px-8 py-4">Created</th>
+                    </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-50 text-sm font-bold text-gray-700">
+                    {stores.map((store: any) => (
+                        <tr key={store.id} className="hover:bg-gray-50/50 transition-colors">
+                            <td className="px-8 py-5">
+                                <div className="flex items-center gap-3">
+                                    <div className="w-8 h-8 bg-green-50 rounded-full flex items-center justify-center text-[#25D366] text-xs font-black">
+                                        {store.name?.[0] || '?'}
+                                    </div>
+                                    {store.name || 'Unnamed'}
+                                </div>
+                            </td>
+                            <td className="px-8 py-5 text-gray-400 font-medium">/shop/{store.slug}</td>
+                            <td className="px-8 py-5">
+                                <span className="bg-green-50 text-[#25D366] text-xs font-black px-3 py-1 rounded-full">{store.orderCount} orders</span>
+                            </td>
+                            <td className="px-8 py-5 text-gray-400 font-medium text-xs">
+                                {store.createdAt ? new Date(store.createdAt).toLocaleDateString() : '—'}
+                            </td>
+                        </tr>
+                    ))}
+                </tbody>
+            </table>
+        </div>
+    );
+}
+
+function Empty({ message }: { message: string }) {
+    return (
+        <div className="p-16 text-center text-gray-400 font-medium">
+            <div className="w-14 h-14 bg-gray-50 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                <XCircle size={24} className="text-gray-300" />
+            </div>
+            {message}
         </div>
     );
 }
