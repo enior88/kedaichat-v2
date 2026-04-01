@@ -41,6 +41,14 @@ export default function LandingPage() {
         }
     };
 
+    const scrollToSection = (e: React.MouseEvent<HTMLAnchorElement>, id: string) => {
+        e.preventDefault();
+        const element = document.getElementById(id);
+        if (element) {
+            element.scrollIntoView({ behavior: 'smooth' });
+        }
+    };
+
     return (
         <div className="bg-white font-inter text-gray-900 md:h-screen md:overflow-y-auto md:snap-y md:snap-mandatory scroll-smooth overflow-x-hidden min-h-screen">
             <script
@@ -58,10 +66,10 @@ export default function LandingPage() {
                     </div>
 
                     <div className="hidden lg:flex items-center gap-8">
-                        <a href="#how-it-works" className="text-sm font-bold text-gray-500 hover:text-gray-900 transition-colors">{t('how_it_works')}</a>
-                        <a href="#problem" className="text-sm font-bold text-gray-500 hover:text-gray-900 transition-colors">{t('problem_title')}</a>
-                        <a href="#features" className="text-sm font-bold text-gray-500 hover:text-gray-900 transition-colors">{t('features')}</a>
-                        <a href="#pricing" className="text-sm font-bold text-gray-500 hover:text-gray-900 transition-colors">{t('pricing_title')}</a>
+                        <a href="#how-it-works" onClick={(e) => scrollToSection(e, 'how-it-works')} className="text-sm font-bold text-gray-500 hover:text-gray-900 transition-colors">{t('how_it_works')}</a>
+                        <a href="#problem" onClick={(e) => scrollToSection(e, 'problem')} className="text-sm font-bold text-gray-500 hover:text-gray-900 transition-colors">{t('problem_title')}</a>
+                        <a href="#features" onClick={(e) => scrollToSection(e, 'features')} className="text-sm font-bold text-gray-500 hover:text-gray-900 transition-colors">{t('features')}</a>
+                        <a href="#pricing" onClick={(e) => scrollToSection(e, 'pricing')} className="text-sm font-bold text-gray-500 hover:text-gray-900 transition-colors">{t('pricing_title')}</a>
                     </div>
 
                     <div className="flex items-center gap-2 md:gap-4">
@@ -103,7 +111,7 @@ export default function LandingPage() {
                                     {t('start_free')}
                                     <ArrowRight size={18} />
                                 </Link>
-                                <a href="#how-it-works" className="w-full sm:w-auto bg-white border-2 border-gray-100 text-gray-900 px-6 md:px-10 h-12 md:h-16 flex items-center justify-center rounded-2xl text-sm md:text-lg font-black hover:bg-gray-50 transition-all active:scale-95 gap-2">
+                                <a href="#how-it-works" onClick={(e) => scrollToSection(e, 'how-it-works')} className="w-full sm:w-auto bg-white border-2 border-gray-100 text-gray-900 px-6 md:px-10 h-12 md:h-16 flex items-center justify-center rounded-2xl text-sm md:text-lg font-black hover:bg-gray-50 transition-all active:scale-95 gap-2">
                                     <Play size={18} fill="currentColor" />
                                     {t('how_it_works')}
                                 </a>
