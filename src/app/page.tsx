@@ -44,13 +44,32 @@ export default function LandingPage() {
     const scrollToSection = (e: React.MouseEvent<HTMLAnchorElement>, id: string) => {
         e.preventDefault();
         const element = document.getElementById(id);
-        if (element) {
-            element.scrollIntoView({ behavior: 'smooth' });
+        const container = document.getElementById('main-scroll-container');
+
+        if (!element) return;
+
+        // Mobile (window scrolling)
+        if (window.innerWidth < 768) {
+            const yOffset = -80; // Offset for navbar
+            const y = element.getBoundingClientRect().top + window.scrollY + yOffset;
+            window.scrollTo({ top: y, behavior: 'smooth' });
+            return;
+        }
+
+        // Desktop (container scrolling with snap)
+        if (container) {
+            let targetScroll = 0;
+            if (id === 'how-it-works') targetScroll = window.innerHeight;
+            else if (id === 'problem') targetScroll = window.innerHeight * 2;
+            else if (id === 'features') targetScroll = window.innerHeight * 3;
+            else if (id === 'pricing') targetScroll = window.innerHeight * 4;
+
+            container.scrollTo({ top: targetScroll, behavior: 'smooth' });
         }
     };
 
     return (
-        <div className="bg-white font-inter text-gray-900 md:h-screen md:overflow-y-auto md:snap-y md:snap-mandatory scroll-smooth overflow-x-hidden min-h-screen">
+        <div id="main-scroll-container" className="bg-white font-inter text-gray-900 md:h-screen md:overflow-y-auto md:snap-y md:snap-mandatory scroll-smooth overflow-x-hidden min-h-screen">
             <script
                 type="application/ld+json"
                 dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
@@ -132,8 +151,8 @@ export default function LandingPage() {
                 </div>
 
                 {/* 2. How it Works Reveal Wrapper */}
-                <div id="how-it-works" className="relative md:h-[200vh] md:-mt-[100vh] h-auto z-[40] md:snap-start">
-                    <section className="md:sticky md:top-0 md:h-screen relative h-auto bg-gray-50 flex flex-col justify-center px-6 py-24 md:py-24 overflow-hidden md:shadow-[0_-20px_40px_rgba(0,0,0,0.05)] border-t border-gray-100 md:border-none">
+                <div className="relative md:h-[200vh] md:-mt-[100vh] h-auto z-[40] md:snap-start">
+                    <section id="how-it-works" className="md:sticky md:top-0 md:h-screen relative h-auto bg-gray-50 flex flex-col justify-center px-6 py-24 md:py-24 overflow-hidden md:shadow-[0_-20px_40px_rgba(0,0,0,0.05)] border-t border-gray-100 md:border-none">
                         <div className="max-w-7xl mx-auto w-full">
                             <div className="text-center mb-12 md:mb-20">
                                 <h2 className="text-[10px] md:text-xs font-black text-[#25D366] uppercase tracking-[0.4em] mb-4">{t('how_it_works')}</h2>
@@ -160,8 +179,8 @@ export default function LandingPage() {
                 </div>
 
                 {/* 3. Problem Reveal Wrapper */}
-                <div id="problem" className="relative md:h-[200vh] md:-mt-[100vh] h-auto z-[30] md:snap-start">
-                    <section className="md:sticky md:top-0 md:h-screen relative h-auto bg-white flex flex-col justify-center px-6 py-24 md:py-24 overflow-hidden md:shadow-[0_-20px_40px_rgba(0,0,0,0.08)] border-t border-gray-100 md:border-none">
+                <div className="relative md:h-[200vh] md:-mt-[100vh] h-auto z-[30] md:snap-start">
+                    <section id="problem" className="md:sticky md:top-0 md:h-screen relative h-auto bg-white flex flex-col justify-center px-6 py-24 md:py-24 overflow-hidden md:shadow-[0_-20px_40px_rgba(0,0,0,0.08)] border-t border-gray-100 md:border-none">
                         <div className="max-w-7xl mx-auto w-full">
                             <div className="text-center mb-12 md:mb-20">
                                 <h2 className="text-[10px] md:text-xs font-black text-[#25D366] uppercase tracking-[0.4em] mb-4">{t('problem_title')}</h2>
@@ -204,8 +223,8 @@ export default function LandingPage() {
                 </div>
 
                 {/* 4. Features Reveal Wrapper */}
-                <div id="features" className="relative md:h-[200vh] md:-mt-[100vh] h-auto z-[20] md:snap-start">
-                    <section className="md:sticky md:top-0 md:h-screen relative h-auto bg-gray-50 flex flex-col justify-center px-6 py-24 md:py-24 overflow-hidden md:shadow-[0_-20px_40px_rgba(0,0,0,0.08)] border-t border-gray-100 md:border-none">
+                <div className="relative md:h-[200vh] md:-mt-[100vh] h-auto z-[20] md:snap-start">
+                    <section id="features" className="md:sticky md:top-0 md:h-screen relative h-auto bg-gray-50 flex flex-col justify-center px-6 py-24 md:py-24 overflow-hidden md:shadow-[0_-20px_40px_rgba(0,0,0,0.08)] border-t border-gray-100 md:border-none">
                         <div className="max-w-7xl mx-auto w-full">
                             <div className="text-center mb-12 md:mb-20">
                                 <h2 className="text-[10px] md:text-xs font-black text-[#25D366] uppercase tracking-[0.4em] mb-4">{t('features')}</h2>
@@ -237,8 +256,8 @@ export default function LandingPage() {
                 </div>
 
                 {/* 5. Pricing Reveal Wrapper */}
-                <div id="pricing" className="relative md:h-[200vh] md:-mt-[100vh] h-auto z-[10] md:snap-start">
-                    <section className="md:sticky md:top-0 md:h-screen relative h-auto bg-gray-900 text-white flex flex-col justify-center px-6 py-24 md:py-24 overflow-hidden border-t border-gray-800 md:border-none">
+                <div className="relative md:h-[200vh] md:-mt-[100vh] h-auto z-[10] md:snap-start">
+                    <section id="pricing" className="md:sticky md:top-0 md:h-screen relative h-auto bg-gray-900 text-white flex flex-col justify-center px-6 py-24 md:py-24 overflow-hidden border-t border-gray-800 md:border-none">
                         <div className="max-w-7xl mx-auto w-full">
                             <div className="text-center mb-12 md:mb-20">
                                 <h2 className="text-[10px] md:text-xs font-black text-[#25D366] uppercase tracking-[0.4em] mb-4">{t('pricing_title')}</h2>
