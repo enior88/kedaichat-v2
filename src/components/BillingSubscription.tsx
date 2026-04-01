@@ -105,6 +105,86 @@ export default function BillingSubscription() {
         }
     };
 
+    const handleDownloadQR = () => {
+        if (!adminBankQrUrl) return;
+
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        if (!ctx) return;
+
+        // Set dimensions for a premium card (800x1200 for high DPI)
+        canvas.width = 800;
+        canvas.height = 1100;
+
+        const img = new Image();
+        img.crossOrigin = "anonymous";
+        img.src = adminBankQrUrl;
+
+        img.onload = () => {
+            // 1. Background Gradient
+            const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
+            gradient.addColorStop(0, '#ffffff');
+            gradient.addColorStop(1, '#f3f4f6');
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // 2. Card Decoration (Corner radius approximation)
+            ctx.fillStyle = '#ffffff';
+            ctx.shadowColor = 'rgba(0,0,0,0.1)';
+            ctx.shadowBlur = 40;
+            ctx.beginPath();
+            ctx.roundRect(40, 40, 720, 1020, 60);
+            ctx.fill();
+            ctx.shadowBlur = 0;
+
+            // 3. Header Branding
+            ctx.fillStyle = '#111827';
+            ctx.font = '900 48px Inter, system-ui, sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText('KedaiChat', canvas.width / 2, 140);
+
+            ctx.fillStyle = '#25D366';
+            ctx.font = 'bold 24px Inter, system-ui, sans-serif';
+            ctx.fillText('OFFICIAL PAYMENT CARD', canvas.width / 2, 185);
+
+            // 4. Instructions
+            ctx.fillStyle = '#6B7280';
+            ctx.font = '500 20px Inter, system-ui, sans-serif';
+            ctx.fillText('Scan this QR code with any banking app', canvas.width / 2, 230);
+
+            // 5. QR Code Area
+            const qrSize = 560;
+            const qrX = (canvas.width - qrSize) / 2;
+            const qrY = 280;
+
+            // QR Shadow/Border
+            ctx.strokeStyle = '#f3f4f6';
+            ctx.lineWidth = 2;
+            ctx.strokeRect(qrX - 10, qrY - 10, qrSize + 20, qrSize + 20);
+
+            ctx.drawImage(img, qrX, qrY, qrSize, qrSize);
+
+            // 6. Footer Branding
+            ctx.fillStyle = '#111827';
+            ctx.font = 'bold 32px Inter, system-ui, sans-serif';
+            ctx.fillText('kedaichat.online', canvas.width / 2, 950);
+
+            ctx.fillStyle = '#9CA3AF';
+            ctx.font = '500 18px Inter, system-ui, sans-serif';
+            ctx.fillText('Automated Merchant OS', canvas.width / 2, 990);
+
+            // 7. Download
+            const link = document.createElement('a');
+            link.download = 'KedaiChat-Payment-QR.png';
+            link.href = canvas.toDataURL('image/png', 1.0);
+            link.click();
+        };
+
+        img.onerror = () => {
+            alert('Failed to process QR for download. Please try long-pressing the image to save.');
+        };
+    };
+
     return (
         <div className="min-h-screen bg-[#F8F9FA] pb-24 font-inter max-w-md mx-auto relative shadow-2xl overflow-hidden border-x border-gray-100">
             <div className="p-6">
@@ -183,6 +263,16 @@ export default function BillingSubscription() {
                                 </div>
                             )}
                         </div>
+
+                        {adminBankQrUrl && (
+                            <button
+                                onClick={handleDownloadQR}
+                                className="mb-8 flex items-center gap-2 text-[#25D366] font-bold text-[10px] uppercase tracking-widest hover:opacity-80 transition-opacity"
+                            >
+                                <Upload size={14} className="rotate-180" />
+                                Save QR to Gallery
+                            </button>
+                        )}
 
                         <div className="bg-gray-50 rounded-2xl p-4 mb-8 w-full">
                             <div className="flex items-center gap-3 mb-2">
