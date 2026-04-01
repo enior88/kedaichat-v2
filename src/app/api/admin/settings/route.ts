@@ -8,8 +8,9 @@ export async function GET() {
     try {
         const session = await getSession();
         const user = session ? await prisma.user.findUnique({ where: { id: session.userId } }) : null;
-        if (!user || user.role !== 'ADMIN') {
-            return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+        if (!user) return NextResponse.json({ error: 'Unauthorized: Session User Not Found' }, { status: 401 });
+        if (user.role.toUpperCase() !== 'ADMIN') {
+            return NextResponse.json({ error: `Unauthorized: Role is ${user.role}` }, { status: 401 });
         }
 
         const settings = await prisma.platformSettings.findUnique({
@@ -26,9 +27,13 @@ export async function GET() {
 export async function PUT(req: Request) {
     try {
         const session = await getSession();
+        console.log('[DEBUG] Admin PUT Session:', session);
         const user = session ? await prisma.user.findUnique({ where: { id: session.userId } }) : null;
-        if (!user || user.role !== 'ADMIN') {
-            return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+        console.log('[DEBUG] Admin PUT User:', user?.email, user?.role);
+
+        if (!user) return NextResponse.json({ error: 'Unauthorized: Session User Not Found' }, { status: 401 });
+        if (user.role.toUpperCase() !== 'ADMIN') {
+            return NextResponse.json({ error: `Unauthorized: Role is ${user.role}` }, { status: 401 });
         }
 
         const body = await req.json();
