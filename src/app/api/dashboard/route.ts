@@ -39,6 +39,7 @@ export async function GET(req: Request) {
             businessName: store.name,
             slug: store.slug,
             archived: store.archived,
+            description: store.category, // Fetch from the repurposed field
             totalProducts: store._count.products,
             totalOrders: store._count.orders,
             revenueToday,

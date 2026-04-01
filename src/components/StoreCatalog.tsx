@@ -145,7 +145,7 @@ export default function StoreCatalog({ slug }: { slug?: string }) {
 
                     <h2 className="text-[22px] font-bold text-gray-900 mb-1 leading-tight">{storeName}</h2>
                     <p className="text-[13px] text-gray-500/80 font-medium px-4 mb-6 leading-snug max-w-[300px]">
-                        Authentic Malaysian flavors delivered fresh to your doorstep since 2010.
+                        {store?.category || store?.description || 'Welcome to my store! We provide the best products and services for you.'}
                     </p>
 
                     <button
