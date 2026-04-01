@@ -13,7 +13,6 @@ import {
     Lock
 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import BottomNav from './BottomNav';
 import { useLanguage } from '@/lib/LanguageContext';
 import LanguageToggle from '@/components/LanguageToggle';
 
@@ -458,7 +457,7 @@ export default function Settings() {
                 </div>
             </div>
 
-            <BottomNav />
+
         </div>
     );
 }

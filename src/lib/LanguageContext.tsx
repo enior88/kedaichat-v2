@@ -8,6 +8,7 @@ interface LanguageContextType {
     language: Language;
     setLanguage: (lang: Language) => void;
     t: (key: string) => string;
+    isAdmin: boolean;
 }
 
 const translations: Record<Language, Record<string, string>> = {
@@ -338,6 +339,7 @@ const LanguageContext = createContext<LanguageContextType | undefined>(undefined
 export function LanguageProvider({ children }: { children: React.ReactNode }) {
     const [language, setLanguage] = useState<Language>('en');
     const [mounted, setMounted] = useState(false);
+    const [isAdmin, setIsAdmin] = useState(false);
 
     useEffect(() => {
         console.log('LanguageProvider mounted');
@@ -345,6 +347,20 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
         if (saved === 'en' || saved === 'ms') {
             setLanguage(saved);
         }
+
+        // Cache isAdmin in session storage to avoid flickers on refresh
+        const cachedRole = sessionStorage.getItem('kd_role');
+        if (cachedRole === 'ADMIN') setIsAdmin(true);
+
+        fetch(`/api/user/role?t=${Date.now()}`)
+            .then(res => res.json())
+            .then(data => {
+                const isUserAdmin = data.role === 'ADMIN';
+                setIsAdmin(isUserAdmin);
+                sessionStorage.setItem('kd_role', isUserAdmin ? 'ADMIN' : 'USER');
+            })
+            .catch(() => { });
+
         setMounted(true);
     }, []);
 
@@ -359,7 +375,7 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
     };
 
     return (
-        <LanguageContext.Provider value={{ language, setLanguage: setLanguageAndStore, t }}>
+        <LanguageContext.Provider value={{ language, setLanguage: setLanguageAndStore, t, isAdmin }}>
             {!mounted ? (
                 <div style={{ visibility: 'hidden' }}>{children}</div>
             ) : (

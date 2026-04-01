@@ -281,7 +281,7 @@ export default function ProductManager() {
                 </>
             )}
 
-            <BottomNav />
+
         </div>
     );
 }

@@ -231,7 +231,7 @@ ${storeUrl}`;
                 </div>
             )}
 
-            <BottomNav />
+
         </div>
     );
 }

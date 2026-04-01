@@ -4,19 +4,11 @@ import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { Home, ClipboardList, Package, Users, Settings, ShieldCheck } from 'lucide-react';
 import { usePathname } from 'next/navigation';
+import { useLanguage } from '@/lib/LanguageContext';
 
 export default function BottomNav() {
     const pathname = usePathname();
-    const [isAdmin, setIsAdmin] = useState(false);
-
-    useEffect(() => {
-        fetch(`/api/user/role?t=${Date.now()}`)
-            .then(res => res.json())
-            .then(data => {
-                if (data.role === 'ADMIN') setIsAdmin(true);
-            })
-            .catch(() => { });
-    }, []);
+    const { isAdmin } = useLanguage();
 
     const navItems = [
         { name: 'Dashboard', icon: Home, path: '/dashboard' },

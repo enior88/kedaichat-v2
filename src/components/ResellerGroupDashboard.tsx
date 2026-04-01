@@ -203,7 +203,7 @@ export default function ResellerGroupDashboard() {
                 </>
             )}
 
-            <BottomNav />
+
         </div>
     );
 

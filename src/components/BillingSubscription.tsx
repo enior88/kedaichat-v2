@@ -2,7 +2,6 @@
 
 import React, { useState, useEffect } from 'react';
 import { Check, ChevronRight, ShieldCheck, Upload, X } from 'lucide-react';
-import BottomNav from './BottomNav';
 import { useLanguage } from '@/lib/LanguageContext';
 
 export default function BillingSubscription() {
@@ -241,7 +240,7 @@ export default function BillingSubscription() {
                 )}
             </div>
 
-            <BottomNav />
+
         </div>
     );
 }

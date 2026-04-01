@@ -118,7 +118,7 @@ export default function OrdersManagement() {
                 ))}
             </div>
 
-            <BottomNav />
+
         </div>
     );
 }

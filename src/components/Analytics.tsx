@@ -124,7 +124,7 @@ export default function Analytics() {
                 </div>
             </div>
 
-            <BottomNav />
+
         </div>
     );
 }

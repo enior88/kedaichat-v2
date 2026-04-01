@@ -8,21 +8,26 @@ import {
     Store, Settings, Plus, Archive, ShieldCheck, LogOut
 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import BottomNav from './BottomNav';
 import { useLanguage } from '@/lib/LanguageContext';
 
 export default function Dashboard() {
     const router = useRouter();
     const { t } = useLanguage();
-    const [stats, setStats] = useState({
-        businessName: 'Loading...',
-        revenueToday: 0,
-        totalOrders: 0,
-        totalProducts: 0,
-        slug: '',
-        plan: 'FREE',
-        isAdmin: false,
-        archived: false
+    const [stats, setStats] = useState(() => {
+        // Instant restoration from simple global cache
+        if (typeof window !== 'undefined' && (window as any).kd_stats_cache) {
+            return (window as any).kd_stats_cache;
+        }
+        return {
+            businessName: 'Loading...',
+            revenueToday: 0,
+            totalOrders: 0,
+            totalProducts: 0,
+            slug: '',
+            plan: 'FREE',
+            isAdmin: false,
+            archived: false
+        };
     });
     const [showToast, setShowToast] = useState(false);
 
@@ -53,6 +58,10 @@ export default function Dashboard() {
 
                 if (!data.error) {
                     setStats(data);
+                    // Update the global cache for instant restoration next time
+                    if (typeof window !== 'undefined') {
+                        (window as any).kd_stats_cache = data;
+                    }
                 } else {
                     console.error('Dashboard error:', data.error);
                 }
@@ -304,7 +313,7 @@ export default function Dashboard() {
                 </section>
             </div>
 
-            <BottomNav />
+
         </div>
     );
 }
