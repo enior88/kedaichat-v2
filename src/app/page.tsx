@@ -18,7 +18,9 @@ import {
     Play,
     Store,
     Package,
-    Mail
+    Mail,
+    Menu,
+    X
 } from 'lucide-react';
 import { useLanguage } from '@/lib/LanguageContext';
 import LanguageToggle from '@/components/LanguageToggle';
@@ -26,6 +28,7 @@ import { Metadata } from 'next';
 
 export default function LandingPage() {
     const { t } = useLanguage();
+    const [isMenuOpen, setIsMenuOpen] = React.useState(false);
 
     const jsonLd = {
         "@context": "https://schema.org",
@@ -117,6 +120,7 @@ export default function LandingPage() {
                         <span className="text-xl font-black tracking-tighter">KedaiChat</span>
                     </div>
 
+                    {/* Desktop Navigation Links */}
                     <div className="hidden lg:flex items-center gap-8">
                         <a href="#how-it-works" onClick={(e) => scrollToSection(e, 'how-it-works')} className="text-sm font-bold text-gray-500 hover:text-gray-900 transition-colors">{t('how_it_works')}</a>
                         <a href="#problem" onClick={(e) => scrollToSection(e, 'problem')} className="text-sm font-bold text-gray-500 hover:text-gray-900 transition-colors">{t('problem_title')}</a>
@@ -124,16 +128,78 @@ export default function LandingPage() {
                         <a href="#pricing" onClick={(e) => scrollToSection(e, 'pricing')} className="text-sm font-bold text-gray-500 hover:text-gray-900 transition-colors">{t('pricing_title')}</a>
                     </div>
 
+                    {/* Right Side Actions */}
                     <div className="flex items-center gap-2 md:gap-4">
-                        <div className="scale-90 md:scale-100">
+                        {/* Language Toggle - Only on Desktop in Header */}
+                        <div className="hidden lg:block scale-90 md:scale-100">
                             <LanguageToggle />
                         </div>
-                        <Link href="/login" className="text-sm font-bold text-gray-900 hover:text-[#25D366] transition-colors px-2 md:px-4 py-2">
-                            {t('login')}
-                        </Link>
-                        <Link href="/onboarding" className="bg-gray-900 text-white px-4 py-2.5 md:px-6 md:py-3 rounded-full text-[10px] md:text-sm font-black hover:bg-gray-800 transition-all shadow-xl shadow-gray-200 active:scale-95 whitespace-nowrap">
-                            {t('start_free')}
-                        </Link>
+
+                        {/* Desktop Actions */}
+                        <div className="hidden lg:flex items-center gap-4">
+                            <Link href="/login" className="text-sm font-bold text-gray-900 hover:text-[#25D366] transition-colors px-2 md:px-4 py-2">
+                                {t('login')}
+                            </Link>
+                            <Link href="/onboarding" className="bg-gray-900 text-white px-4 py-2.5 md:px-6 md:py-3 rounded-full text-xs md:text-sm font-black hover:bg-gray-800 transition-all shadow-xl shadow-gray-200 active:scale-95 whitespace-nowrap">
+                                {t('start_free')}
+                            </Link>
+                        </div>
+
+                        {/* Mobile Menu Toggle Icon */}
+                        <button
+                            onClick={() => setIsMenuOpen(!isMenuOpen)}
+                            className="lg:hidden w-10 h-10 flex items-center justify-center rounded-xl bg-gray-50 text-gray-900 hover:bg-gray-100 transition-all active:scale-90"
+                        >
+                            {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
+                        </button>
+                    </div>
+                </div>
+
+                {/* Mobile Drawer Overlay */}
+                <div className={`lg:hidden fixed inset-x-0 top-20 bg-white border-b border-gray-100 shadow-2xl transition-all duration-500 origin-top overflow-hidden z-[90] ${isMenuOpen ? 'max-h-screen opacity-100' : 'max-h-0 opacity-0'}`}>
+                    <div className="p-6 flex flex-col gap-6">
+                        {/* Mobile Language Toggle */}
+                        <div className="flex items-center justify-between p-4 bg-gray-50 rounded-2xl">
+                            <span className="text-sm font-bold text-gray-500 uppercase tracking-widest">{t('language')}</span>
+                            <LanguageToggle />
+                        </div>
+
+                        {/* Mobile Navigation Links */}
+                        <div className="flex flex-col gap-4">
+                            {[
+                                { id: 'how-it-works', label: t('how_it_works') },
+                                { id: 'problem', label: t('problem_title') },
+                                { id: 'features', label: t('features') },
+                                { id: 'pricing', label: t('pricing_title') }
+                            ].map((item) => (
+                                <a
+                                    key={item.id}
+                                    href={`#${item.id}`}
+                                    onClick={(e) => { scrollToSection(e, item.id); setIsMenuOpen(false); }}
+                                    className="text-lg font-black text-gray-900 p-2 hover:text-[#25D366] transition-colors"
+                                >
+                                    {item.label}
+                                </a>
+                            ))}
+                        </div>
+
+                        {/* Mobile Primary Actions */}
+                        <div className="flex flex-col gap-3 pt-6 border-t border-gray-50">
+                            <Link
+                                href="/login"
+                                onClick={() => setIsMenuOpen(false)}
+                                className="w-full py-4 text-center text-lg font-black text-gray-900 bg-gray-50 rounded-2xl active:scale-95 transition-all"
+                            >
+                                {t('login')}
+                            </Link>
+                            <Link
+                                href="/onboarding"
+                                onClick={() => setIsMenuOpen(false)}
+                                className="w-full py-5 text-center text-lg font-black text-white bg-gradient-to-r from-[#25D366] to-[#128C7E] rounded-2xl shadow-xl shadow-green-100 active:scale-95 transition-all"
+                            >
+                                {t('start_free')}
+                            </Link>
+                        </div>
                     </div>
                 </div>
             </nav>
