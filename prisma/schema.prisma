@@ -25,7 +25,6 @@ model Store {
   slug           String        @unique
   category       String?
   whatsappNumber String
-  description    String?
   logoUrl        String?
   paymentQrUrl   String?
   ownerId        String

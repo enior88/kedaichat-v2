@@ -41,7 +41,7 @@ export async function POST(req: Request) {
                 slug: data.slug,
                 logoUrl: data.storeLogo,
                 paymentQrUrl: data.paymentQrUrl,
-                description: data.description
+                // description: data.description // Removed due to DB migration failure
             }
         });
 
