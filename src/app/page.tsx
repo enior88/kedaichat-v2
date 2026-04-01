@@ -57,14 +57,11 @@ export default function LandingPage() {
         }
 
         // Desktop (container scrolling with snap)
-        if (container) {
-            let targetScroll = 0;
-            if (id === 'how-it-works') targetScroll = window.innerHeight;
-            else if (id === 'problem') targetScroll = window.innerHeight * 2;
-            else if (id === 'features') targetScroll = window.innerHeight * 3;
-            else if (id === 'pricing') targetScroll = window.innerHeight * 4;
-
-            container.scrollTo({ top: targetScroll, behavior: 'smooth' });
+        const wrapper = document.getElementById(`wrapper-${id}`);
+        if (wrapper) {
+            wrapper.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        } else if (container) {
+            container.scrollTo({ top: 0, behavior: 'smooth' });
         }
     };
 
@@ -151,7 +148,7 @@ export default function LandingPage() {
                 </div>
 
                 {/* 2. How it Works Reveal Wrapper */}
-                <div className="relative md:h-[200vh] md:-mt-[100vh] h-auto z-[40] md:snap-start">
+                <div id="wrapper-how-it-works" className="relative md:h-[200vh] md:-mt-[100vh] h-auto z-[40] md:snap-start">
                     <section id="how-it-works" className="md:sticky md:top-0 md:h-screen relative h-auto bg-gray-50 flex flex-col justify-center px-6 py-24 md:py-24 overflow-hidden md:shadow-[0_-20px_40px_rgba(0,0,0,0.05)] border-t border-gray-100 md:border-none">
                         <div className="max-w-7xl mx-auto w-full">
                             <div className="text-center mb-12 md:mb-20">
@@ -179,7 +176,7 @@ export default function LandingPage() {
                 </div>
 
                 {/* 3. Problem Reveal Wrapper */}
-                <div className="relative md:h-[200vh] md:-mt-[100vh] h-auto z-[30] md:snap-start">
+                <div id="wrapper-problem" className="relative md:h-[200vh] md:-mt-[100vh] h-auto z-[30] md:snap-start">
                     <section id="problem" className="md:sticky md:top-0 md:h-screen relative h-auto bg-white flex flex-col justify-center px-6 py-24 md:py-24 overflow-hidden md:shadow-[0_-20px_40px_rgba(0,0,0,0.08)] border-t border-gray-100 md:border-none">
                         <div className="max-w-7xl mx-auto w-full">
                             <div className="text-center mb-12 md:mb-20">
@@ -223,7 +220,7 @@ export default function LandingPage() {
                 </div>
 
                 {/* 4. Features Reveal Wrapper */}
-                <div className="relative md:h-[200vh] md:-mt-[100vh] h-auto z-[20] md:snap-start">
+                <div id="wrapper-features" className="relative md:h-[200vh] md:-mt-[100vh] h-auto z-[20] md:snap-start">
                     <section id="features" className="md:sticky md:top-0 md:h-screen relative h-auto bg-gray-50 flex flex-col justify-center px-6 py-24 md:py-24 overflow-hidden md:shadow-[0_-20px_40px_rgba(0,0,0,0.08)] border-t border-gray-100 md:border-none">
                         <div className="max-w-7xl mx-auto w-full">
                             <div className="text-center mb-12 md:mb-20">
@@ -256,7 +253,7 @@ export default function LandingPage() {
                 </div>
 
                 {/* 5. Pricing Reveal Wrapper */}
-                <div className="relative md:h-[200vh] md:-mt-[100vh] h-auto z-[10] md:snap-start">
+                <div id="wrapper-pricing" className="relative md:h-[200vh] md:-mt-[100vh] h-auto z-[10] md:snap-start">
                     <section id="pricing" className="md:sticky md:top-0 md:h-screen relative h-auto bg-gray-900 text-white flex flex-col justify-center px-6 py-24 md:py-24 overflow-hidden border-t border-gray-800 md:border-none">
                         <div className="max-w-7xl mx-auto w-full">
                             <div className="text-center mb-12 md:mb-20">
