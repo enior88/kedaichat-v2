@@ -131,6 +131,37 @@ export default function Settings() {
         }
     };
 
+    const handleDeleteStore = async () => {
+        const confirmDelete = window.confirm(
+            "ARE YOU ABSOLUTELY SURE?\n\nThis will permanently delete your store, all products, and all order history. This action cannot be undone."
+        );
+
+        if (!confirmDelete) return;
+
+        const doubleConfirm = window.prompt("To confirm deletion, please type 'DELETE' below:");
+        if (doubleConfirm !== 'DELETE') {
+            alert("Deletion cancelled. Confirmation text did not match.");
+            return;
+        }
+
+        setSaving(true);
+        try {
+            const res = await fetch('/api/store', { method: 'DELETE' });
+            if (res.ok) {
+                alert("Store deleted successfully. Redirecting...");
+                router.push('/onboarding');
+            } else {
+                const data = await res.json();
+                alert(data.error || 'Deletion failed');
+            }
+        } catch (error) {
+            console.error('Delete failed:', error);
+            alert('Connection error');
+        } finally {
+            setSaving(false);
+        }
+    };
+
     if (loading) {
         return (
             <div className="min-h-screen bg-[#F8F9FA] flex items-center justify-center">
@@ -417,7 +448,10 @@ export default function Settings() {
                         {t('sign_out')}
                     </button>
 
-                    <button className="w-full h-16 bg-white text-red-500 font-bold text-xs rounded-[24px] flex items-center justify-center gap-2 border border-red-50 active:scale-95 transition-all uppercase tracking-widest opacity-30">
+                    <button
+                        onClick={handleDeleteStore}
+                        className="w-full h-16 bg-white text-red-500 font-bold text-xs rounded-[24px] flex items-center justify-center gap-2 border border-red-50 active:scale-95 transition-all uppercase tracking-widest hover:bg-red-50"
+                    >
                         <Trash2 size={16} />
                         {t('delete_store')}
                     </button>

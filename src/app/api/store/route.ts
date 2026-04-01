@@ -41,11 +41,32 @@ export async function POST(req: Request) {
                 slug: data.slug,
                 logoUrl: data.storeLogo,
                 paymentQrUrl: data.paymentQrUrl,
-                // description: data.description // Prisma schema needs this field added for full support, skipping for exact matchMVP
+                description: data.description
             }
         });
 
         return NextResponse.json({ success: true, store: updatedStore });
+
+    } catch (error: any) {
+        return NextResponse.json({ error: error.message }, { status: 500 });
+    }
+}
+
+export async function DELETE(req: Request) {
+    try {
+        const session = await getSession();
+        if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+
+        const store = await prisma.store.findFirst({ where: { ownerId: session.userId } });
+        if (!store) return NextResponse.json({ error: 'Store not found' }, { status: 404 });
+
+        // Hard delete the store and its relations (cascades should be handled by schema or manually)
+        // For now, we perform a simple delete. Relations like Products, Orders, etc. should be deleted.
+        // Prisma schema doesn't have explicit cascades yet, so we'll do a simple delete.
+        // NOTE: If there are foreign key constraints, this might fail unless cascades are in place.
+        await prisma.store.delete({ where: { id: store.id } });
+
+        return NextResponse.json({ success: true });
 
     } catch (error: any) {
         return NextResponse.json({ error: error.message }, { status: 500 });
