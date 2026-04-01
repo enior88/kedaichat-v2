@@ -124,8 +124,8 @@ export default function LandingPage() {
                 </div>
 
                 {/* 2. How it Works Reveal Wrapper */}
-                <div className="relative md:h-[200vh] md:-mt-[100vh] h-auto z-[40] md:snap-start">
-                    <section id="how-it-works" className="md:sticky md:top-0 md:h-screen relative h-auto bg-gray-50 flex flex-col justify-center px-6 py-24 md:py-24 overflow-hidden md:shadow-[0_-20px_40px_rgba(0,0,0,0.05)] border-t border-gray-100 md:border-none">
+                <div id="how-it-works" className="relative md:h-[200vh] md:-mt-[100vh] h-auto z-[40] md:snap-start">
+                    <section className="md:sticky md:top-0 md:h-screen relative h-auto bg-gray-50 flex flex-col justify-center px-6 py-24 md:py-24 overflow-hidden md:shadow-[0_-20px_40px_rgba(0,0,0,0.05)] border-t border-gray-100 md:border-none">
                         <div className="max-w-7xl mx-auto w-full">
                             <div className="text-center mb-12 md:mb-20">
                                 <h2 className="text-[10px] md:text-xs font-black text-[#25D366] uppercase tracking-[0.4em] mb-4">{t('how_it_works')}</h2>
@@ -152,8 +152,8 @@ export default function LandingPage() {
                 </div>
 
                 {/* 3. Problem Reveal Wrapper */}
-                <div className="relative md:h-[200vh] md:-mt-[100vh] h-auto z-[30] md:snap-start">
-                    <section id="problem" className="md:sticky md:top-0 md:h-screen relative h-auto bg-white flex flex-col justify-center px-6 py-24 md:py-24 overflow-hidden md:shadow-[0_-20px_40px_rgba(0,0,0,0.08)] border-t border-gray-100 md:border-none">
+                <div id="problem" className="relative md:h-[200vh] md:-mt-[100vh] h-auto z-[30] md:snap-start">
+                    <section className="md:sticky md:top-0 md:h-screen relative h-auto bg-white flex flex-col justify-center px-6 py-24 md:py-24 overflow-hidden md:shadow-[0_-20px_40px_rgba(0,0,0,0.08)] border-t border-gray-100 md:border-none">
                         <div className="max-w-7xl mx-auto w-full">
                             <div className="text-center mb-12 md:mb-20">
                                 <h2 className="text-[10px] md:text-xs font-black text-[#25D366] uppercase tracking-[0.4em] mb-4">{t('problem_title')}</h2>
@@ -196,8 +196,8 @@ export default function LandingPage() {
                 </div>
 
                 {/* 4. Features Reveal Wrapper */}
-                <div className="relative md:h-[200vh] md:-mt-[100vh] h-auto z-[20] md:snap-start">
-                    <section id="features" className="md:sticky md:top-0 md:h-screen relative h-auto bg-gray-50 flex flex-col justify-center px-6 py-24 md:py-24 overflow-hidden md:shadow-[0_-20px_40px_rgba(0,0,0,0.08)] border-t border-gray-100 md:border-none">
+                <div id="features" className="relative md:h-[200vh] md:-mt-[100vh] h-auto z-[20] md:snap-start">
+                    <section className="md:sticky md:top-0 md:h-screen relative h-auto bg-gray-50 flex flex-col justify-center px-6 py-24 md:py-24 overflow-hidden md:shadow-[0_-20px_40px_rgba(0,0,0,0.08)] border-t border-gray-100 md:border-none">
                         <div className="max-w-7xl mx-auto w-full">
                             <div className="text-center mb-12 md:mb-20">
                                 <h2 className="text-[10px] md:text-xs font-black text-[#25D366] uppercase tracking-[0.4em] mb-4">{t('features')}</h2>
@@ -229,8 +229,8 @@ export default function LandingPage() {
                 </div>
 
                 {/* 5. Pricing Reveal Wrapper */}
-                <div className="relative md:h-[200vh] md:-mt-[100vh] h-auto z-[10] md:snap-start">
-                    <section id="pricing" className="md:sticky md:top-0 md:h-screen relative h-auto bg-gray-900 text-white flex flex-col justify-center px-6 py-24 md:py-24 overflow-hidden border-t border-gray-800 md:border-none">
+                <div id="pricing" className="relative md:h-[200vh] md:-mt-[100vh] h-auto z-[10] md:snap-start">
+                    <section className="md:sticky md:top-0 md:h-screen relative h-auto bg-gray-900 text-white flex flex-col justify-center px-6 py-24 md:py-24 overflow-hidden border-t border-gray-800 md:border-none">
                         <div className="max-w-7xl mx-auto w-full">
                             <div className="text-center mb-12 md:mb-20">
                                 <h2 className="text-[10px] md:text-xs font-black text-[#25D366] uppercase tracking-[0.4em] mb-4">{t('pricing_title')}</h2>
