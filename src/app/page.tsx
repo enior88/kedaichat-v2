@@ -58,15 +58,33 @@ export default function LandingPage() {
 
         // Desktop (container scrolling with snap)
         const wrapper = document.getElementById(`wrapper-${id}`);
-        if (wrapper) {
-            wrapper.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        } else if (container) {
-            container.scrollTo({ top: 0, behavior: 'smooth' });
+        const containerElem = document.getElementById('main-scroll-container');
+
+        if (containerElem) {
+            let targetScroll = 0;
+            if (id === 'how-it-works') targetScroll = window.innerHeight;
+            else if (id === 'problem') targetScroll = window.innerHeight * 2;
+            else if (id === 'features') targetScroll = window.innerHeight * 3;
+            else if (id === 'pricing') targetScroll = window.innerHeight * 4;
+
+            // CSS scroll-snap aggressively conflicts with programmatic smooth scrolling.
+            // Temporarily disable snap, smoothly scroll, then restore snap.
+            containerElem.style.scrollSnapType = 'none';
+            containerElem.style.scrollBehavior = 'smooth';
+
+            setTimeout(() => {
+                containerElem.scrollTo({ top: targetScroll, behavior: 'smooth' });
+            }, 10);
+
+            // Re-enable snap after the glide finishes
+            setTimeout(() => {
+                containerElem.style.scrollSnapType = 'y mandatory';
+            }, 1000);
         }
     };
 
     return (
-        <div id="main-scroll-container" className="bg-white font-inter text-gray-900 md:h-screen md:overflow-y-auto md:snap-y md:snap-mandatory scroll-smooth overflow-x-hidden min-h-screen">
+        <div id="main-scroll-container" className="bg-white font-inter text-gray-900 md:h-screen md:overflow-y-auto md:snap-y md:snap-mandatory overflow-x-hidden min-h-screen" style={{ scrollBehavior: 'smooth' }}>
             <script
                 type="application/ld+json"
                 dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
