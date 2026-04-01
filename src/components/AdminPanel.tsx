@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import {
     TrendingUp, ExternalLink, XCircle, RefreshCw, Trash2, Archive, Key, LogOut,
-    BarChart3, Store, CreditCard, CheckCircle2, Users, ShoppingBag, Search, Package, Settings, Upload, Menu, AlertCircle
+    BarChart3, Store, CreditCard, CheckCircle2, Users, ShoppingBag, Search, Package, Settings, Upload, Menu, AlertCircle, FileText, Download, Eye
 } from 'lucide-react';
 
 type Section = 'Overview' | 'Stores' | 'Subscriptions' | 'Payments' | 'Settings';
@@ -40,6 +40,7 @@ export default function AdminPanel() {
     const [editingSubscription, setEditingSubscription] = useState<any>(null);
     const [subForm, setSubForm] = useState({ plan: '', status: '', expiresAt: '' });
     const [isSavingSub, setIsSavingSub] = useState(false);
+    const [viewingReceipt, setViewingReceipt] = useState<string | null>(null);
 
     const handleLogout = async () => {
         try {
@@ -623,9 +624,12 @@ export default function AdminPanel() {
                                                         </td>
                                                         <td className="px-8 py-5">
                                                             {s.paymentReceiptUrl ? (
-                                                                <a href={s.paymentReceiptUrl} target="_blank" className="text-blue-500 hover:underline text-xs font-bold flex items-center gap-1">
-                                                                    View Proof <ExternalLink size={12} />
-                                                                </a>
+                                                                <button
+                                                                    onClick={() => setViewingReceipt(s.paymentReceiptUrl)}
+                                                                    className="text-blue-500 hover:text-blue-600 transition-colors text-xs font-black flex items-center gap-1 bg-blue-50 px-3 py-1.5 rounded-full"
+                                                                >
+                                                                    <Eye size={12} /> View Proof
+                                                                </button>
                                                             ) : (
                                                                 <span className="text-gray-300 text-xs">—</span>
                                                             )}
@@ -882,6 +886,66 @@ function Empty({ message }: { message: string }) {
                 <XCircle size={24} className="text-gray-300" />
             </div>
             {message}
+            {/* ── MODALS ── */}
+            {/* Receipt Viewer Modal */}
+            {viewingReceipt && (
+                <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 md:p-8">
+                    <div className="absolute inset-0 bg-gray-900/60 backdrop-blur-sm" onClick={() => setViewingReceipt(null)} />
+                    <div className="bg-white w-full max-w-4xl h-full max-h-[90vh] rounded-[32px] shadow-2xl relative z-10 flex flex-col overflow-hidden animate-in zoom-in-95 duration-200">
+                        <div className="p-6 border-b border-gray-50 flex items-center justify-between">
+                            <div className="flex items-center gap-3">
+                                <div className="p-2 bg-blue-50 text-blue-500 rounded-xl">
+                                    <FileText size={20} />
+                                </div>
+                                <div>
+                                    <h3 className="font-black text-gray-900">Payment Proof</h3>
+                                    <p className="text-[10px] text-gray-400 font-bold uppercase tracking-wider">Verification Document</p>
+                                </div>
+                            </div>
+                            <div className="flex items-center gap-2">
+                                <a
+                                    href={viewingReceipt}
+                                    download
+                                    target="_blank"
+                                    className="p-3 text-gray-400 hover:text-gray-900 hover:bg-gray-50 rounded-xl transition-all"
+                                    title="Open / Download Original"
+                                >
+                                    <Download size={20} />
+                                </a>
+                                <button
+                                    onClick={() => setViewingReceipt(null)}
+                                    className="p-3 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all"
+                                >
+                                    <XCircle size={20} />
+                                </button>
+                            </div>
+                        </div>
+
+                        <div className="flex-1 bg-gray-50 p-4 md:p-8 overflow-auto flex items-center justify-center">
+                            {viewingReceipt.toLowerCase().endsWith('.pdf') || viewingReceipt.includes('/raw/') ? (
+                                <iframe
+                                    src={`${viewingReceipt}#toolbar=0`}
+                                    className="w-full h-full rounded-2xl border-none shadow-inner"
+                                    title="PDF Receipt"
+                                />
+                            ) : (
+                                <img
+                                    src={viewingReceipt}
+                                    alt="Payment Receipt"
+                                    className="max-w-full max-h-full object-contain rounded-2xl shadow-xl hover:scale-105 transition-transform duration-500"
+                                />
+                            )}
+                        </div>
+
+                        <div className="p-6 border-t border-gray-50 bg-white">
+                            <p className="text-[10px] text-gray-400 font-medium text-center uppercase tracking-widest">
+                                <ShieldCheck size={12} className="inline mr-1" />
+                                Securely stored and encrypted verified transaction
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }
