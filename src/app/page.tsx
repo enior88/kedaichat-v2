@@ -68,18 +68,32 @@ export default function LandingPage() {
             else if (id === 'pricing') targetScroll = window.innerHeight * 4;
 
             // CSS scroll-snap aggressively conflicts with programmatic smooth scrolling.
-            // Temporarily disable snap, smoothly scroll, then restore snap.
+            // Absolute foolproof fix: Mathematically control the scroll by disabling snap,
+            // manipulating scrollTop via requestAnimationFrame, then restoring snap.
+            const startY = containerElem.scrollTop;
+            const distance = targetScroll - startY;
+            const startTime = performance.now();
+
             containerElem.style.scrollSnapType = 'none';
-            containerElem.style.scrollBehavior = 'smooth';
 
-            setTimeout(() => {
-                containerElem.scrollTo({ top: targetScroll, behavior: 'smooth' });
-            }, 10);
+            const step = (currentTime: number) => {
+                const elapsed = currentTime - startTime;
+                const progress = Math.min(elapsed / 800, 1); // 800ms duration
 
-            // Re-enable snap after the glide finishes
-            setTimeout(() => {
-                containerElem.style.scrollSnapType = 'y mandatory';
-            }, 1000);
+                // Ease In Out Quart exactly matches premium browser smooth scrolling
+                const easing = progress < 0.5
+                    ? 8 * progress * progress * progress * progress
+                    : 1 - Math.pow(-2 * progress + 2, 4) / 2;
+
+                containerElem.scrollTo(0, startY + (distance * easing));
+
+                if (elapsed < 800) {
+                    window.requestAnimationFrame(step);
+                } else {
+                    containerElem.style.scrollSnapType = 'y mandatory';
+                }
+            };
+            window.requestAnimationFrame(step);
         }
     };
 
