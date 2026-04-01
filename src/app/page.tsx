@@ -62,10 +62,14 @@ export default function LandingPage() {
 
         if (containerElem) {
             let targetScroll = 0;
-            if (id === 'how-it-works') targetScroll = window.innerHeight;
-            else if (id === 'problem') targetScroll = window.innerHeight * 2;
-            else if (id === 'features') targetScroll = window.innerHeight * 3;
-            else if (id === 'pricing') targetScroll = window.innerHeight * 4;
+            // The "Reveal" structure has a 100vh overlay delay.
+            // When scrollTop = 0 to 100vh, Hero is fully visible.
+            // At 200vh, Hero is completely off-screen, revealing How It Works.
+            // At 300vh, How It Works is completely off-screen, revealing Problem.
+            if (id === 'how-it-works') targetScroll = window.innerHeight * 2;
+            else if (id === 'problem') targetScroll = window.innerHeight * 3;
+            else if (id === 'features') targetScroll = window.innerHeight * 4;
+            else if (id === 'pricing') targetScroll = window.innerHeight * 5;
 
             // CSS scroll-snap aggressively conflicts with programmatic smooth scrolling.
             // Absolute foolproof fix: Mathematically control the scroll by disabling snap,
@@ -76,18 +80,18 @@ export default function LandingPage() {
 
             containerElem.style.scrollSnapType = 'none';
 
+            const duration = 500; // Snappy 500ms glide
+
             const step = (currentTime: number) => {
                 const elapsed = currentTime - startTime;
-                const progress = Math.min(elapsed / 800, 1); // 800ms duration
+                const progress = Math.min(elapsed / duration, 1);
 
-                // Ease In Out Quart exactly matches premium browser smooth scrolling
-                const easing = progress < 0.5
-                    ? 8 * progress * progress * progress * progress
-                    : 1 - Math.pow(-2 * progress + 2, 4) / 2;
+                // Ease Out Cubic: Fast acceleration, smooth deceleration (modern feel)
+                const easing = 1 - Math.pow(1 - progress, 3);
 
                 containerElem.scrollTo(0, startY + (distance * easing));
 
-                if (elapsed < 800) {
+                if (elapsed < duration) {
                     window.requestAnimationFrame(step);
                 } else {
                     containerElem.style.scrollSnapType = 'y mandatory';
