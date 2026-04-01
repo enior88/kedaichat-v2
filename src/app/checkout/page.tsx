@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useRef, Suspense } from 'react';
-import { ShieldCheck, QrCode, Upload, Check, ChevronRight, X, ArrowLeft } from 'lucide-react';
+import { ShieldCheck, QrCode, Upload, Check, ChevronRight, X, ArrowLeft, Download } from 'lucide-react';
 import { useSearchParams, useRouter } from 'next/navigation';
 
 function CheckoutContent() {
@@ -63,6 +63,86 @@ function CheckoutContent() {
         router.push(`/onboarding?plan=${planId}&receipt=${encodeURIComponent(receiptUrl)}`);
     };
 
+    const handleDownloadQR = () => {
+        if (!adminBankQrUrl) return;
+
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        if (!ctx) return;
+
+        // Set dimensions for high-quality card (800x1100)
+        canvas.width = 800;
+        canvas.height = 1100;
+
+        const img = new Image();
+        img.crossOrigin = "anonymous";
+        img.src = adminBankQrUrl;
+
+        img.onload = () => {
+            // 1. Background Gradient
+            const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
+            gradient.addColorStop(0, '#ffffff');
+            gradient.addColorStop(1, '#f3f4f6');
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // 2. Card Decoration
+            ctx.fillStyle = '#ffffff';
+            ctx.shadowColor = 'rgba(0,0,0,0.1)';
+            ctx.shadowBlur = 40;
+            ctx.beginPath();
+            if (ctx.roundRect) ctx.roundRect(40, 40, 720, 1020, 60);
+            else ctx.rect(40, 40, 720, 1020);
+            ctx.fill();
+            ctx.shadowBlur = 0;
+
+            // 3. Header Branding
+            ctx.fillStyle = '#111827';
+            ctx.font = '900 48px Inter, system-ui, sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText('KedaiChat', canvas.width / 2, 140);
+
+            ctx.fillStyle = '#25D366';
+            ctx.font = 'bold 24px Inter, system-ui, sans-serif';
+            ctx.fillText('OFFICIAL PAYMENT CARD', canvas.width / 2, 185);
+
+            // 4. Instructions
+            ctx.fillStyle = '#6B7280';
+            ctx.font = '500 20px Inter, system-ui, sans-serif';
+            ctx.fillText('Scan this QR code with any banking app', canvas.width / 2, 230);
+
+            // 5. QR Code Area
+            const qrSize = 560;
+            const qrX = (canvas.width - qrSize) / 2;
+            const qrY = 280;
+
+            ctx.strokeStyle = '#f3f4f6';
+            ctx.lineWidth = 2;
+            ctx.strokeRect(qrX - 10, qrY - 10, qrSize + 20, qrSize + 20);
+
+            ctx.drawImage(img, qrX, qrY, qrSize, qrSize);
+
+            // 6. Footer Branding
+            ctx.fillStyle = '#111827';
+            ctx.font = 'bold 32px Inter, system-ui, sans-serif';
+            ctx.fillText('kedaichat.online', canvas.width / 2, 950);
+
+            ctx.fillStyle = '#9CA3AF';
+            ctx.font = '500 18px Inter, system-ui, sans-serif';
+            ctx.fillText('Automated Merchant OS', canvas.width / 2, 990);
+
+            // 7. Download
+            const link = document.createElement('a');
+            link.download = `KedaiChat-Payment-${planId}.png`;
+            link.href = canvas.toDataURL('image/png', 1.0);
+            link.click();
+        };
+
+        img.onerror = () => {
+            alert('Failed to process QR for download. Please try long-pressing the image to save.');
+        };
+    };
+
     React.useEffect(() => {
         const fetchAdminBankQr = async () => {
             try {
@@ -118,6 +198,16 @@ function CheckoutContent() {
                         </div>
                     )}
                 </div>
+
+                {adminBankQrUrl && (
+                    <button
+                        onClick={handleDownloadQR}
+                        className="w-full h-12 mt-2 bg-[#25D366] text-white font-black rounded-2xl flex items-center justify-center gap-3 hover:scale-105 active:scale-95 transition-all shadow-lg mb-8"
+                    >
+                        <Download size={20} />
+                        SAVE QR TO GALLERY
+                    </button>
+                )}
 
                 <div className="bg-green-50 rounded-2xl p-5 mb-8 text-center text-[#128C7E]">
                     <p className="text-sm font-bold mb-1">Total to Pay</p>
