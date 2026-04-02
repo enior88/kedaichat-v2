@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { Check, ChevronRight, ShieldCheck, Upload, X } from 'lucide-react';
+import { Check, ChevronRight, ShieldCheck, Upload, X, Download } from 'lucide-react';
 import { useLanguage } from '@/lib/LanguageContext';
 
 export default function BillingSubscription() {
@@ -267,10 +267,10 @@ export default function BillingSubscription() {
                         {adminBankQrUrl && (
                             <button
                                 onClick={handleDownloadQR}
-                                className="mb-8 flex items-center gap-2 text-[#25D366] font-bold text-[10px] uppercase tracking-widest hover:opacity-80 transition-opacity"
+                                className="w-full h-12 mt-2 bg-[#25D366] text-white font-black rounded-2xl flex items-center justify-center gap-3 hover:scale-105 active:scale-95 transition-all shadow-lg mb-8"
                             >
-                                <Upload size={14} className="rotate-180" />
-                                Save QR to Gallery
+                                <Download size={20} />
+                                SAVE QR TO GALLERY
                             </button>
                         )}
 

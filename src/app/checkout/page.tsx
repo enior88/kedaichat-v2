@@ -4,6 +4,7 @@ import React, { useState, useRef, Suspense } from 'react';
 import { ShieldCheck, QrCode, Upload, Check, ChevronRight, X, ArrowLeft, Download } from 'lucide-react';
 import { useSearchParams, useRouter } from 'next/navigation';
 
+
 function CheckoutContent() {
     const searchParams = useSearchParams();
     const router = useRouter();

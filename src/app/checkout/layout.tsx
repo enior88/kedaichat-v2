@@ -1,4 +1,3 @@
-import AdminPanel from '@/components/AdminPanel';
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
@@ -8,7 +7,10 @@ export const metadata: Metadata = {
     },
 };
 
-
-export default function AdminPage() {
-    return <AdminPanel />;
+export default function CheckoutLayout({
+    children,
+}: {
+    children: React.ReactNode;
+}) {
+    return <>{children}</>;
 }
