@@ -9,15 +9,16 @@ export async function POST(req: Request) {
         const identStr = identifier?.toString() || '';
         const digitsOnly = identStr.replace(/\D/g, '');
 
-        // Find user by email or exact phone number
+        // Build phone variants to cover common formats (with/without country code)
+        const last9 = digitsOnly.slice(-9); // e.g. '128556781'
+
         const user = await prisma.user.findFirst({
             where: {
                 OR: [
                     { email: identStr },
                     { whatsappNumber: identStr },
-                    // Normalize: match if digits end with the same sequence (handles country code variants)
-                    { whatsappNumber: `60${digitsOnly.slice(-9)}` },
-                    { whatsappNumber: `0${digitsOnly.slice(-9)}` },
+                    // Match regardless of stored country code format (60xxx, 0xxx, +60xxx, etc.)
+                    ...(last9.length >= 8 ? [{ whatsappNumber: { contains: last9 } }] : []),
                 ]
             }
         });
