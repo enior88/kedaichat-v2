@@ -209,7 +209,7 @@ export default function LandingPage() {
             <main className="relative">
                 {/* 1. Hero Section Filler & Wrapper */}
                 <div className="relative md:h-[200vh] h-auto z-[50] md:snap-start">
-                    <section className="md:sticky md:top-0 md:h-screen relative h-auto bg-white flex flex-col items-center justify-start px-4 md:px-6 pt-16 md:pt-32 pb-4 overflow-hidden">
+                    <section className="md:sticky md:top-0 md:h-screen relative h-auto bg-white flex flex-col items-center justify-start px-4 md:px-6 pt-24 md:pt-32 pb-4 overflow-hidden">
                         <div className="max-w-7xl mx-auto text-center w-full">
                             <div className="inline-flex items-center gap-2 bg-green-50 text-[#25D366] px-3 py-1.5 rounded-full mb-3 md:mb-6 animate-in fade-in slide-in-from-bottom-4 duration-700">
                                 <Zap size={14} fill="currentColor" />
