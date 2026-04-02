@@ -53,7 +53,7 @@ export default function LandingPage() {
 
         // Mobile (window scrolling)
         if (window.innerWidth < 768) {
-            const yOffset = -80; // Offset for navbar
+            const yOffset = -64; // Offset for navbar
             const y = element.getBoundingClientRect().top + window.scrollY + yOffset;
             window.scrollTo({ top: y, behavior: 'smooth' });
             return;
@@ -112,7 +112,7 @@ export default function LandingPage() {
             />
             {/* Navigation */}
             <nav className="fixed top-0 left-0 right-0 z-[100] bg-white/90 backdrop-blur-xl border-b border-gray-100">
-                <div className="max-w-7xl mx-auto px-4 md:px-6 h-20 flex items-center justify-between">
+                <div className="max-w-7xl mx-auto px-4 md:px-6 h-16 lg:h-20 flex items-center justify-between">
                     <div className="flex items-center gap-2">
                         <div className="w-10 h-10 rounded-xl overflow-hidden shadow-lg shadow-green-200">
                             <img src="/logo.png" alt="KedaiChat Logo" className="w-full h-full object-cover" />
@@ -156,7 +156,7 @@ export default function LandingPage() {
                 </div>
 
                 {/* Mobile Drawer Overlay */}
-                <div className={`lg:hidden fixed inset-x-0 top-20 bg-white border-b border-gray-100 shadow-2xl transition-all duration-500 origin-top overflow-hidden z-[90] ${isMenuOpen ? 'max-h-screen opacity-100' : 'max-h-0 opacity-0'}`}>
+                <div className={`lg:hidden fixed inset-x-0 top-16 bg-white border-b border-gray-100 shadow-2xl transition-all duration-500 origin-top overflow-hidden z-[90] ${isMenuOpen ? 'max-h-screen opacity-100' : 'max-h-0 opacity-0'}`}>
                     <div className="p-6 flex flex-col gap-6">
                         {/* Mobile Language Toggle */}
                         <div className="flex items-center justify-between p-4 bg-gray-50 rounded-2xl">
@@ -209,7 +209,7 @@ export default function LandingPage() {
             <main className="relative">
                 {/* 1. Hero Section Filler & Wrapper */}
                 <div className="relative md:h-[200vh] h-auto z-[50] md:snap-start">
-                    <section className="md:sticky md:top-0 md:h-screen relative h-auto bg-white flex flex-col items-center justify-start px-4 md:px-6 pt-20 md:pt-32 pb-4 overflow-hidden">
+                    <section className="md:sticky md:top-0 md:h-screen relative h-auto bg-white flex flex-col items-center justify-start px-4 md:px-6 pt-16 md:pt-32 pb-4 overflow-hidden">
                         <div className="max-w-7xl mx-auto text-center w-full">
                             <div className="inline-flex items-center gap-2 bg-green-50 text-[#25D366] px-3 py-1.5 rounded-full mb-3 md:mb-6 animate-in fade-in slide-in-from-bottom-4 duration-700">
                                 <Zap size={14} fill="currentColor" />
