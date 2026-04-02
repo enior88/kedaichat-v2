@@ -24,13 +24,10 @@ export async function POST(req: Request) {
             return NextResponse.json({ success: false, error: 'User not found' }, { status: 404 });
         }
 
-        // Verify current password
+        // Verify current password using bcrypt only
         const isValid = user.password ? await bcrypt.compare(currentPassword, user.password) : false;
         if (!isValid) {
-            // Check for plain-text fallback (for existing users/admin)
-            if (user.password !== currentPassword) {
-                return NextResponse.json({ success: false, error: 'Current password is incorrect' }, { status: 401 });
-            }
+            return NextResponse.json({ success: false, error: 'Current password is incorrect' }, { status: 401 });
         }
 
         // Hash and update to new password

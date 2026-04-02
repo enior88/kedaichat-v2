@@ -10,11 +10,11 @@ const config: Config = {
         extend: {
             colors: {
                 whatsapp: {
-                    light: "#25D366",
-                    dark: "#075E54",
-                    teal: "#128C7E",
+                    light: "var(--whatsapp-light)",
+                    dark: "var(--whatsapp-dark)",
+                    teal: "var(--whatsapp-teal)",
                 },
-                "soft-grey": "#F0F2F5",
+                "soft-grey": "var(--soft-grey)",
             },
         },
     },

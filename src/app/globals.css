@@ -2,23 +2,27 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --whatsapp-green: #25D366;
-  --whatsapp-dark: #075E54;
-  --whatsapp-teal: #128C7E;
-  --soft-grey: #F0F2F5;
+@layer base {
+  :root {
+    --whatsapp-light: #25D366;
+    --whatsapp-dark: #075E54;
+    --whatsapp-teal: #128C7E;
+    --soft-grey: #F0F2F5;
+  }
+
+  body {
+    background-color: #f9f9fa;
+    /* Very subtle off-white to make the mobile frame pop */
+    color: #111;
+  }
 }
 
-body {
-  background-color: #f9f9fa;
-  /* Very subtle off-white to make the mobile frame pop */
-  color: #111;
-}
+@layer components {
+  .premium-card {
+    @apply bg-white rounded-2xl shadow-sm border border-gray-100 p-6;
+  }
 
-.premium-card {
-  @apply bg-white rounded-2xl shadow-sm border border-gray-100 p-6;
-}
-
-.btn-whatsapp {
-  @apply bg-whatsapp-light text-white font-semibold py-3 px-6 rounded-full hover:bg-opacity-90 transition-all flex items-center justify-center gap-2;
+  .btn-whatsapp {
+    @apply bg-whatsapp-light text-white font-semibold py-3 px-6 rounded-full hover:bg-opacity-90 transition-all flex items-center justify-center gap-2;
+  }
 }

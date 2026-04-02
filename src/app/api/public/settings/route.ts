@@ -33,7 +33,6 @@ export async function GET() {
 
         return NextResponse.json({
             adminBankQrUrl: settings.adminBankQrUrl || null,
-            _debug: { id: settings.id, updatedAt: settings.updatedAt }
         });
     } catch (error: any) {
         console.error('[PUBLIC_SETTINGS_GET_ERROR]', error);

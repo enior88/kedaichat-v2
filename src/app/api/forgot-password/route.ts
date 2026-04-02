@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import bcrypt from 'bcryptjs';
+import { randomBytes } from 'crypto';
 
 export async function POST(req: Request) {
     try {
@@ -18,8 +19,8 @@ export async function POST(req: Request) {
             return NextResponse.json({ success: false, error: 'No account found with this WhatsApp number' }, { status: 404 });
         }
 
-        // Generate temporary password
-        const tempPassword = 'KC-' + Math.random().toString(36).substring(2, 8).toUpperCase();
+        // Generate cryptographically secure temporary password
+        const tempPassword = 'KC-' + randomBytes(4).toString('hex').toUpperCase();
         const hashedPassword = await bcrypt.hash(tempPassword, 10);
 
         await prisma.user.update({

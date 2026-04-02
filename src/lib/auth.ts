@@ -1,7 +1,13 @@
 import { cookies } from 'next/headers';
 import { SignJWT, jwtVerify } from 'jose';
 
-const SECRET = new TextEncoder().encode(process.env.JWT_SECRET || 'kedaichat-secret-123456');
+const jwtSecretValue = process.env.JWT_SECRET;
+
+if (!jwtSecretValue && process.env.NODE_ENV === 'production') {
+    throw new Error('FATAL: JWT_SECRET environment variable is not set. The application cannot start securely.');
+}
+
+const SECRET = new TextEncoder().encode(jwtSecretValue || 'kedaichat-local-dev-secret');
 
 export async function createSession(userId: string) {
     const token = await new SignJWT({ userId })
