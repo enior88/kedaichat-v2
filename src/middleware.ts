@@ -2,7 +2,11 @@ import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import { jwtVerify } from 'jose';
 
-const SECRET = new TextEncoder().encode(process.env.JWT_SECRET || 'kedaichat-secret-123456');
+const jwtSecret = process.env.JWT_SECRET;
+if (!jwtSecret) {
+    throw new Error('JWT_SECRET environment variable is not set');
+}
+const SECRET = new TextEncoder().encode(jwtSecret);
 
 export async function middleware(request: NextRequest) {
     const url = request.nextUrl;
