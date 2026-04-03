@@ -1,8 +1,14 @@
-import React from 'react';
+import { Metadata } from 'next';
 import Link from 'next/link';
-import { ArrowLeft, ShieldCheck, Mail } from 'lucide-react';
+import { ShieldCheck, ArrowLeft, Mail } from 'lucide-react';
+
+export const metadata: Metadata = {
+    title: "Privacy Policy - KedaiChat",
+    description: "Learn about how KedaiChat handles and protects your personal data.",
+};
 
 export default function PrivacyPage() {
+
     return (
         <div className="min-h-screen bg-gray-50 font-inter text-gray-900 pb-24">
             {/* Hero Section */}
