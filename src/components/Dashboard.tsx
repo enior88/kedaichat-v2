@@ -76,10 +76,7 @@ export default function Dashboard() {
         if (action === 'Add Product') {
             router.push('/products?action=add');
         } else if (action === 'Share Link') {
-            const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-            const url = isLocal
-                ? `${window.location.origin}/shop/${stats.slug}`
-                : `https://${stats.slug}.kedaichat.online`;
+            const url = `${window.location.origin}/shop/${stats.slug}`;
 
             const copyToClipboard = async () => {
                 try {
@@ -126,10 +123,7 @@ export default function Dashboard() {
         } else if (action === 'Analytics') {
             router.push('/analytics');
         } else if (action === 'WhatsApp Status' || action === 'Status WhatsApp') {
-            const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-            const url = isLocal
-                ? `${window.location.origin}/shop/${stats.slug}`
-                : `https://${stats.slug}.kedaichat.online`;
+            const url = `${window.location.origin}/shop/${stats.slug}`;
 
             const text = encodeURIComponent(`Check out my store on KedaiChat! 🛍️\n\n${url}`);
             window.open(`https://wa.me/?text=${text}`, '_blank');
