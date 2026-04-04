@@ -105,6 +105,8 @@ const translations: Record<Language, Record<string, string>> = {
         share_link: 'Share Link',
         analytics: 'Analytics',
         go_pro: 'Go Pro',
+        share_status: 'WhatsApp Status',
+        post_to_status: 'Post to Status',
         recent_orders: 'Recent Orders',
         paid: 'Paid',
 
@@ -269,6 +271,8 @@ const translations: Record<Language, Record<string, string>> = {
         share_link: 'Kongsi Pautan',
         analytics: 'Analatik',
         go_pro: 'Jadi Pro',
+        share_status: 'Status WhatsApp',
+        post_to_status: 'Hantar ke Status',
         recent_orders: 'Pesanan Terkini',
         paid: 'Dibayar',
 

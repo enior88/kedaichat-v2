@@ -5,7 +5,7 @@ import {
     BarChart3,
     Search, ShoppingBag, Users, Package,
     TrendingUp, Share2, ChevronRight, Rocket,
-    Store, Settings, Plus, Archive, ShieldCheck, LogOut
+    Store, Settings, Plus, Archive, ShieldCheck, LogOut, MessageCircle
 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useLanguage } from '@/lib/LanguageContext';
@@ -125,6 +125,14 @@ export default function Dashboard() {
             }
         } else if (action === 'Analytics') {
             router.push('/analytics');
+        } else if (action === 'WhatsApp Status' || action === 'Status WhatsApp') {
+            const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+            const url = isLocal
+                ? `${window.location.origin}/shop/${stats.slug}`
+                : `https://${stats.slug}.kedaichat.online`;
+
+            const text = encodeURIComponent(`Check out my store on KedaiChat! 🛍️\n\n${url}`);
+            window.open(`https://wa.me/?text=${text}`, '_blank');
         }
     };
 
@@ -229,7 +237,8 @@ export default function Dashboard() {
                         {[
                             { name: t('add_product'), icon: Plus, color: 'text-blue-500', bg: 'bg-blue-50' },
                             { name: t('share_link'), icon: Share2, color: 'text-purple-500', bg: 'bg-purple-50' },
-                            { name: t('analytics'), icon: BarChart3, color: 'text-green-500', bg: 'bg-green-50' },
+                            { name: t('share_status'), icon: MessageCircle, color: 'text-green-600', bg: 'bg-green-50' },
+                            { name: t('analytics'), icon: BarChart3, color: 'text-orange-500', bg: 'bg-orange-50' },
                         ].map(action => (
                             <button
                                 key={action.name}

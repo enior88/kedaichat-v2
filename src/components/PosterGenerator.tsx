@@ -1,12 +1,14 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { Copy, Share, ChevronLeft, Calendar, Clock, CheckCircle2, Loader2, Share2, Lock } from 'lucide-react';
+import { Copy, Share, ChevronLeft, Calendar, Clock, CheckCircle2, Loader2, Share2, Lock, MessageCircle } from 'lucide-react';
 import BottomNav from './BottomNav';
 import { useRouter } from 'next/navigation';
+import { useLanguage } from '@/lib/LanguageContext';
 
 export default function PosterGenerator() {
     const router = useRouter();
+    const { t } = useLanguage();
     const [products, setProducts] = useState<any[]>([]);
     const [storeInfo, setStoreInfo] = useState<any>(null);
     const [isLoading, setIsLoading] = useState(true);
@@ -85,6 +87,11 @@ ${storeUrl}`;
         } else {
             handleCopy('whatsapp');
         }
+    };
+
+    const handleStatusShare = () => {
+        const text = encodeURIComponent(previewText);
+        window.open(`https://wa.me/?text=${text}`, '_blank');
     };
 
     if (isLoading) {
@@ -210,6 +217,13 @@ ${storeUrl}`;
                     >
                         <Share2 size={20} />
                         Copy Order Link
+                    </button>
+                    <button
+                        onClick={handleStatusShare}
+                        className="w-full h-14 bg-[#25D366] text-white font-bold rounded-[2xl] flex items-center justify-center gap-2 shadow-lg shadow-green-100 active:scale-95 transition-all"
+                    >
+                        <MessageCircle size={20} />
+                        {t('post_to_status')}
                     </button>
                     <button
                         onClick={handleShare}
