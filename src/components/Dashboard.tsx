@@ -158,7 +158,7 @@ export default function Dashboard() {
                         <h1 className="text-2xl font-black text-gray-900 tracking-tight">{stats.businessName}</h1>
                         <div className="flex items-center gap-1.5 mt-1">
                             <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
-                            <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest">Store Live • {stats.slug}.kedaichat.online</p>
+                            <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest">Store Live • kedaichat.online/shop/{stats.slug}</p>
                         </div>
                     </div>
                     <div className="flex gap-2">
