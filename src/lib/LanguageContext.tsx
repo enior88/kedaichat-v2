@@ -293,7 +293,7 @@ const translations: Record<Language, Record<string, string>> = {
         ob_launching: 'Melancarkan...',
         ob_launch_store: 'Lancar Kedai Saya',
         ob_welcome_title: 'Selamat Datang ke KedaiChat 👋',
-        ob_welcome_subtitle: 'Mula berjualan di WhatsApp dalam beberapa minit.',
+        ob_welcome_subtitle: 'Mula berniaga di WhatsApp dalam beberapa minit.',
         ob_welcome_action: '👉 Tambah produk pertama anda dan terima pesanan hari ini.',
         ob_go_dashboard: 'Ke Papan Pemuka',
 
