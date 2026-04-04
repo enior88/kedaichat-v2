@@ -128,6 +128,10 @@ const translations: Record<Language, Record<string, string>> = {
         ob_continue: 'Continue',
         ob_launching: 'Launching...',
         ob_launch_store: 'Launch My Store',
+        ob_welcome_title: 'Welcome to KedaiChat 👋',
+        ob_welcome_subtitle: 'Start selling on WhatsApp in minutes.',
+        ob_welcome_action: '👉 Add your first product and receive orders today.',
+        ob_go_dashboard: 'Go to Dashboard',
 
         // Settings
         store_settings: 'Store Settings',
@@ -288,6 +292,10 @@ const translations: Record<Language, Record<string, string>> = {
         ob_continue: 'Seterusnya',
         ob_launching: 'Melancarkan...',
         ob_launch_store: 'Lancar Kedai Saya',
+        ob_welcome_title: 'Selamat Datang ke KedaiChat 👋',
+        ob_welcome_subtitle: 'Mula berjualan di WhatsApp dalam beberapa minit.',
+        ob_welcome_action: '👉 Tambah produk pertama anda dan terima pesanan hari ini.',
+        ob_go_dashboard: 'Ke Papan Pemuka',
 
         // Settings
         store_settings: 'Tetapan Kedai',

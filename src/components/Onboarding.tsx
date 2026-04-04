@@ -189,12 +189,12 @@ export default function Onboarding() {
                         <div className="w-24 h-24 rounded-full bg-[#25D366] text-white flex items-center justify-center mb-8 shadow-2xl shadow-green-200">
                             <Check size={48} />
                         </div>
-                        <h1 className="text-3xl font-black text-gray-900 mb-4">Welcome to KedaiChat 👋</h1>
-                        <p className="text-gray-500 font-medium mb-8">Start selling on WhatsApp in minutes.</p>
+                        <h1 className="text-3xl font-black text-gray-900 mb-4">{t('ob_welcome_title')}</h1>
+                        <p className="text-gray-500 font-medium mb-8">{t('ob_welcome_subtitle')}</p>
 
                         <div className="bg-white p-6 rounded-[32px] border border-gray-100 shadow-sm mb-10 w-full">
                             <p className="text-sm font-bold text-gray-900">
-                                👉 Add your first product and receive orders today.
+                                {t('ob_welcome_action')}
                             </p>
                         </div>
                     </div>
@@ -228,7 +228,7 @@ export default function Onboarding() {
                             onClick={() => window.location.href = '/dashboard'}
                             className="w-full h-16 bg-gray-900 text-white font-bold rounded-[24px] flex items-center justify-center gap-2 shadow-xl active:scale-95 transition-all"
                         >
-                            Go to Dashboard
+                            {t('ob_go_dashboard')}
                             <ChevronRight size={20} />
                         </button>
                     )}
