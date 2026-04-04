@@ -109,6 +109,7 @@ const translations: Record<Language, Record<string, string>> = {
         post_to_status: 'Post to Status',
         recent_orders: 'Recent Orders',
         paid: 'Paid',
+        cancel_order: 'Cancel Order',
 
         // Onboarding
         ob_store_name_title: "What's your store name?",
@@ -275,6 +276,7 @@ const translations: Record<Language, Record<string, string>> = {
         post_to_status: 'Hantar ke Status',
         recent_orders: 'Pesanan Terkini',
         paid: 'Dibayar',
+        cancel_order: 'Batalkan Pesanan',
 
         // Onboarding
         ob_store_name_title: 'Apakah nama kedai anda?',

@@ -2,10 +2,11 @@
 
 import React, { useState } from 'react';
 import BottomNav from './BottomNav';
-import { mockOrders } from '@/data/mockData';
-import { ChevronRight } from 'lucide-react';
+import { ChevronRight, XCircle } from 'lucide-react';
+import { useLanguage } from '@/lib/LanguageContext';
 
 export default function OrdersManagement() {
+    const { t } = useLanguage();
     const [activeTab, setActiveTab] = useState('Active');
     const [orders, setOrders] = useState<any[]>([]);
     const [isLoading, setIsLoading] = useState(true);
@@ -106,13 +107,35 @@ export default function OrdersManagement() {
                         )}
 
                         {activeTab === 'Active' && (
-                            <button
-                                onClick={() => handleUpdateStatus(order.id, order.paymentStatus)}
-                                className="w-full py-3 border-2 border-[#25D366] text-[#25D366] font-bold rounded-2xl flex items-center justify-center gap-2 active:bg-green-50 transition-all text-sm"
-                            >
-                                Mark as {order.paymentStatus === 'PAID' ? 'Preparing' : order.paymentStatus === 'PREPARING' ? 'Delivering' : 'Completed'}
-                                <ChevronRight size={16} />
-                            </button>
+                            <div className="flex gap-2">
+                                <button
+                                    onClick={() => handleUpdateStatus(order.id, order.paymentStatus)}
+                                    className="flex-1 py-3 border-2 border-[#25D366] text-[#25D366] font-bold rounded-2xl flex items-center justify-center gap-2 active:bg-green-50 transition-all text-sm"
+                                >
+                                    Mark as {order.paymentStatus === 'PAID' ? 'Preparing' : order.paymentStatus === 'PREPARING' ? 'Delivering' : 'Completed'}
+                                    <ChevronRight size={16} />
+                                </button>
+                                <button
+                                    onClick={async () => {
+                                        if (confirm('Are you sure you want to cancel this order?')) {
+                                            try {
+                                                const res = await fetch('/api/orders', {
+                                                    method: 'PUT',
+                                                    headers: { 'Content-Type': 'application/json' },
+                                                    body: JSON.stringify({ id: order.id, paymentStatus: 'CANCELED' })
+                                                });
+                                                if (res.ok) fetchOrders();
+                                            } catch (e) {
+                                                console.error(e);
+                                            }
+                                        }
+                                    }}
+                                    className="p-3 border-2 border-red-100 text-red-500 rounded-2xl flex items-center justify-center active:bg-red-50 transition-all"
+                                    title={t('cancel_order')}
+                                >
+                                    <XCircle size={20} />
+                                </button>
+                            </div>
                         )}
                     </div>
                 ))}
