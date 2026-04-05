@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { LanguageProvider } from "@/lib/LanguageContext";
@@ -6,20 +6,35 @@ import LayoutWrapper from "@/components/LayoutWrapper";
 
 const inter = Inter({ subsets: ["latin"] });
 
+export const viewport: Viewport = {
+    themeColor: "#25D366",
+    width: "device-width",
+    initialScale: 1,
+    maximumScale: 1,
+};
+
 export const metadata: Metadata = {
     title: "KedaiChat - WhatsApp Business Shop & Order Management",
     description: "Launch your WhatsApp Shop in minutes. The easiest way to manage orders, resellers, and group orders for your WhatsApp Business. WhatsApp Biz solution for SMEs.",
     keywords: ["WhatsApp Business", "WhatsApp Shop", "Whatapp Biz", "WhatsApp Catalog", "Social Commerce", "Order Management", "Reseller System"],
+    manifest: "/manifest.ts",
+    appleWebApp: {
+        capable: true,
+        statusBarStyle: "default",
+        title: "KedaiChat",
+    },
+    formatDetection: {
+        telephone: false,
+    },
     icons: {
         icon: [
-            { url: "/favicon.ico" },
-            { url: "/favicon.ico", sizes: "32x32", type: "image/x-icon" },
-            { url: "/favicon.ico", sizes: "16x16", type: "image/x-icon" },
+            { url: "/logo.png" },
+            { url: "/logo.png", sizes: "32x32", type: "image/png" },
+            { url: "/logo.png", sizes: "16x16", type: "image/png" },
         ],
         apple: [
-            { url: "/favicon.ico", sizes: "180x180", type: "image/x-icon" },
+            { url: "/logo.png", sizes: "180x180", type: "image/png" },
         ],
-        shortcut: "/favicon.ico",
     },
     openGraph: {
         title: "KedaiChat - WhatsApp-first Business OS",
