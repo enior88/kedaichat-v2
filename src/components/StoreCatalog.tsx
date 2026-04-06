@@ -41,6 +41,13 @@ export default function StoreCatalog({ slug }: { slug?: string }) {
                 })
                 .catch(console.error);
         }
+
+        // Capture ?ref= referral code from URL and persist it
+        const urlParams = new URLSearchParams(window.location.search);
+        const refCode = urlParams.get('ref');
+        if (refCode) {
+            localStorage.setItem('kd_ref', refCode);
+        }
     }, [slug]);
 
     const addToCart = (product: any) => {
@@ -57,12 +64,14 @@ export default function StoreCatalog({ slug }: { slug?: string }) {
     const cartTotal = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
 
     const handleCheckout = () => {
+        const refCode = localStorage.getItem('kd_ref');
         localStorage.setItem('kd_cart', JSON.stringify({
             items: cartItems,
             storeId: store.id,
             whatsappNumber: store.whatsappNumber,
             storeName: store.name,
-            paymentQrUrl: store.paymentQrUrl
+            paymentQrUrl: store.paymentQrUrl,
+            refCode: refCode || null
         }));
         window.location.href = `/shop/${slug || store.slug}/checkout`;
     };

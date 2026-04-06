@@ -50,6 +50,7 @@ export default function Checkout({ params }: { params: { name: string } }) {
                     storeId: cartState?.storeId,
                     items: cartState?.items,
                     total: cartTotal,
+                    refCode: cartState?.refCode || null,
                 })
             });
 
@@ -67,7 +68,8 @@ export default function Checkout({ params }: { params: { name: string } }) {
                 };
                 myOrders.push(enrichedOrder);
                 localStorage.setItem('kd_my_orders', JSON.stringify(myOrders));
-                localStorage.removeItem('kd_cart'); // clear cart
+                localStorage.removeItem('kd_cart');
+                localStorage.removeItem('kd_ref'); // clear referral after use
 
                 setStep(2);
                 setIsPaid(true);
@@ -117,6 +119,7 @@ export default function Checkout({ params }: { params: { name: string } }) {
                     storeId: cartState?.storeId,
                     items: cartState?.items,
                     total: cartTotal,
+                    refCode: cartState?.refCode || null,
                 })
             });
 

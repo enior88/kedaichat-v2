@@ -22,10 +22,7 @@ export async function GET(req: Request) {
 export async function POST(req: Request) {
     try {
         const body = await req.json();
-        const { storeId, items, total, customerPhone, message } = body;
-
-        // Note: For a serious MVP, we could calculate 'total' on the server too
-        // but since we are doing a quick MVP, relying on client total is fine
+        const { storeId, items, total, customerPhone, message, refCode } = body;
 
         // Subscription enforcement
         const subscription = await prisma.subscription.findFirst({
@@ -44,7 +41,6 @@ export async function POST(req: Request) {
 
         if (plan === 'FREE' && !isAdmin) {
             const storeOrders = await prisma.order.findMany({ where: { storeId } });
-            // Simplified check: if total orders > 30, block. In a real app this would filter by current month.
             if (storeOrders.length >= 30) {
                 return NextResponse.json(
                     { error: 'Order limit reached for Free plan. Please ask the seller to upgrade.' },
@@ -60,11 +56,27 @@ export async function POST(req: Request) {
                 orderNumber,
                 storeId,
                 total: parseFloat(total),
-                paymentStatus: 'PAID', // Auto-approving for Scan & Pay flow emulation
+                paymentStatus: 'PAID',
                 customerName: customerPhone || 'Walk-in Customer',
                 customerPhone: customerPhone || null,
             }
         });
+
+        // If there is a referral code, create a Commission record
+        if (refCode) {
+            const reseller = await prisma.reseller.findUnique({ where: { refCode } });
+            if (reseller) {
+                const commissionAmount = parseFloat(total) * 0.10; // 10% commission
+                await prisma.commission.create({
+                    data: {
+                        amount: commissionAmount,
+                        orderId: newOrder.id,
+                        resellerId: reseller.id
+                    }
+                });
+                // Clear the ref after use so it doesn't double-count
+            }
+        }
 
         return NextResponse.json({ success: true, order: newOrder });
     } catch (error: any) {
