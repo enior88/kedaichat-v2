@@ -22,6 +22,16 @@ export default function StoreCatalog({ slug }: { slug?: string }) {
         { id: 'Others', label: t('cat_others') }
     ];
 
+    const defaultCategoryIds = ['All', 'Rice Items', 'Noodles', 'Drinks', 'Desserts', 'Snacks', 'Add-ons', 'Others'];
+    const customCategories = store?.products
+        ? Array.from(new Set(store.products.flatMap((p: any) => p.category ? p.category.split(',').filter(Boolean) : []).filter((c: any) => c && !defaultCategoryIds.includes(c))))
+        : [];
+
+    const allCategories = [
+        ...categories,
+        ...customCategories.map(c => ({ id: c as string, label: c as string }))
+    ];
+
     useEffect(() => {
         if (slug) {
             fetch(`/api/store?slug=${slug}`)
@@ -170,7 +180,7 @@ export default function StoreCatalog({ slug }: { slug?: string }) {
 
                 {/* Category Pills */}
                 <div className="flex gap-2 overflow-x-auto no-scrollbar py-2 -mx-6 px-6">
-                    {categories.map((cat) => (
+                    {allCategories.map((cat) => (
                         <button
                             key={cat.id}
                             onClick={() => setSelectedCategory(cat.id)}
@@ -189,10 +199,11 @@ export default function StoreCatalog({ slug }: { slug?: string }) {
             <div className="p-6 pt-4">
                 <div className="grid grid-cols-2 gap-x-4 gap-y-6">
                     {(store?.products || [])
-                        .filter((p: any) =>
-                            (selectedCategory === 'All' || p.category === selectedCategory || p.description === selectedCategory) &&
-                            (searchTerm === '' || p.name.toLowerCase().includes(searchTerm.toLowerCase()))
-                        )
+                        .filter((p: any) => {
+                            const pCats = p.category ? p.category.split(',').filter(Boolean) : [];
+                            return (selectedCategory === 'All' || pCats.includes(selectedCategory) || p.description === selectedCategory) &&
+                                (searchTerm === '' || p.name.toLowerCase().includes(searchTerm.toLowerCase()));
+                        })
                         .map((p: any) => (
                             <div key={p.id} className="bg-white rounded-[32px] overflow-hidden shadow-sm border border-gray-100/80 flex flex-col p-2.5 pb-4">
                                 <div className="aspect-square bg-gray-100 rounded-[24px] overflow-hidden mb-3 relative">
@@ -205,7 +216,19 @@ export default function StoreCatalog({ slug }: { slug?: string }) {
                                     )}
                                 </div>
                                 <div className="px-1.5 flex flex-col flex-grow justify-between">
-                                    <h3 className="font-bold text-gray-900 text-[13.5px] leading-tight mb-1.5 tracking-tight">{p.name}</h3>
+                                    <h3 className="font-bold text-gray-900 text-[13.5px] leading-tight mb-1 tracking-tight">{p.name}</h3>
+                                    {p.description && (
+                                        <div className="mb-1.5">
+                                            <p className="text-[11px] text-gray-500 leading-snug line-clamp-2">{p.description}</p>
+                                        </div>
+                                    )}
+                                    {p.category && (
+                                        <div className="mb-1.5 flex flex-wrap gap-1">
+                                            {p.category.split(',').filter(Boolean).map((cat: string) => !defaultCategoryIds.includes(cat) ? (
+                                                <span key={cat} className="bg-[#25D366]/10 text-[#25D366] text-[9.5px] uppercase font-black px-1.5 py-0.5 rounded border border-[#25D366]/20">{cat}</span>
+                                            ) : null)}
+                                        </div>
+                                    )}
                                     <div className="flex justify-between items-end mt-auto">
                                         <p className="text-[#25D366] font-bold text-[14px]">RM {p.price.toFixed(2)}</p>
                                         <button

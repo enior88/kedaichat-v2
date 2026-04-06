@@ -52,6 +52,7 @@ model Product {
   createdAt   DateTime    @default(now())
   updatedAt   DateTime    @updatedAt
   orderItems  OrderItem[]
+  groupOrderItems GroupOrderItem[]
   store       Store       @relation(fields: [storeId], references: [id])
 }
 
@@ -101,12 +102,28 @@ model Commission {
 
 model GroupOrder {
   id         String   @id @default(cuid())
+  inviteCode String   @unique
   title      String
   deadline   DateTime
   pickupTime String
+  status     String   @default("ACTIVE")
   storeId    String
   createdAt  DateTime @default(now())
   store      Store    @relation(fields: [storeId], references: [id])
+  items      GroupOrderItem[]
+}
+
+model GroupOrderItem {
+  id              String      @id @default(cuid())
+  participantName String
+  quantity        Int
+  price           Float
+  productId       String
+  groupOrderId    String
+  createdAt       DateTime    @default(now())
+  
+  product         Product     @relation(fields: [productId], references: [id])
+  groupOrder      GroupOrder  @relation(fields: [groupOrderId], references: [id], onDelete: Cascade)
 }
 
 model Subscription {

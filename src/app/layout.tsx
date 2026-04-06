@@ -17,7 +17,6 @@ export const metadata: Metadata = {
     title: "KedaiChat - WhatsApp Business Shop & Order Management",
     description: "Launch your WhatsApp Shop in minutes. The easiest way to manage orders, resellers, and group orders for your WhatsApp Business. WhatsApp Biz solution for SMEs.",
     keywords: ["WhatsApp Business", "WhatsApp Shop", "Whatapp Biz", "WhatsApp Catalog", "Social Commerce", "Order Management", "Reseller System"],
-    manifest: "/manifest.ts",
     appleWebApp: {
         capable: true,
         statusBarStyle: "default",

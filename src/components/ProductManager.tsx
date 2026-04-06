@@ -1,10 +1,12 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { Plus, Search, MoreVertical, Package, ArrowLeft, Image as ImageIcon } from 'lucide-react';
+import { Plus, Search, MoreVertical, Package, ArrowLeft, Image as ImageIcon, X } from 'lucide-react';
 import BottomNav from './BottomNav';
 import { mockProducts } from '@/data/mockData';
 import { useSearchParams, useRouter } from 'next/navigation';
+
+const DEFAULT_CATEGORIES = ['Rice Items', 'Noodles', 'Drinks', 'Desserts', 'Snacks', 'Add-ons', 'Others'];
 
 export default function ProductManager() {
     const searchParams = useSearchParams();
@@ -13,7 +15,8 @@ export default function ProductManager() {
     const [showAddForm, setShowAddForm] = useState(searchParams.get('action') === 'add');
     const [products, setProducts] = useState<any[]>([]);
     const [isLoading, setIsLoading] = useState(true);
-    const [formData, setFormData] = useState({ id: '', name: '', price: '', category: 'Rice Items', image: '' });
+    const [formData, setFormData] = useState({ id: '', name: '', price: '', description: '', category: 'Rice Items', image: '' });
+    const [tagInput, setTagInput] = useState('');
 
     useEffect(() => {
         if (searchParams.get('action') === 'add') {
@@ -55,7 +58,7 @@ export default function ProductManager() {
 
             if (res.ok) {
                 setShowAddForm(false);
-                setFormData({ id: '', name: '', price: '', category: 'Rice Items', image: '' });
+                setFormData({ id: '', name: '', price: '', description: '', category: 'Rice Items', image: '' });
                 fetchProducts();
             }
         } catch (error) {
@@ -69,7 +72,7 @@ export default function ProductManager() {
             const res = await fetch(`/api/products?id=${id}`, { method: 'DELETE' });
             if (res.ok) {
                 setShowAddForm(false);
-                setFormData({ id: '', name: '', price: '', category: 'Rice Items', image: '' });
+                setFormData({ id: '', name: '', price: '', description: '', category: 'Rice Items', image: '' });
                 fetchProducts();
             }
         } catch (error) {
@@ -93,11 +96,13 @@ export default function ProductManager() {
     };
 
     const openEditForm = (product: any) => {
+        const cat = product.category || 'Rice Items';
         setFormData({
             id: product.id,
             name: product.name,
             price: product.price.toString(),
-            category: product.category || 'Rice Items',
+            description: product.description || '',
+            category: cat,
             image: product.image || ''
         });
         setShowAddForm(true);
@@ -111,7 +116,7 @@ export default function ProductManager() {
                         <button
                             onClick={() => {
                                 setShowAddForm(false);
-                                setFormData({ id: '', name: '', price: '', category: 'Rice Items', image: '' });
+                                setFormData({ id: '', name: '', price: '', description: '', category: 'Rice Items', image: '' });
                             }}
                             className="w-10 h-10 bg-white rounded-2xl flex items-center justify-center text-gray-400 border border-gray-100 shadow-sm active:scale-90 transition-all"
                         >
@@ -133,7 +138,31 @@ export default function ProductManager() {
                                     if (file) {
                                         const reader = new FileReader();
                                         reader.onloadend = () => {
-                                            setFormData(prev => ({ ...prev, image: reader.result as string }));
+                                            const img = new Image();
+                                            img.onload = () => {
+                                                const canvas = document.createElement('canvas');
+                                                let width = img.width;
+                                                let height = img.height;
+                                                const MAX_SIZE = 800;
+
+                                                if (width > height && width > MAX_SIZE) {
+                                                    height *= MAX_SIZE / width;
+                                                    width = MAX_SIZE;
+                                                } else if (height > MAX_SIZE) {
+                                                    width *= MAX_SIZE / height;
+                                                    height = MAX_SIZE;
+                                                }
+
+                                                canvas.width = width;
+                                                canvas.height = height;
+                                                const ctx = canvas.getContext('2d');
+                                                ctx?.drawImage(img, 0, 0, width, height);
+
+                                                // Compress as JPEG
+                                                const dataUrl = canvas.toDataURL('image/jpeg', 0.8);
+                                                setFormData(prev => ({ ...prev, image: dataUrl }));
+                                            };
+                                            img.src = reader.result as string;
                                         };
                                         reader.readAsDataURL(file);
                                     }
@@ -172,20 +201,94 @@ export default function ProductManager() {
                                 />
                             </div>
                             <div className="space-y-1.5">
-                                <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Category</label>
-                                <select
-                                    className="w-full h-14 bg-white border border-gray-100 rounded-2xl px-6 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#25D366] shadow-sm transition-all appearance-none"
-                                    value={formData.category}
-                                    onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-                                >
-                                    <option value="Rice Items">Rice Items</option>
-                                    <option value="Noodles">Noodles</option>
-                                    <option value="Drinks">Drinks</option>
-                                    <option value="Desserts">Desserts</option>
-                                    <option value="Snacks">Snacks</option>
-                                    <option value="Add-ons">Add-ons</option>
-                                    <option value="Others">Others</option>
-                                </select>
+                                <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Category / Tag</label>
+                                <div className="w-full min-h-[56px] bg-white border border-gray-100 rounded-2xl p-2 px-3 flex flex-wrap items-center gap-2 shadow-sm focus-within:ring-2 focus-within:ring-[#25D366] transition-all">
+                                    {formData.category?.split(',').filter(Boolean).map(cat => (
+                                        <div key={cat} className="bg-gray-100 text-gray-700 text-[13px] font-bold px-3 py-1.5 rounded-xl flex items-center gap-2 border border-gray-200 shadow-sm animate-in zoom-in-95 duration-200">
+                                            {cat}
+                                            <button
+                                                type="button"
+                                                onClick={() => {
+                                                    const tags = formData.category.split(',').filter(Boolean);
+                                                    setFormData({ ...formData, category: tags.filter(t => t !== cat).join(',') });
+                                                }}
+                                                className="text-gray-400 hover:text-red-500 focus:outline-none bg-white rounded-full p-0.5 shadow-sm transition-colors active:scale-90"
+                                            >
+                                                <X size={12} strokeWidth={3} />
+                                            </button>
+                                        </div>
+                                    ))}
+                                    <div className="flex-1 flex min-w-[120px] items-center">
+                                        <input
+                                            type="text"
+                                            placeholder="Type custom tag e.g. Promo..."
+                                            className="flex-1 h-10 bg-transparent text-sm font-medium focus:outline-none px-1"
+                                            value={tagInput}
+                                            onChange={(e) => setTagInput(e.target.value)}
+                                            onKeyDown={(e) => {
+                                                if (e.key === 'Enter') {
+                                                    e.preventDefault();
+                                                    if (tagInput.trim()) {
+                                                        const current = formData.category ? formData.category.split(',').filter(Boolean) : [];
+                                                        if (!current.includes(tagInput.trim())) {
+                                                            current.push(tagInput.trim());
+                                                            setFormData({ ...formData, category: current.join(',') });
+                                                        }
+                                                        setTagInput('');
+                                                    }
+                                                }
+                                            }}
+                                        />
+                                        {tagInput.trim() && (
+                                            <button
+                                                type="button"
+                                                onClick={() => {
+                                                    const current = formData.category ? formData.category.split(',').filter(Boolean) : [];
+                                                    if (!current.includes(tagInput.trim())) {
+                                                        current.push(tagInput.trim());
+                                                        setFormData({ ...formData, category: current.join(',') });
+                                                    }
+                                                    setTagInput('');
+                                                }}
+                                                className="bg-[#25D366] text-white text-[10px] uppercase font-black px-3 py-1.5 rounded-xl ml-2 shadow-sm active:scale-95 transition-all animate-in zoom-in duration-200"
+                                            >
+                                                Add
+                                            </button>
+                                        )}
+                                    </div>
+                                </div>
+                                <div className="flex flex-wrap gap-1.5 mt-2 px-1 animate-in fade-in duration-300">
+                                    {DEFAULT_CATEGORIES.map(cat => {
+                                        const isSelected = formData.category?.split(',').filter(Boolean).includes(cat);
+                                        if (isSelected) return null;
+                                        return (
+                                            <button
+                                                key={cat}
+                                                type="button"
+                                                onClick={() => {
+                                                    const current = formData.category ? formData.category.split(',').filter(Boolean) : [];
+                                                    if (!current.includes(cat)) {
+                                                        current.push(cat);
+                                                        setFormData({ ...formData, category: current.join(',') });
+                                                    }
+                                                }}
+                                                className="bg-white border border-gray-100 hover:bg-gray-50 text-gray-500 hover:text-gray-900 border-b-2 hover:border-gray-200 text-[11px] font-bold px-3 py-1.5 rounded-full transition-all active:scale-95"
+                                            >
+                                                {cat}
+                                            </button>
+                                        );
+                                    })}
+                                </div>
+                            </div>
+                            <div className="space-y-1.5">
+                                <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Description (Optional)</label>
+                                <textarea
+                                    placeholder="Brief description about the product..."
+                                    className="w-full bg-white border border-gray-100 rounded-2xl p-4 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#25D366] shadow-sm transition-all resize-none"
+                                    rows={3}
+                                    value={formData.description}
+                                    onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                                />
                             </div>
                         </div>
 
@@ -251,9 +354,13 @@ export default function ProductManager() {
                                     </div>
                                     <div className="flex-1 min-w-0">
                                         <h3 className="font-bold text-gray-900 truncate">{product.name}</h3>
-                                        <div className="flex items-center gap-2 mt-0.5">
-                                            <span className="bg-gray-100 text-gray-500 text-[10px] uppercase font-black px-2 py-0.5 rounded-md">{product.category || 'Uncategorized'}</span>
-                                            <p className="text-[#25D366] font-bold text-sm">RM {product.price.toFixed(2)}</p>
+                                        <div className="flex flex-wrap items-center gap-1 mt-0.5">
+                                            {product.category ? product.category.split(',').filter(Boolean).map((cat: string) => (
+                                                <span key={cat} className="bg-gray-100 text-gray-500 text-[10px] uppercase font-black px-2 py-0.5 rounded-md">{cat}</span>
+                                            )) : (
+                                                <span className="bg-gray-100 text-gray-500 text-[10px] uppercase font-black px-2 py-0.5 rounded-md">Uncategorized</span>
+                                            )}
+                                            <p className="text-[#25D366] font-bold text-sm ml-2">RM {product.price.toFixed(2)}</p>
                                         </div>
                                     </div>
                                     <div className="flex items-center gap-3">

@@ -7,8 +7,20 @@ import BottomNav from './BottomNav';
 export default function ResellerGroupDashboard() {
     const [activeTab, setActiveTab] = useState('Resellers');
     const [storeInfo, setStoreInfo] = useState<any>(null);
+    const [groupOrders, setGroupOrders] = useState<any[]>([]);
+    const [showNewSessionModal, setShowNewSessionModal] = useState(false);
+    const [sessionForm, setSessionForm] = useState({ title: '', deadline: '', pickupTime: '' });
+    const [isSaving, setIsSaving] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
     const tabs = ['Resellers', 'Group Orders'];
+
+    const fetchGroupOrders = () => {
+        fetch('/api/group-orders')
+            .then(res => res.json())
+            .then(data => {
+                if (!data.error) setGroupOrders(data);
+            });
+    };
 
     useEffect(() => {
         fetch('/api/dashboard')
@@ -18,7 +30,23 @@ export default function ResellerGroupDashboard() {
                 setIsLoading(false);
             })
             .catch(() => setIsLoading(false));
+
+        fetchGroupOrders();
     }, []);
+
+    const handleCreateSession = async () => {
+        setIsSaving(true);
+        const res = await fetch('/api/group-orders', {
+            method: 'POST',
+            body: JSON.stringify(sessionForm)
+        });
+        if (res.ok) {
+            setShowNewSessionModal(false);
+            setSessionForm({ title: '', deadline: '', pickupTime: '' });
+            fetchGroupOrders();
+        }
+        setIsSaving(false);
+    };
 
     if (isLoading) {
         return (
@@ -154,48 +182,167 @@ export default function ResellerGroupDashboard() {
                         ) : (
                             <div className="space-y-4 text-gray-900">
                                 {/* Group Orders List */}
-                                {[
-                                    { id: 1, title: 'Friday Office Lunch', items: 12, status: 'Active', time: '12:30 PM' },
-                                    { id: 2, title: 'Gym Buds Dinner', items: 5, status: 'Draft', time: '08:00 PM' },
-                                ].map((session) => (
+                                {groupOrders.length === 0 && (
+                                    <div className="p-8 text-center text-gray-400 bg-white/50 border-2 border-dashed border-gray-200 rounded-[32px]">
+                                        <p className="text-sm font-bold">No active sessions.</p>
+                                        <button
+                                            onClick={() => setShowNewSessionModal(true)}
+                                            className="mt-4 px-6 py-2 bg-white border border-gray-200 rounded-full text-xs font-black text-gray-900 hover:border-[#25D366] transition-all shadow-sm"
+                                        >
+                                            Start New Session
+                                        </button>
+                                    </div>
+                                )}
+
+                                {groupOrders.map((session) => (
                                     <div key={session.id} className="bg-white border border-gray-100 rounded-[32px] p-6 shadow-sm relative overflow-hidden">
-                                        {session.status === 'Active' && (
-                                            <div className="absolute top-0 right-0 bg-[#25D366] text-white text-[9px] font-black px-4 py-1 rounded-bl-2xl uppercase tracking-widest">
+                                        {session.status === 'ACTIVE' && (
+                                            <div className="absolute top-0 right-0 bg-[#25D366] text-white text-[9px] font-black px-4 py-1 rounded-bl-2xl uppercase tracking-widest shadow-sm">
                                                 Active
+                                            </div>
+                                        )}
+                                        {session.status === 'CLOSED' && (
+                                            <div className="absolute top-0 right-0 bg-gray-500 text-white text-[9px] font-black px-4 py-1 rounded-bl-2xl uppercase tracking-widest shadow-sm">
+                                                Closed
                                             </div>
                                         )}
                                         <div className="flex justify-between items-start mb-4">
                                             <div>
                                                 <h3 className="font-black text-gray-900 text-lg leading-tight">{session.title}</h3>
-                                                <p className="text-[11px] text-gray-400 font-bold uppercase tracking-tighter mt-1">Delivery: {session.time} • {session.items} Items</p>
+                                                <p className="text-[11px] text-gray-400 font-bold uppercase tracking-tighter mt-1">
+                                                    Deadline: {new Date(session.deadline).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} • Pickup: {session.pickupTime}
+                                                </p>
                                             </div>
-                                            <div className={`p-2 rounded-xl ${session.status === 'Active' ? 'bg-green-50 text-[#25D366]' : 'bg-gray-50 text-gray-300'}`}>
+                                            <div className={`p-2 rounded-xl ${session.status === 'ACTIVE' ? 'bg-green-50 text-[#25D366]' : 'bg-gray-50 text-gray-400'}`}>
                                                 <TrendingUp size={22} />
                                             </div>
                                         </div>
 
-                                        <div className="flex gap-2 mb-6">
-                                            <div className="flex-1 h-2 bg-gray-50 rounded-full overflow-hidden">
-                                                <div className="h-full bg-[#25D366]" style={{ width: session.status === 'Active' ? '65%' : '0%' }} />
+                                        <div className="flex gap-2 mb-6 items-center">
+                                            <div className="flex-1 font-medium text-xs text-gray-500 flex items-center gap-2">
+                                                <Users size={14} className="text-[#25D366]" />
+                                                <span className="font-bold text-gray-900">{session.totalItems} Items Submitted</span>
                                             </div>
-                                            <span className="text-[10px] font-black text-gray-400">{session.status === 'Active' ? '65%' : '0%'}</span>
+                                            <button
+                                                onClick={() => {
+                                                    const url = `${window.location.origin}/group/${session.inviteCode}`;
+                                                    navigator.clipboard.writeText(url);
+                                                    alert('Invite link copied! Share it on WhatsApp.');
+                                                }}
+                                                className="text-[10px] text-[#25D366] font-black uppercase bg-green-50 px-2 py-1 rounded-md"
+                                            >
+                                                Copy Invite Link
+                                            </button>
                                         </div>
 
-                                        <button className="w-full h-12 bg-gray-900 text-white font-black rounded-2xl flex items-center justify-center gap-2 active:scale-95 transition-all text-xs uppercase tracking-widest">
-                                            <Send size={16} />
-                                            Push Combined Order
-                                        </button>
+                                        {session.status === 'ACTIVE' && (
+                                            <button
+                                                onClick={async () => {
+                                                    setIsSaving(true);
+                                                    try {
+                                                        const res = await fetch(`/api/group-orders/${session.inviteCode}/push`, { method: 'POST' });
+                                                        const data = await res.json();
+                                                        if (data.success) {
+                                                            // Save to local wallet
+                                                            const storePhone = storeInfo?.whatsappNumber || '60128556781';
+                                                            const myOrders = JSON.parse(localStorage.getItem('kd_my_orders') || '[]');
+                                                            myOrders.push({
+                                                                ...data.order,
+                                                                storeName: storeInfo?.businessName || 'Group Order',
+                                                                storeSlug: '',
+                                                                whatsappNumber: storePhone
+                                                            });
+                                                            localStorage.setItem('kd_my_orders', JSON.stringify(myOrders));
+
+                                                            // Auto open WhatsApp Link
+                                                            let text = `*Group Order - ${session.title}*\n\n`;
+                                                            text += `Total: *RM ${(data.order.total || 0).toFixed(2)}*\n\n`;
+                                                            text += `_Please verify my payment attached._`;
+                                                            const encodedText = encodeURIComponent(text);
+                                                            const phone = storePhone.replace(/\D/g, '');
+                                                            const link = `https://wa.me/${phone}?text=${encodedText}`;
+
+                                                            window.open(link, '_blank');
+                                                            fetchGroupOrders();
+                                                        } else {
+                                                            alert(data.error || 'Failed to push order');
+                                                        }
+                                                    } catch (err) {
+                                                    } finally {
+                                                        setIsSaving(false);
+                                                    }
+                                                }}
+                                                disabled={isSaving}
+                                                className="w-full h-12 bg-gray-900 text-white font-black rounded-2xl flex items-center justify-center gap-2 active:scale-95 transition-all text-xs uppercase tracking-widest shadow-md disabled:opacity-50"
+                                            >
+                                                <Send size={16} />
+                                                Finalize & Push Combined Order
+                                            </button>
+                                        )}
                                     </div>
                                 ))}
 
-                                <div className="p-8 text-center text-gray-400 bg-white/50 border-2 border-dashed border-gray-200 rounded-[32px]">
-                                    <p className="text-sm font-bold">New group order session?</p>
+                                {groupOrders.length > 0 && (
                                     <button
-                                        onClick={() => setActiveTab('Resellers')} // placeholder action
-                                        className="mt-4 px-6 py-2 bg-white border border-gray-200 rounded-full text-xs font-black text-gray-900 hover:border-[#25D366] transition-all"
+                                        onClick={() => setShowNewSessionModal(true)}
+                                        className="w-full mt-4 px-6 py-4 bg-white border-2 border-dashed border-gray-200 rounded-3xl text-xs font-black text-gray-400 hover:border-[#25D366] hover:text-[#25D366] transition-all"
                                     >
-                                        Start New Session
+                                        + Start Another Group Order Session
                                     </button>
+                                )}
+                            </div>
+                        )}
+
+                        {/* New Session Modal */}
+                        {showNewSessionModal && (
+                            <div className="fixed object-contain h-full z-50 flex items-end justify-center sm:items-center inset-0 px-0 sm:px-4 bg-black/60 backdrop-blur-md transition-all animate-in fade-in duration-300">
+                                <div className="absolute inset-0 max-w-md mx-auto" onClick={() => setShowNewSessionModal(false)} />
+                                <div className="bg-white w-full max-w-md rounded-t-[32px] sm:rounded-[32px] p-6 shadow-2xl relative z-10 animate-in slide-in-from-bottom-8 duration-300">
+                                    <div className="flex justify-between items-center mb-6">
+                                        <h2 className="text-xl font-bold text-gray-900">New Group Order</h2>
+                                        <button onClick={() => setShowNewSessionModal(false)} className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center text-gray-500 font-bold text-sm hover:bg-gray-200">
+                                            ✕
+                                        </button>
+                                    </div>
+                                    <div className="space-y-4">
+                                        <div>
+                                            <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1 mb-1 block">Session Title</label>
+                                            <input
+                                                type="text"
+                                                placeholder="e.g. Friday Office Lunch"
+                                                className="w-full h-12 bg-gray-50 border border-gray-100 rounded-2xl px-4 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#25D366]"
+                                                value={sessionForm.title}
+                                                onChange={e => setSessionForm({ ...sessionForm, title: e.target.value })}
+                                            />
+                                        </div>
+                                        <div className="grid grid-cols-2 gap-3">
+                                            <div>
+                                                <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1 mb-1 block">Order Deadline</label>
+                                                <input
+                                                    type="datetime-local"
+                                                    className="w-full h-12 bg-gray-50 border border-gray-100 rounded-2xl px-4 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#25D366]"
+                                                    value={sessionForm.deadline}
+                                                    onChange={e => setSessionForm({ ...sessionForm, deadline: e.target.value })}
+                                                />
+                                            </div>
+                                            <div>
+                                                <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1 mb-1 block">Expected Pickup</label>
+                                                <input
+                                                    type="time"
+                                                    className="w-full h-12 bg-gray-50 border border-gray-100 rounded-2xl px-4 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#25D366]"
+                                                    value={sessionForm.pickupTime}
+                                                    onChange={e => setSessionForm({ ...sessionForm, pickupTime: e.target.value })}
+                                                />
+                                            </div>
+                                        </div>
+                                        <button
+                                            disabled={!sessionForm.title || !sessionForm.deadline || !sessionForm.pickupTime || isSaving}
+                                            onClick={handleCreateSession}
+                                            className="w-full h-14 bg-[#25D366] text-white font-black rounded-2xl shadow-lg shadow-green-100 active:scale-95 transition-all mt-4 disabled:opacity-50"
+                                        >
+                                            {isSaving ? 'Creating...' : 'Create Session'}
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         )}
