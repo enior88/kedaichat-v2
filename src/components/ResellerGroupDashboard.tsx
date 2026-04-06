@@ -7,8 +7,12 @@ import BottomNav from './BottomNav';
 export default function ResellerGroupDashboard() {
     const [activeTab, setActiveTab] = useState('Resellers');
     const [storeInfo, setStoreInfo] = useState<any>(null);
+    const [resellers, setResellers] = useState<any[]>([]);
     const [groupOrders, setGroupOrders] = useState<any[]>([]);
     const [showNewSessionModal, setShowNewSessionModal] = useState(false);
+    const [showInviteModal, setShowInviteModal] = useState(false);
+    const [generatedLink, setGeneratedLink] = useState('');
+    const [resellerName, setResellerName] = useState('');
     const [sessionForm, setSessionForm] = useState({ title: '', deadline: '', pickupTime: '' });
     const [isSaving, setIsSaving] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
@@ -22,6 +26,14 @@ export default function ResellerGroupDashboard() {
             });
     };
 
+    const fetchResellers = () => {
+        fetch('/api/resellers')
+            .then(res => res.json())
+            .then(data => {
+                if (!data.error && Array.isArray(data)) setResellers(data);
+            });
+    };
+
     useEffect(() => {
         fetch('/api/dashboard')
             .then(res => res.json())
@@ -32,7 +44,24 @@ export default function ResellerGroupDashboard() {
             .catch(() => setIsLoading(false));
 
         fetchGroupOrders();
+        fetchResellers();
     }, []);
+
+    const handleGenerateInvite = async () => {
+        if (!resellerName.trim()) return;
+        setIsSaving(true);
+        const res = await fetch('/api/resellers', {
+            method: 'POST',
+            body: JSON.stringify({ name: resellerName })
+        });
+        if (res.ok) {
+            const data = await res.json();
+            const link = `${window.location.origin}/shop/${storeInfo?.slug}?ref=${data.refCode}`;
+            setGeneratedLink(link);
+            fetchResellers();
+        }
+        setIsSaving(false);
+    };
 
     const handleCreateSession = async () => {
         setIsSaving(true);
@@ -147,37 +176,98 @@ export default function ResellerGroupDashboard() {
                                 <div>
                                     <div className="flex justify-between items-center mb-4 text-gray-900">
                                         <h3 className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Active Resellers</h3>
-                                        <span className="text-[10px] font-bold text-[#25D366]">3 Active</span>
+                                        <span className="text-[10px] font-bold text-[#25D366]">{resellers.length} Active</span>
                                     </div>
                                     <div className="space-y-3">
-                                        {[
-                                            { name: 'Ali', sales: 14, comm: (storeInfo?.revenueToday || 140) * 0.05 },
-                                            { name: 'Fatimah', sales: 8, comm: (storeInfo?.revenueToday || 80) * 0.03 },
-                                            { name: 'Zul', sales: 22, comm: (storeInfo?.revenueToday || 220) * 0.02 },
-                                        ].map((reseller) => (
-                                            <div key={reseller.name} className="bg-white border border-gray-100 rounded-[24px] p-4 flex justify-between items-center shadow-xs hover:border-[#25D366]/30 transition-all cursor-pointer group">
+                                        {resellers.length === 0 ? (
+                                            <p className="text-center text-sm font-bold text-gray-300 py-6">No resellers yet. Generate an invite link below!</p>
+                                        ) : resellers.map((reseller) => (
+                                            <div key={reseller.id} className="bg-white border border-gray-100 rounded-[24px] p-4 flex justify-between items-center shadow-xs hover:border-[#25D366]/30 transition-all cursor-pointer group">
                                                 <div className="flex items-center gap-3">
                                                     <div className="w-10 h-10 bg-gray-50 rounded-2xl flex items-center justify-center font-bold text-[#25D366] group-hover:bg-[#25D366] group-hover:text-white transition-all">
                                                         {reseller.name[0]}
                                                     </div>
                                                     <div>
                                                         <p className="font-bold text-gray-900">{reseller.name}</p>
-                                                        <p className="text-[10px] text-gray-400 font-bold uppercase tracking-tight">{reseller.sales} Orders Generated</p>
+                                                        <p className="text-[10px] text-gray-400 font-bold uppercase tracking-tight">{reseller.commissions?.length || 0} Orders Generated</p>
                                                     </div>
                                                 </div>
                                                 <div className="text-right">
-                                                    <p className="font-black text-gray-900">RM {reseller.comm.toFixed(2)}</p>
-                                                    <p className="text-[10px] text-gray-400 font-bold uppercase">Pending</p>
+                                                    <p className="font-black text-gray-400 font-mono text-xs">#{reseller.refCode}</p>
+                                                    <p className="text-[10px] text-gray-400 font-bold uppercase">Ref Code</p>
                                                 </div>
                                             </div>
                                         ))}
                                     </div>
                                 </div>
 
-                                <button className="w-full h-14 bg-[#25D366] text-white font-black rounded-[2xl] flex items-center justify-center gap-2 shadow-lg shadow-green-100 active:scale-95 transition-all">
+                                <button
+                                    onClick={() => { setShowInviteModal(true); setGeneratedLink(''); setResellerName(''); }}
+                                    className="w-full h-14 bg-[#25D366] text-white font-black rounded-2xl flex items-center justify-center gap-2 shadow-lg shadow-green-100 active:scale-95 transition-all">
                                     <Share2 size={20} />
                                     Generate Reseller Invite Link
                                 </button>
+
+                                {/* Invite Link Modal */}
+                                {showInviteModal && (
+                                    <div className="fixed inset-0 z-50 flex items-end justify-center sm:items-center bg-black/60 backdrop-blur-md animate-in fade-in duration-300">
+                                        <div className="absolute inset-0" onClick={() => setShowInviteModal(false)} />
+                                        <div className="bg-white w-full max-w-md rounded-t-[32px] sm:rounded-[32px] p-6 shadow-2xl relative z-10 animate-in slide-in-from-bottom-8 duration-300">
+                                            <div className="flex justify-between items-center mb-6">
+                                                <h2 className="text-xl font-bold text-gray-900">{generatedLink ? 'Share This Link' : 'New Reseller Invite'}</h2>
+                                                <button onClick={() => setShowInviteModal(false)} className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center text-gray-500 font-bold hover:bg-gray-200">
+                                                    ✕
+                                                </button>
+                                            </div>
+
+                                            {!generatedLink ? (
+                                                <div className="space-y-4">
+                                                    <p className="text-sm text-gray-400 font-medium">Enter the name of the person you want to invite as a reseller.</p>
+                                                    <input
+                                                        type="text"
+                                                        placeholder="e.g. Ali Hassan"
+                                                        className="w-full h-12 bg-gray-50 border border-gray-100 rounded-2xl px-4 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#25D366]"
+                                                        value={resellerName}
+                                                        onChange={e => setResellerName(e.target.value)}
+                                                    />
+                                                    <button
+                                                        disabled={!resellerName.trim() || isSaving}
+                                                        onClick={handleGenerateInvite}
+                                                        className="w-full h-13 bg-[#25D366] text-white font-black rounded-2xl shadow-lg shadow-green-100 active:scale-95 transition-all py-4 disabled:opacity-50"
+                                                    >
+                                                        {isSaving ? 'Generating...' : 'Generate Link'}
+                                                    </button>
+                                                </div>
+                                            ) : (
+                                                <div className="space-y-4">
+                                                    <p className="text-sm text-gray-500 font-medium">Share this unique link with <span className="font-black text-gray-900">{resellerName}</span> via WhatsApp.</p>
+                                                    <div className="bg-gray-50 rounded-2xl p-4 border border-gray-100">
+                                                        <p className="text-xs font-mono text-gray-600 break-all">{generatedLink}</p>
+                                                    </div>
+                                                    <div className="grid grid-cols-2 gap-3">
+                                                        <button
+                                                            onClick={() => {
+                                                                navigator.clipboard.writeText(generatedLink);
+                                                                alert('Link copied!');
+                                                            }}
+                                                            className="h-13 bg-gray-900 text-white font-black rounded-2xl active:scale-95 transition-all py-3 text-sm"
+                                                        >
+                                                            Copy Link
+                                                        </button>
+                                                        <a
+                                                            href={`https://wa.me/?text=${encodeURIComponent(`Join as my reseller and earn commission! Use this link: ${generatedLink}`)}`}
+                                                            target="_blank"
+                                                            rel="noopener noreferrer"
+                                                            className="h-13 bg-[#25D366] text-white font-black rounded-2xl active:scale-95 transition-all py-3 text-sm flex items-center justify-center gap-2"
+                                                        >
+                                                            Share on WhatsApp
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            )}
+                                        </div>
+                                    </div>
+                                )}
                             </div>
                         ) : (
                             <div className="space-y-4 text-gray-900">
