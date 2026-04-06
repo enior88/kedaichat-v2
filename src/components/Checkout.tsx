@@ -58,7 +58,14 @@ export default function Checkout({ params }: { params: { name: string } }) {
 
                 // Save specific order id to local storage to show in Wallet
                 const myOrders = JSON.parse(localStorage.getItem('kd_my_orders') || '[]');
-                myOrders.push(data.order);
+                const enrichedOrder = {
+                    ...data.order,
+                    items: cartState.items,
+                    storeName: cartState.storeName,
+                    storeSlug: params.name,
+                    whatsappNumber: cartState.whatsappNumber
+                };
+                myOrders.push(enrichedOrder);
                 localStorage.setItem('kd_my_orders', JSON.stringify(myOrders));
                 localStorage.removeItem('kd_cart'); // clear cart
 
@@ -80,6 +87,67 @@ export default function Checkout({ params }: { params: { name: string } }) {
         } catch (error) {
             console.error('Checkout failed', error);
             alert('An unexpected error occurred during checkout.');
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
+
+    const handleWhatsAppOnly = async () => {
+        setIsSubmitting(true);
+        try {
+            // Generate WhatsApp Message (Same as payment submit but no delay)
+            let text = `*New Order - ${cartState?.storeName || 'KedaiChat'}*\n\n`;
+            text += `Total: *RM ${cartTotal.toFixed(2)}*\n\n`;
+            text += `*Items:*\n`;
+            cartState?.items?.forEach((item: any) => {
+                text += `- ${item.quantity}x ${item.name} (RM ${(item.price * item.quantity).toFixed(2)})\n`;
+            });
+            text += `\n_I would like to pay via WhatsApp. Please verify._`;
+
+            const encodedText = encodeURIComponent(text);
+            const phone = cartState?.whatsappNumber?.replace(/\D/g, '') || '';
+            const link = `https://wa.me/${phone}?text=${encodedText}`;
+            setWaLink(link);
+
+            // Post order to database for tracking
+            const res = await fetch('/api/orders', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    storeId: cartState?.storeId,
+                    items: cartState?.items,
+                    total: cartTotal,
+                })
+            });
+
+            if (res.ok) {
+                const data = await res.json();
+
+                // Save to Wallet history
+                const myOrders = JSON.parse(localStorage.getItem('kd_my_orders') || '[]');
+                const enrichedOrder = {
+                    ...data.order,
+                    items: cartState.items,
+                    storeName: cartState.storeName,
+                    storeSlug: params.name,
+                    whatsappNumber: cartState.whatsappNumber
+                };
+                myOrders.push(enrichedOrder);
+                localStorage.setItem('kd_my_orders', JSON.stringify(myOrders));
+                localStorage.removeItem('kd_cart');
+
+                setStep(2);
+                setIsPaid(true);
+
+                // Open WhatsApp immediately
+                window.open(link, '_blank');
+            } else {
+                const errorData = await res.json();
+                alert(errorData.error || 'Failed to process order.');
+            }
+        } catch (error) {
+            console.error('WhatsApp order failed', error);
+            alert('An unexpected error occurred.');
         } finally {
             setIsSubmitting(false);
         }
@@ -133,7 +201,11 @@ export default function Checkout({ params }: { params: { name: string } }) {
                                 >
                                     {isSubmitting ? 'Verifying payment...' : t('submit_proof')}
                                 </button>
-                                <button className="w-full py-4 text-gray-400 text-xs font-bold uppercase tracking-widest hover:text-gray-600 transition-colors">
+                                <button
+                                    onClick={handleWhatsAppOnly}
+                                    disabled={isSubmitting || cartTotal === 0}
+                                    className="w-full py-4 text-gray-400 text-xs font-bold uppercase tracking-widest hover:text-gray-600 transition-colors disabled:opacity-50"
+                                >
                                     {t('pay_whatsapp')}
                                 </button>
                             </div>
