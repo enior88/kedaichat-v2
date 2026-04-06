@@ -135,10 +135,16 @@ export default function StoreCatalog({ slug }: { slug?: string }) {
                 {/* Store Profile Header */}
                 <div className="flex flex-col items-center text-center mb-8">
                     <div className="relative mb-4">
-                        <div className="w-[100px] h-[100px] bg-gray-900 rounded-full overflow-hidden flex items-center justify-center p-4 border-[3px] border-[#F8F9FA] shadow-sm">
-                            <img src="/logo.png" alt="Store Logo" className="w-full h-full object-contain filter brightness-0 invert" />
-                        </div>
-                        <div className="absolute bottom-1 right-1 bg-[#25D366] text-white p-0.5 rounded-full border-2 border-[#F8F9FA]">
+                        {store?.logoUrl ? (
+                            <div className="w-[100px] h-[100px] rounded-full overflow-hidden border-[3px] border-white shadow-lg bg-white">
+                                <img src={store.logoUrl} alt={storeName} className="w-full h-full object-cover" />
+                            </div>
+                        ) : (
+                            <div className="w-[100px] h-[100px] bg-gradient-to-br from-[#25D366] to-[#128C7E] rounded-full overflow-hidden flex items-center justify-center border-[3px] border-white shadow-lg">
+                                <span className="text-4xl font-black text-white uppercase">{storeInitials}</span>
+                            </div>
+                        )}
+                        <div className="absolute bottom-1 right-1 bg-[#25D366] text-white p-0.5 rounded-full border-2 border-[#F8F9FA] shadow-md">
                             <Check size={14} strokeWidth={4} />
                         </div>
                     </div>
