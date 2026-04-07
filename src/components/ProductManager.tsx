@@ -218,11 +218,11 @@ export default function ProductManager() {
                                             </button>
                                         </div>
                                     ))}
-                                    <div className="flex-1 flex min-w-[120px] items-center">
+                                    <div className="flex-1 flex min-w-[80px] items-center">
                                         <input
                                             type="text"
-                                            placeholder="Type custom tag e.g. Promo..."
-                                            className="flex-1 h-10 bg-transparent text-sm font-medium focus:outline-none px-1"
+                                            placeholder="Add custom tag..."
+                                            className="flex-1 min-w-0 h-10 bg-transparent text-sm font-medium focus:outline-none px-1"
                                             value={tagInput}
                                             onChange={(e) => setTagInput(e.target.value)}
                                             onKeyDown={(e) => {
