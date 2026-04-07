@@ -106,34 +106,36 @@ ${storeUrl}`;
     const handleDownload = async () => {
         if (!posterRef.current) return;
         setIsLoading(true);
-        try {
-            // Optimization for mobile: Use a higher pixel ratio for better quality
-            // and ensure we wait for any images/fonts to settle
-            const dataUrl = await htmlToImage.toPng(posterRef.current, {
-                canvasWidth: 1000,
-                canvasHeight: 1250,
-                pixelRatio: 2,
-                backgroundColor: primaryColor,
-                cacheBust: true,
-                style: {
-                    borderRadius: '0',
-                    width: '1000px',
-                    height: '1250px',
-                }
-            });
 
-            const link = document.createElement('a');
-            link.download = `${storeInfo?.businessName || 'kedai'}-flyer-${Date.now()}.png`;
-            link.href = dataUrl;
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-        } catch (err) {
-            console.error('Download failed', err);
-            alert('Download failed. Try taking a screenshot instead or use a different browser.');
-        } finally {
-            setIsLoading(false);
-        }
+        // Wait for rendering and fonts
+        setTimeout(async () => {
+            try {
+                const dataUrl = await htmlToImage.toPng(posterRef.current!, {
+                    canvasWidth: 1000,
+                    canvasHeight: 1250,
+                    pixelRatio: 2,
+                    backgroundColor: primaryColor,
+                    cacheBust: true,
+                    style: {
+                        borderRadius: '0',
+                        width: '1000px',
+                        height: '1250px',
+                    }
+                });
+
+                const link = document.createElement('a');
+                link.download = `${storeInfo?.businessName || 'kedai'}-flyer-${Date.now()}.png`;
+                link.href = dataUrl;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            } catch (err) {
+                console.error('Download failed', err);
+                alert('Download failed. Try taking a screenshot instead or use a different browser.');
+            } finally {
+                setIsLoading(false);
+            }
+        }, 1500);
     };
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
