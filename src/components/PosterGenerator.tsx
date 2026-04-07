@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { ChevronLeft, Share2, Download, Copy, ImagePlus, Lock, Loader2, MessageCircle, Plus, Calendar, Clock, CheckCircle2, Palette, Type } from 'lucide-react';
+import { ChevronLeft, Share2, Download, Copy, ImagePlus, Lock, Loader2, MessageCircle, Plus, Edit2, X, Calendar, Clock, CheckCircle2, Palette, Type } from 'lucide-react';
 import BottomNav from './BottomNav';
 import { useRouter } from 'next/navigation';
 import { useLanguage } from '@/lib/LanguageContext';
@@ -369,6 +369,41 @@ ${storeUrl}`;
                             </button>
                         ))}
                     </div>
+
+                    {/* Manage Selected Items */}
+                    {selectedItems.length > 0 && (
+                        <div className="mt-6 space-y-3 p-4 bg-gray-50 rounded-2xl border border-gray-100 animate-in zoom-in-95 duration-300">
+                            <h3 className="text-[10px] font-bold text-gray-400 uppercase tracking-widest px-1">Selected Flyer Items (Max 5)</h3>
+                            <div className="space-y-2">
+                                {selectedItems.map((item, idx) => (
+                                    <div key={idx} className="flex items-center gap-2 bg-white p-2 px-3 rounded-xl shadow-xs group">
+                                        <div className="w-5 h-5 rounded-full bg-gray-900 text-white text-[10px] font-bold flex items-center justify-center shrink-0">
+                                            {idx + 1}
+                                        </div>
+                                        <input
+                                            type="text"
+                                            value={item}
+                                            onChange={(e) => {
+                                                const newItems = [...selectedItems];
+                                                newItems[idx] = e.target.value;
+                                                setSelectedItems(newItems);
+                                            }}
+                                            className="flex-1 bg-transparent border-none p-0 text-xs font-bold focus:ring-0"
+                                        />
+                                        <button
+                                            onClick={() => toggleItem(item)}
+                                            className="p-1 hover:bg-gray-100 rounded-lg text-gray-400 hover:text-red-500 transition-all"
+                                        >
+                                            <X size={14} />
+                                        </button>
+                                    </div>
+                                ))}
+                                {selectedItems.length > 5 && (
+                                    <p className="text-[10px] text-orange-500 font-bold px-1">⚠️ Only the first 5 items fit on the flyer.</p>
+                                )}
+                            </div>
+                        </div>
+                    )}
                 </section>
 
                 {mode === 'TEXT' ? (
