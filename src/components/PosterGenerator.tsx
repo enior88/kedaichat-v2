@@ -111,14 +111,21 @@ ${storeUrl}`;
         try {
             // Create a high-res canvas
             const canvas = document.createElement('canvas');
-            const scale = 2;
+            const scale = 2.5; // High resolution for premium feel
             canvas.width = 800 * scale;
             canvas.height = 1000 * scale;
             const ctx = canvas.getContext('2d');
             if (!ctx) throw new Error('Could not get canvas context');
 
-            // 1. Background
+            // 1. Premium Gradient Background
+            const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
+            gradient.addColorStop(0, primaryColor);
+            // Derive a slightly darker color for the gradient bottom
+            gradient.addColorStop(1, 'rgba(0,0,0,0.2)');
+
             ctx.fillStyle = primaryColor;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = gradient;
             ctx.fillRect(0, 0, canvas.width, canvas.height);
 
             // 2. Background Image (if any)
@@ -131,7 +138,6 @@ ${storeUrl}`;
                     img.src = posterBg;
                 });
 
-                // Draw aspect fill
                 const imgAspect = img.width / img.height;
                 const canvasAspect = canvas.width / canvas.height;
                 let drawW, drawH, drawX, drawY;
@@ -148,66 +154,119 @@ ${storeUrl}`;
                 }
                 ctx.drawImage(img, drawX, drawY, drawW, drawH);
 
-                // Dark overlay
-                ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
+                // Professional dark gradient overlay
+                const overlay = ctx.createLinearGradient(0, 0, 0, canvas.height);
+                overlay.addColorStop(0, 'rgba(0,0,0,0.3)');
+                overlay.addColorStop(1, 'rgba(0,0,0,0.7)');
+                ctx.fillStyle = overlay;
                 ctx.fillRect(0, 0, canvas.width, canvas.height);
             }
 
-            // 3. Header Text
+            // 3. Noise Texture Overlay (Premium Feel)
+            const noiseCanvas = document.createElement('canvas');
+            noiseCanvas.width = 100;
+            noiseCanvas.height = 100;
+            const noiseCtx = noiseCanvas.getContext('2d')!;
+            const noiseData = noiseCtx.createImageData(100, 100);
+            for (let i = 0; i < noiseData.data.length; i += 4) {
+                const val = Math.random() * 255;
+                noiseData.data[i] = val;
+                noiseData.data[i + 1] = val;
+                noiseData.data[i + 2] = val;
+                noiseData.data[i + 3] = 15; // Subtle
+            }
+            noiseCtx.putImageData(noiseData, 0, 0);
+            const noisePattern = ctx.createPattern(noiseCanvas, 'repeat')!;
+            ctx.fillStyle = noisePattern;
+            ctx.globalCompositeOperation = 'overlay';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.globalCompositeOperation = 'source-over';
+
+            // 4. Header Section
+            // Logo Icon (Box shape)
+            ctx.fillStyle = 'rgba(255,255,255,0.2)';
+            ctx.beginPath();
+            ctx.roundRect(40 * scale, 40 * scale, 48 * scale, 48 * scale, 12 * scale);
+            ctx.fill();
+            ctx.strokeStyle = 'rgba(255,255,255,0.4)';
+            ctx.lineWidth = 1 * scale;
+            ctx.stroke();
+
             ctx.fillStyle = 'white';
-            ctx.font = `bold ${24 * scale}px sans-serif`;
-            ctx.fillText(storeInfo?.businessName || 'Your Store', 40 * scale, 80 * scale);
+            ctx.font = `black ${24 * scale}px sans-serif`;
+            ctx.textAlign = 'center';
+            ctx.fillText(storeInfo?.businessName?.[0] || 'K', 64 * scale, 73 * scale);
 
-            ctx.font = `900 ${48 * scale}px sans-serif`;
-            ctx.fillText(customHeading, 40 * scale, 180 * scale);
+            ctx.textAlign = 'left';
+            ctx.fillStyle = 'rgba(255,255,255,0.7)';
+            ctx.font = `900 ${10 * scale}px sans-serif`;
+            ctx.fillText('PREMIUM SELECTION', 100 * scale, 55 * scale);
 
-            // Underline heading
-            ctx.fillRect(40 * scale, 210 * scale, 60 * scale, 8 * scale);
+            ctx.fillStyle = 'white';
+            ctx.font = `bold ${16 * scale}px sans-serif`;
+            ctx.fillText(storeInfo?.businessName || 'Your Store', 100 * scale, 80 * scale);
 
-            // 4. Items List
-            const itemsToDraw = selectedItems.length > 0 ? selectedItems.slice(0, 5) : ['Selection 1', 'Selection 2', 'Selection 3'];
+            // Large Heading
+            ctx.font = `900 ${52 * scale}px sans-serif`;
+            ctx.fillText(customHeading.toUpperCase(), 40 * scale, 200 * scale);
+
+            // Accent Line
+            ctx.fillStyle = 'white';
+            ctx.fillRect(40 * scale, 230 * scale, 80 * scale, 6 * scale);
+
+            // 5. Items List with Icons
+            const itemsToDraw = selectedItems.length > 0 ? selectedItems.slice(0, 5) : ['Signature Selection 1', 'Premium Item 2', 'Exclusive Choice 3'];
             itemsToDraw.forEach((item, idx) => {
-                const y = 320 * scale + (idx * 80 * scale);
+                const y = 350 * scale + (idx * 80 * scale);
 
-                // Number circle
+                // Glass circle
+                ctx.fillStyle = 'rgba(255,255,255,0.15)';
                 ctx.beginPath();
                 ctx.arc(60 * scale, y - 10 * scale, 18 * scale, 0, Math.PI * 2);
-                ctx.fillStyle = 'white';
                 ctx.fill();
 
-                ctx.fillStyle = '#111827';
+                ctx.fillStyle = 'white';
                 ctx.font = `bold ${14 * scale}px sans-serif`;
                 ctx.textAlign = 'center';
                 ctx.fillText(String(idx + 1), 60 * scale, y - 5 * scale);
 
                 // Item text
-                ctx.fillStyle = 'white';
                 ctx.textAlign = 'left';
                 ctx.font = `900 ${28 * scale}px sans-serif`;
                 ctx.fillText(item, 100 * scale, y - 2 * scale);
             });
 
-            // 5. Footer Info
-            ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
-            ctx.font = `900 ${10 * scale}px sans-serif`;
-            ctx.fillText('DELIVERY/PICKUP', 40 * scale, 750 * scale);
-            ctx.fillText('ORDER BEFORE', 400 * scale, 750 * scale);
+            // 6. Footer Section
+            // Shadow divider
+            ctx.fillStyle = 'rgba(255,255,255,0.1)';
+            ctx.fillRect(40 * scale, 730 * scale, canvas.width - 80 * scale, 1 * scale);
 
-            ctx.fillStyle = 'white';
-            ctx.font = `900 ${24 * scale}px sans-serif`;
-            ctx.fillText(pickupTime, 40 * scale, 800 * scale);
-            ctx.fillText(deadline, 400 * scale, 800 * scale);
+            // Time Icons (Clocks)
+            const drawTick = (x: number, y: number, label: string, val: string) => {
+                ctx.fillStyle = 'rgba(255,255,255,0.5)';
+                ctx.font = `900 ${10 * scale}px sans-serif`;
+                ctx.fillText(label, x, y);
 
-            // 6. Branding
-            ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
-            ctx.font = `900 ${12 * scale}px sans-serif`;
+                ctx.fillStyle = 'white';
+                ctx.font = `900 ${28 * scale}px sans-serif`;
+                ctx.fillText(val, x, y + 40 * scale);
+            };
+
+            drawTick(40 * scale, 780 * scale, 'PICKUP TIME', pickupTime);
+            drawTick(400 * scale, 780 * scale, 'ORDER BY', deadline);
+
+            // 7. Branding (Elegant)
+            ctx.fillStyle = 'rgba(255,255,255,0.4)';
+            ctx.font = `900 ${9 * scale}px sans-serif`;
             ctx.textAlign = 'center';
-            ctx.fillText('POWERED BY KEDAICHAT', canvas.width / 2, 950 * scale);
+            // @ts-ignore
+            ctx.letterSpacing = '4px';
+            ctx.fillText('POWERED BY KEDAICHAT.ONLINE', canvas.width / 2, 950 * scale);
 
-            // Download
-            const dataUrl = canvas.toDataURL('image/png');
+            // Export
+            const dataUrl = canvas.toDataURL('image/png', 1.0);
             const link = document.createElement('a');
-            link.download = `${storeInfo?.businessName || 'kedai'}-flyer.png`;
+            link.download = `kedaichat-${storeInfo?.businessName || 'store'}-flyer.png`;
             link.href = dataUrl;
             document.body.appendChild(link);
             link.click();
@@ -315,42 +374,75 @@ ${storeUrl}`;
                             <div className="space-y-4">
                                 <div className="space-y-2">
                                     <label className="text-[10px] font-bold text-gray-400 uppercase ml-1 flex items-center justify-between">
-                                        Poster Heading
-                                        {!isPro && <Lock size={10} className="text-orange-400" />}
+                                        Flyer Title
                                     </label>
                                     <input
-                                        disabled={!isPro}
                                         type="text"
                                         value={customHeading}
+                                        placeholder="e.g. TODAY'S SPECIALS"
                                         onChange={e => setCustomHeading(e.target.value)}
-                                        className="w-full h-12 bg-gray-50 border border-gray-100 rounded-2xl px-4 text-sm font-bold disabled:opacity-50"
+                                        className="w-full h-12 bg-gray-50 border border-gray-100 rounded-2xl px-4 text-sm font-bold focus:ring-2 focus:ring-green-500 transition-all"
                                     />
+                                </div>
+
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div className="space-y-2">
+                                        <label className="text-[10px] font-bold text-gray-400 uppercase ml-1">
+                                            Pickup Time
+                                        </label>
+                                        <input
+                                            type="text"
+                                            value={pickupTime}
+                                            onChange={e => setPickupTime(e.target.value)}
+                                            className="w-full h-12 bg-gray-50 border border-gray-100 rounded-2xl px-4 text-sm font-bold"
+                                        />
+                                    </div>
+                                    <div className="space-y-2">
+                                        <label className="text-[10px] font-bold text-gray-400 uppercase ml-1">
+                                            Order Deadline
+                                        </label>
+                                        <input
+                                            type="text"
+                                            value={deadline}
+                                            onChange={e => setDeadline(e.target.value)}
+                                            className="w-full h-12 bg-gray-50 border border-gray-100 rounded-2xl px-4 text-sm font-bold"
+                                        />
+                                    </div>
                                 </div>
 
                                 <div className="space-y-2">
                                     <label className="text-[10px] font-bold text-gray-400 uppercase ml-1 flex items-center justify-between">
-                                        Theme Color
+                                        Theme Style
                                         {!isPro && <Lock size={10} className="text-orange-400" />}
                                     </label>
-                                    <div className="flex gap-2">
-                                        {['#25D366', '#000000', '#FFB800', '#FF4B4B', '#4B7BFF'].map(c => (
+                                    <div className="flex flex-wrap gap-2">
+                                        {[
+                                            { code: '#25D366', name: 'Emerald' },
+                                            { code: '#000000', name: 'Midnight' },
+                                            { code: '#1a365d', name: 'Royal' },
+                                            { code: '#9b1c1c', name: 'Crimson' },
+                                            { code: '#c2410c', name: 'Safety' }
+                                        ].map((c, idx) => (
                                             <button
-                                                key={c}
-                                                onClick={() => isPro && setPrimaryColor(c)}
-                                                className={`w-8 h-8 rounded-full border-2 transition-all ${primaryColor === c ? 'border-gray-900 scale-110' : 'border-transparent opacity-60'} ${!isPro && c !== '#25D366' ? 'hidden' : ''}`}
-                                                style={{ backgroundColor: c }}
-                                            />
+                                                key={c.code}
+                                                onClick={() => (isPro || idx < 2) && setPrimaryColor(c.code)}
+                                                className={`h-8 px-3 rounded-full border-2 text-[10px] font-bold transition-all flex items-center gap-2 ${primaryColor === c.code ? 'border-gray-900 bg-gray-900 text-white' : 'border-gray-100 bg-white text-gray-500'} ${!isPro && idx >= 2 ? 'opacity-30' : ''}`}
+                                            >
+                                                <div className="w-3 h-3 rounded-full" style={{ backgroundColor: c.code }} />
+                                                {c.name}
+                                                {!isPro && idx >= 2 && <Lock size={8} />}
+                                            </button>
                                         ))}
                                     </div>
                                 </div>
 
                                 <div className="space-y-2">
                                     <label className="text-[10px] font-bold text-gray-400 uppercase ml-1 flex items-center justify-between">
-                                        Background Image
+                                        Custom Background
                                         {!isPro && <Lock size={10} className="text-orange-400" />}
                                     </label>
-                                    <label className={`w-full h-12 bg-gray-50 border border-dashed border-gray-200 rounded-2xl flex items-center justify-center gap-2 text-xs font-bold text-gray-500 cursor-pointer hover:bg-gray-100 transition-all ${!isPro ? 'opacity-50 pointer-events-none' : ''}`}>
-                                        <ImagePlus size={16} /> {posterBg ? 'Change Photo' : 'Upload Background'}
+                                    <label className={`w-full h-12 bg-white border border-gray-100 rounded-2xl flex items-center justify-center gap-2 text-xs font-bold text-gray-600 cursor-pointer hover:bg-gray-50 transition-all ${!isPro ? 'bg-gray-50 opacity-50 pointer-events-none' : ''}`}>
+                                        <ImagePlus size={16} /> {posterBg ? 'Change Photo' : 'Upload Image'}
                                         <input type="file" className="hidden" accept="image/*" onChange={handleFileChange} />
                                     </label>
                                 </div>
@@ -358,7 +450,7 @@ ${storeUrl}`;
 
                             {!isPro && (
                                 <button onClick={() => router.push('/billing')} className="w-full py-3 bg-orange-50 text-orange-600 rounded-xl text-[10px] font-black uppercase tracking-wider hover:bg-orange-100 transition-all">
-                                    Upgrade to Pro for Full Editor
+                                    Get Pro for Custom Colors & Brands
                                 </button>
                             )}
                         </section>
