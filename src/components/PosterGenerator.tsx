@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { Copy, Share, ChevronLeft, Calendar, Clock, CheckCircle2, Loader2, Share2, Lock, MessageCircle, ImagePlus, Download, Palette, Type } from 'lucide-react';
+import { ChevronLeft, Share2, Download, Copy, ImagePlus, Lock, Loader2, MessageCircle, Plus, Calendar, Clock, CheckCircle2, Palette, Type } from 'lucide-react';
 import BottomNav from './BottomNav';
 import { useRouter } from 'next/navigation';
 import { useLanguage } from '@/lib/LanguageContext';
@@ -20,6 +20,8 @@ export default function PosterGenerator() {
     const [mode, setMode] = useState<'TEXT' | 'VISUAL'>('TEXT');
 
     // Editable Features
+    const [showPreview, setShowPreview] = useState(false);
+    const [newItemName, setNewItemName] = useState('');
     const [primaryColor, setPrimaryColor] = useState('#25D366');
     const [customHeading, setCustomHeading] = useState('TODAY\'S SPECIALS');
     const [customFooter, setCustomFooter] = useState('Place your order via WhatsApp now!');
@@ -54,6 +56,14 @@ export default function PosterGenerator() {
         setSelectedItems(prev =>
             prev.includes(name) ? prev.filter(i => i !== name) : [...prev, name]
         );
+    };
+
+    const handleAddItem = (e: React.FormEvent) => {
+        e.preventDefault();
+        if (newItemName.trim() && !selectedItems.includes(newItemName.trim())) {
+            toggleItem(newItemName.trim());
+            setNewItemName('');
+        }
     };
 
     const storeUrl = storeInfo?.slug
@@ -330,24 +340,39 @@ ${storeUrl}`;
 
             <div className={`p-6 space-y-8 max-w-lg mx-auto`}>
 
+                {/* Unified Selection (Visible for both modes) */}
+                <section className="animate-in fade-in slide-in-from-top-4 duration-500">
+                    <h2 className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-4">Add Items to Flyer</h2>
+
+                    {/* Add Custom Item */}
+                    <form onSubmit={handleAddItem} className="flex gap-2 mb-4">
+                        <input
+                            type="text"
+                            value={newItemName}
+                            onChange={(e) => setNewItemName(e.target.value)}
+                            placeholder="Type item name..."
+                            className="flex-1 h-12 bg-white border border-gray-100 rounded-2xl px-4 text-sm font-bold shadow-sm focus:ring-2 focus:ring-green-500 transition-all"
+                        />
+                        <button type="submit" className="w-12 h-12 bg-gray-900 text-white rounded-2xl flex items-center justify-center active:scale-95 transition-all">
+                            <Plus size={20} />
+                        </button>
+                    </form>
+
+                    <div className="flex flex-wrap gap-2 max-h-32 overflow-y-auto p-1">
+                        {products.map((p) => (
+                            <button
+                                key={p.id}
+                                onClick={() => toggleItem(p.name)}
+                                className={`px-4 py-2 rounded-full text-xs font-bold border transition-all ${selectedItems.includes(p.name) ? 'bg-[#25D366] text-white border-transparent' : 'bg-white text-gray-500 border-gray-100 shadow-xs'}`}
+                            >
+                                {p.name}
+                            </button>
+                        ))}
+                    </div>
+                </section>
+
                 {mode === 'TEXT' ? (
                     <div className="space-y-8 animate-in fade-in duration-500">
-                        {/* Menu Selection (Simplified) */}
-                        <section>
-                            <h2 className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-4">Select Products</h2>
-                            <div className="flex flex-wrap gap-2">
-                                {products.map((p) => (
-                                    <button
-                                        key={p.id}
-                                        onClick={() => toggleItem(p.name)}
-                                        className={`px-4 py-2 rounded-full text-xs font-bold border transition-all ${selectedItems.includes(p.name) ? 'bg-[#25D366] text-white border-transparent' : 'bg-white text-gray-500 border-gray-100'}`}
-                                    >
-                                        {p.name}
-                                    </button>
-                                ))}
-                            </div>
-                        </section>
-
                         {/* Text Preview */}
                         <section>
                             <h2 className="text-sm font-bold text-gray-400 uppercase tracking-widest mb-4">WhatsApp Text</h2>
