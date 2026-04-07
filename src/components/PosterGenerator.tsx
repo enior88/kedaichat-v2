@@ -110,11 +110,15 @@ ${storeUrl}`;
             // Optimization for mobile: Use a higher pixel ratio for better quality
             // and ensure we wait for any images/fonts to settle
             const dataUrl = await htmlToImage.toPng(posterRef.current, {
+                canvasWidth: 1000,
+                canvasHeight: 1250,
                 pixelRatio: 2,
                 backgroundColor: primaryColor,
                 cacheBust: true,
                 style: {
                     borderRadius: '0',
+                    width: '1000px',
+                    height: '1250px',
                 }
             });
 
@@ -277,78 +281,152 @@ ${storeUrl}`;
                         <div className="relative group">
                             <div
                                 ref={posterRef}
-                                className="aspect-[4/5] w-full bg-white rounded-[24px] shadow-2xl relative overflow-hidden flex flex-col"
-                                style={{ backgroundColor: primaryColor }}
+                                className="aspect-[4/5] w-full relative overflow-hidden"
+                                style={{
+                                    backgroundColor: primaryColor,
+                                    width: '100%',
+                                    aspectRatio: '4/5',
+                                    position: 'relative',
+                                    overflow: 'hidden',
+                                    display: 'flex',
+                                    flexDirection: 'column',
+                                    borderRadius: '24px'
+                                }}
                             >
-                                {/* Pattern Overlay for Premium Feel */}
-                                <div className="absolute inset-0 opacity-10 pointer-events-none z-0" style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, white 1px, transparent 0)', backgroundSize: '24px 24px' }}></div>
+                                {/* Pattern Overlay */}
+                                <div style={{
+                                    position: 'absolute',
+                                    inset: 0,
+                                    opacity: 0.1,
+                                    zIndex: 0,
+                                    backgroundImage: 'radial-gradient(circle at 2px 2px, white 1px, transparent 0)',
+                                    backgroundSize: '24px 24px'
+                                }}></div>
 
                                 {/* Background Image with Overlay */}
                                 {posterBg && (
-                                    <div className="absolute inset-0 z-0">
-                                        <img src={posterBg} className="w-full h-full object-cover" alt="bg" />
-                                        <div className="absolute inset-0 bg-black/50 backdrop-blur-[1px]" />
+                                    <div style={{ position: 'absolute', inset: 0, zIndex: 0 }}>
+                                        <img src={posterBg} style={{ width: '100%', height: '100%', objectFit: 'cover' }} alt="bg" />
+                                        <div style={{ position: 'absolute', inset: 0, backgroundColor: 'rgba(0,0,0,0.5)' }} />
                                     </div>
                                 )}
 
                                 {/* Card Content */}
-                                <div className="relative z-10 p-8 flex flex-col h-full text-white" style={{ color: 'white', display: 'flex', flexDirection: 'column', height: '100%' }}>
-                                    <div className="flex justify-between items-start mb-8" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '32px' }}>
-                                        <div className="flex items-center gap-3" style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                                            <div className="w-12 h-12 rounded-2xl flex items-center justify-center font-black text-xl border border-[rgba(255,255,255,0.3)] text-white" style={{ width: '48px', height: '48px', backgroundColor: 'rgba(255,255,255,0.2)', borderRadius: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 900, fontSize: '20px', border: '1px solid rgba(255,255,255,0.3)', color: 'white' }}>
+                                <div style={{
+                                    position: 'relative',
+                                    zIndex: 10,
+                                    padding: '32px',
+                                    display: 'flex',
+                                    flexDirection: 'column',
+                                    height: '100%',
+                                    color: 'white',
+                                    flex: 1
+                                }}>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '32px', width: '100%' }}>
+                                        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                                            <div style={{
+                                                width: '48px',
+                                                height: '48px',
+                                                backgroundColor: 'rgba(255,255,255,0.2)',
+                                                borderRadius: '16px',
+                                                display: 'flex',
+                                                alignItems: 'center',
+                                                justifyContent: 'center',
+                                                fontWeight: 900,
+                                                fontSize: '20px',
+                                                border: '1px solid rgba(255,255,255,0.3)',
+                                                color: 'white'
+                                            }}>
                                                 {storeInfo?.businessName?.[0] || 'K'}
                                             </div>
                                             <div>
-                                                <p className="text-[10px] font-black uppercase tracking-[0.2em] leading-none mb-1 opacity-80" style={{ fontWeight: 900, fontSize: '10px', textTransform: 'uppercase', letterSpacing: '0.2em', marginBottom: '4px', opacity: 0.8 }}>Local Shop</p>
-                                                <p className="font-bold text-sm leading-none" style={{ fontWeight: 700, fontSize: '14px' }}>{storeInfo?.businessName || 'Your Store'}</p>
+                                                <p style={{ fontWeight: 900, fontSize: '10px', textTransform: 'uppercase', letterSpacing: '0.2em', marginBottom: '4px', opacity: 0.8, color: 'white', margin: 0 }}>Local Shop</p>
+                                                <p style={{ fontWeight: 700, fontSize: '14px', color: 'white', margin: 0 }}>{storeInfo?.businessName || 'Your Store'}</p>
                                             </div>
                                         </div>
-                                        <div className="px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest border border-[rgba(255,255,255,0.1)] text-white" style={{ backgroundColor: 'rgba(255,255,255,0.2)', borderRadius: '9999px', padding: '6px 16px', fontSize: '10px', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '0.1em', color: 'white' }}>
+                                        <div style={{
+                                            backgroundColor: 'rgba(255,255,255,0.2)',
+                                            borderRadius: '9999px',
+                                            padding: '6px 16px',
+                                            fontSize: '10px',
+                                            fontWeight: 900,
+                                            textTransform: 'uppercase',
+                                            letterSpacing: '0.1em',
+                                            color: 'white',
+                                            border: '1px solid rgba(255,255,255,0.1)'
+                                        }}>
                                             Open Now
                                         </div>
                                     </div>
 
-                                    <div className="mb-8" style={{ marginBottom: '32px' }}>
-                                        <h3 className="text-4xl font-black mb-2 leading-tight tracking-tighter" style={{ fontWeight: 900, fontSize: '36px', marginBottom: '8px', lineHeight: 1.25, letterSpacing: '-0.05em' }}>{customHeading}</h3>
-                                        <div className="w-12 h-1.5 bg-white rounded-full" style={{ width: '48px', height: '6px', backgroundColor: 'white', borderRadius: '9999px' }}></div>
+                                    <div style={{ marginBottom: '32px' }}>
+                                        <h3 style={{ fontWeight: 900, fontSize: '36px', marginBottom: '8px', lineHeight: 1.1, letterSpacing: '-0.05em', color: 'white', margin: 0 }}>{customHeading}</h3>
+                                        <div style={{ width: '48px', height: '6px', backgroundColor: 'white', borderRadius: '9999px' }}></div>
                                     </div>
 
-                                    <div className="space-y-6 flex-1" style={{ flex: 1 }}>
+                                    <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '24px' }}>
                                         {(selectedItems.length > 0 ? selectedItems.slice(0, 5) : ['Best Selection 1', 'Premium Item 2', 'Signature Dish 3']).map((item, idx) => (
-                                            <div key={idx} className="flex items-center gap-5" style={{ display: 'flex', alignItems: 'center', gap: '20px', marginBottom: '24px' }}>
-                                                <div className="w-8 h-8 rounded-full bg-white text-gray-900 flex items-center justify-center font-black text-xs" style={{ width: '32px', height: '32px', borderRadius: '9999px', backgroundColor: 'white', color: '#111827', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 900, fontSize: '12px' }}>
+                                            <div key={idx} style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
+                                                <div style={{
+                                                    width: '32px',
+                                                    height: '32px',
+                                                    borderRadius: '9999px',
+                                                    backgroundColor: 'white',
+                                                    color: '#111827',
+                                                    display: 'flex',
+                                                    alignItems: 'center',
+                                                    justifyContent: 'center',
+                                                    fontWeight: 900,
+                                                    fontSize: '12px'
+                                                }}>
                                                     {idx + 1}
                                                 </div>
-                                                <span className="font-black text-xl tracking-tight" style={{ fontWeight: 900, fontSize: '20px', letterSpacing: '-0.025em' }}>{item}</span>
+                                                <span style={{ fontWeight: 900, fontSize: '20px', letterSpacing: '-0.025em', color: 'white' }}>{item}</span>
                                             </div>
                                         ))}
                                     </div>
 
-                                    <div className="mt-8 grid grid-cols-2 gap-8 border-t border-[rgba(255,255,255,0.2)] pt-8 pb-4" style={{ marginTop: '32px', display: 'grid', gridTemplateColumns: 'repeat(2, minmax(0, 1fr))', gap: '32px', borderTop: '1px solid rgba(255,255,255,0.2)', paddingTop: '32px', paddingBottom: '16px' }}>
-                                        <div>
-                                            <p className="text-[9px] font-black text-white/50 uppercase tracking-[0.2em] mb-2" style={{ fontWeight: 900, fontSize: '9px', textTransform: 'uppercase', letterSpacing: '0.2em', marginBottom: '8px', color: 'rgba(255,255,255,0.5)' }}>Delivery/Pickup</p>
-                                            <div className="flex items-center gap-2" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                                <Clock size={14} style={{ color: 'rgba(255,255,255,0.6)' }} />
-                                                <p className="font-black text-lg" style={{ fontWeight: 900, fontSize: '18px' }}>{pickupTime}</p>
-                                            </div>
+                                    <div style={{
+                                        marginTop: '32px',
+                                        display: 'flex',
+                                        justifyContent: 'space-between',
+                                        borderTop: '1px solid rgba(255,255,255,0.2)',
+                                        paddingTop: '32px',
+                                        paddingBottom: '16px'
+                                    }}>
+                                        <div style={{ flex: 1 }}>
+                                            <p style={{ fontWeight: 900, fontSize: '9px', textTransform: 'uppercase', letterSpacing: '0.2em', marginBottom: '8px', color: 'rgba(255,255,255,0.5)', margin: 0 }}>Delivery/Pickup</p>
+                                            <p style={{ fontWeight: 900, fontSize: '18px', color: 'white', margin: 0 }}>{pickupTime}</p>
                                         </div>
-                                        <div>
-                                            <p className="text-[9px] font-black text-white/50 uppercase tracking-[0.2em] mb-2" style={{ fontWeight: 900, fontSize: '9px', textTransform: 'uppercase', letterSpacing: '0.2em', marginBottom: '8px', color: 'rgba(255,255,255,0.5)' }}>Order Before</p>
-                                            <div className="flex items-center gap-2" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                                <Calendar size={14} style={{ color: 'rgba(255,255,255,0.6)' }} />
-                                                <p className="font-black text-lg" style={{ fontWeight: 900, fontSize: '18px' }}>{deadline}</p>
-                                            </div>
+                                        <div style={{ flex: 1 }}>
+                                            <p style={{ fontWeight: 900, fontSize: '9px', textTransform: 'uppercase', letterSpacing: '0.2em', marginBottom: '8px', color: 'rgba(255,255,255,0.5)', margin: 0 }}>Order Before</p>
+                                            <p style={{ fontWeight: 900, fontSize: '18px', color: 'white', margin: 0 }}>{deadline}</p>
                                         </div>
                                     </div>
 
                                     {/* Viral Loop / Branding */}
-                                    <div className="mt-auto pt-8 border-t border-[rgba(255,255,255,0.1)] flex items-center justify-center gap-3" style={{ marginTop: 'auto', paddingTop: '32px', borderTop: '1px solid rgba(255,255,255,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '12px' }}>
-                                        <div className="w-6 h-6 bg-white rounded-lg flex items-center justify-center" style={{ width: '24px', height: '24px', backgroundColor: 'white', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                                            <div className="w-4 h-4 bg-[#25D366] rounded flex items-center justify-center" style={{ width: '16px', height: '16px', backgroundColor: '#25D366', borderRadius: '4px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                                                <CheckCircle2 size={10} style={{ color: 'white' }} />
-                                            </div>
+                                    <div style={{
+                                        marginTop: 'auto',
+                                        paddingTop: '32px',
+                                        borderTop: '1px solid rgba(255,255,255,0.1)',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                        gap: '12px',
+                                        width: '100%'
+                                    }}>
+                                        <div style={{
+                                            width: '24px',
+                                            height: '24px',
+                                            backgroundColor: 'white',
+                                            borderRadius: '8px',
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            justifyContent: 'center'
+                                        }}>
+                                            <div style={{ width: '12px', height: '12px', backgroundColor: '#25D366', borderRadius: '3px' }}></div>
                                         </div>
-                                        <p className="text-[9px] font-black uppercase tracking-[0.3em] opacity-80 text-white" style={{ fontWeight: 900, fontSize: '9px', textTransform: 'uppercase', letterSpacing: '0.3em', opacity: 0.8, color: 'white' }}>Powered by KedaiChat</p>
+                                        <p style={{ fontWeight: 900, fontSize: '9px', textTransform: 'uppercase', letterSpacing: '0.3em', opacity: 0.8, color: 'white', margin: 0 }}>Powered by KedaiChat</p>
                                     </div>
                                 </div>
                             </div>
@@ -366,16 +444,18 @@ ${storeUrl}`;
             </div>
 
             {/* Toast */}
-            {copyStatus && (
-                <div className="fixed bottom-24 left-1/2 -translate-x-1/2 z-50">
-                    <div className="bg-gray-900 text-white px-6 py-3 rounded-full text-sm font-bold shadow-xl flex items-center gap-2 animate-in slide-in-from-bottom-4">
-                        <CheckCircle2 size={16} className="text-[#25D366]" />
-                        {copyStatus}
+            {
+                copyStatus && (
+                    <div className="fixed bottom-24 left-1/2 -translate-x-1/2 z-50">
+                        <div className="bg-gray-900 text-white px-6 py-3 rounded-full text-sm font-bold shadow-xl flex items-center gap-2 animate-in slide-in-from-bottom-4">
+                            <CheckCircle2 size={16} className="text-[#25D366]" />
+                            {copyStatus}
+                        </div>
                     </div>
-                </div>
-            )}
+                )
+            }
             <BottomNav />
-        </div>
+        </div >
     );
 }
 
