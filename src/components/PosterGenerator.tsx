@@ -107,13 +107,27 @@ ${storeUrl}`;
         if (!posterRef.current) return;
         setIsLoading(true);
         try {
-            const dataUrl = await htmlToImage.toJpeg(posterRef.current, { quality: 0.95 });
+            // Optimization for mobile: Use a higher pixel ratio for better quality
+            // and ensure we wait for any images/fonts to settle
+            const dataUrl = await htmlToImage.toPng(posterRef.current, {
+                quality: 1.0,
+                pixelRatio: 2, // High-res capture
+                backgroundColor: primaryColor,
+                style: {
+                    transform: 'scale(1)',
+                    borderRadius: '0', // Full bleed for download
+                }
+            });
+
             const link = document.createElement('a');
-            link.download = `kedaichat-poster-${Date.now()}.jpg`;
+            link.download = `${storeInfo?.businessName || 'kedai'}-flyer-${Date.now()}.png`;
             link.href = dataUrl;
+            document.body.appendChild(link);
             link.click();
+            document.body.removeChild(link);
         } catch (err) {
             console.error('Download failed', err);
+            alert('Download failed. Try taking a screenshot instead or use a different browser.');
         } finally {
             setIsLoading(false);
         }
@@ -260,72 +274,84 @@ ${storeUrl}`;
                             )}
                         </section>
 
-                        {/* Visual Poster Preview */}
-                        <section className="space-y-4">
-                            <h2 className="text-xs font-bold text-gray-400 uppercase tracking-widest text-center">Flyer Preview</h2>
-
-                            {/* The DOM element we capture */}
+                        {/* The DOM element we capture */}
+                        <div className="relative group">
                             <div
                                 ref={posterRef}
                                 className="aspect-[4/5] w-full bg-white rounded-[24px] shadow-2xl relative overflow-hidden flex flex-col"
                                 style={{ backgroundColor: primaryColor }}
                             >
+                                {/* Pattern Overlay for Premium Feel */}
+                                <div className="absolute inset-0 opacity-10 pointer-events-none z-0" style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, white 1px, transparent 0)', backgroundSize: '24px 24px' }}></div>
+
                                 {/* Background Image with Overlay */}
                                 {posterBg && (
                                     <div className="absolute inset-0 z-0">
                                         <img src={posterBg} className="w-full h-full object-cover" alt="bg" />
-                                        <div className="absolute inset-0 bg-black/40 backdrop-blur-[2px]" />
+                                        <div className="absolute inset-0 bg-black/50 backdrop-blur-[1px]" />
                                     </div>
                                 )}
 
                                 {/* Card Content */}
                                 <div className="relative z-10 p-8 flex flex-col h-full text-white">
                                     <div className="flex justify-between items-start mb-8">
-                                        <div className="w-12 h-12 bg-white/20 backdrop-blur-md rounded-2xl flex items-center justify-center font-black text-xl">
-                                            {storeInfo?.businessName?.[0] || 'K'}
+                                        <div className="flex items-center gap-3">
+                                            <div className="w-12 h-12 bg-white/20 backdrop-blur-md rounded-2xl flex items-center justify-center font-black text-xl border border-white/20">
+                                                {storeInfo?.businessName?.[0] || 'K'}
+                                            </div>
+                                            <div>
+                                                <p className="text-[10px] font-black uppercase tracking-[0.2em] leading-none mb-1 opacity-80">Local Shop</p>
+                                                <p className="font-bold text-sm leading-none">{storeInfo?.businessName || 'Your Store'}</p>
+                                            </div>
                                         </div>
-                                        <div className="px-3 py-1 bg-white/20 backdrop-blur-md rounded-full text-[10px] font-black uppercase tracking-widest">
-                                            Open for orders
+                                        <div className="px-4 py-1.5 bg-white/20 backdrop-blur-md rounded-full text-[10px] font-black uppercase tracking-widest border border-white/10">
+                                            Open Now
                                         </div>
                                     </div>
 
-                                    <h3 className="text-3xl font-black mb-1 leading-tight tracking-tight">{customHeading}</h3>
-                                    <p className="text-white/80 text-xs font-bold uppercase tracking-widest mb-8">{storeInfo?.businessName || 'Your Store'}</p>
+                                    <div className="mb-8">
+                                        <h3 className="text-4xl font-black mb-2 leading-tight tracking-tighter drop-shadow-lg">{customHeading}</h3>
+                                        <div className="w-12 h-1.5 bg-white rounded-full"></div>
+                                    </div>
 
-                                    <div className="space-y-4 flex-1">
-                                        {(selectedItems.length > 0 ? selectedItems.slice(0, 5) : ['Product A', 'Product B', 'Product C']).map((item, idx) => (
-                                            <div key={idx} className="flex items-center gap-4 group">
-                                                <div className="w-8 h-8 rounded-xl bg-white text-gray-900 flex items-center justify-center font-black text-xs shadow-lg">
+                                    <div className="space-y-6 flex-1">
+                                        {(selectedItems.length > 0 ? selectedItems.slice(0, 5) : ['Best Selection 1', 'Premium Item 2', 'Signature Dish 3']).map((item, idx) => (
+                                            <div key={idx} className="flex items-center gap-5 translate-x-2">
+                                                <div className="w-8 h-8 rounded-full bg-white text-gray-900 flex items-center justify-center font-black text-xs shadow-xl ring-4 ring-white/10">
                                                     {idx + 1}
                                                 </div>
-                                                <span className="font-bold text-lg">{item}</span>
+                                                <span className="font-black text-xl tracking-tight drop-shadow-sm">{item}</span>
                                             </div>
                                         ))}
                                     </div>
 
-                                    <div className="mt-8 grid grid-cols-2 gap-4 border-t border-white/20 pt-8 pb-4">
+                                    <div className="mt-8 grid grid-cols-2 gap-8 border-t border-white/20 pt-8 pb-4">
                                         <div>
-                                            <p className="text-[10px] font-black text-white/60 uppercase tracking-widest mb-1">Pickup At</p>
-                                            <p className="font-black text-xl">{pickupTime}</p>
+                                            <p className="text-[9px] font-black text-white/50 uppercase tracking-[0.2em] mb-2">Delivery/Pickup</p>
+                                            <div className="flex items-center gap-2">
+                                                <Clock size={14} className="text-white/60" />
+                                                <p className="font-black text-lg">{pickupTime}</p>
+                                            </div>
                                         </div>
                                         <div>
-                                            <p className="text-[10px] font-black text-white/60 uppercase tracking-widest mb-1">Order Before</p>
-                                            <p className="font-black text-xl">{deadline}</p>
+                                            <p className="text-[9px] font-black text-white/50 uppercase tracking-[0.2em] mb-2">Order Before</p>
+                                            <div className="flex items-center gap-2">
+                                                <Calendar size={14} className="text-white/60" />
+                                                <p className="font-black text-lg">{deadline}</p>
+                                            </div>
                                         </div>
                                     </div>
 
                                     {/* Viral Loop / Branding */}
-                                    <div className="mt-auto pt-6 text-center">
-                                        <div className="inline-flex items-center gap-2 bg-black/20 backdrop-blur-md px-4 py-2 rounded-full border border-white/10">
-                                            <div className="w-4 h-4 bg-[#25D366] rounded-md flex items-center justify-center">
-                                                <CheckCircle2 size={10} className="text-white" />
-                                            </div>
-                                            <span className="text-[9px] font-black uppercase tracking-[0.2em]">Powered by KedaiChat</span>
+                                    <div className="mt-auto pt-8 border-t border-white/10 flex items-center justify-center gap-3">
+                                        <div className="w-6 h-6 bg-white rounded-lg flex items-center justify-center">
+                                            <img src="/logo.png" className="w-4 h-4 object-contain" alt="K" />
                                         </div>
+                                        <p className="text-[9px] font-black uppercase tracking-[0.3em] opacity-80">Powered by KedaiChat</p>
                                     </div>
                                 </div>
                             </div>
-                        </section>
+                        </div>
 
                         <button
                             onClick={handleDownload}
