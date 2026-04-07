@@ -5,7 +5,7 @@ import { Copy, Share, ChevronLeft, Calendar, Clock, CheckCircle2, Loader2, Share
 import BottomNav from './BottomNav';
 import { useRouter } from 'next/navigation';
 import { useLanguage } from '@/lib/LanguageContext';
-import * as htmlToImage from 'html-to-image';
+import html2canvas from 'html2canvas';
 
 export default function PosterGenerator() {
     const router = useRouter();
@@ -104,35 +104,30 @@ ${storeUrl}`;
     };
 
     const handleDownload = async () => {
-        if (!posterRef.current) return;
+        const el = posterRef.current;
+        if (!el) return;
         setIsLoading(true);
 
         // Wait for rendering and fonts
         setTimeout(async () => {
             try {
-                // Use toBlob as it's more memory efficient on mobile than toPng (dataURLs)
-                const blob = await htmlToImage.toBlob(posterRef.current!, {
-                    pixelRatio: 1.5, // Reduced from 2.0 to save memory
+                const canvas = await html2canvas(el, {
+                    useCORS: true,
+                    scale: 2, // High resolution
                     backgroundColor: primaryColor,
-                    cacheBust: true,
-                    style: {
-                        borderRadius: '0',
-                        width: '800px', // Reduced from 1000px
-                        height: '1000px', // Reduced from 1250px
-                    }
+                    logging: false,
+                    allowTaint: true,
+                    windowWidth: 800, // Force specific width for consistent layout
+                    windowHeight: 1000,
                 });
 
-                if (!blob) throw new Error('Could not generate image blob');
-
+                const dataUrl = canvas.toDataURL('image/png');
                 const link = document.createElement('a');
                 link.download = `${storeInfo?.businessName || 'kedai'}-flyer-${Date.now()}.png`;
-                link.href = URL.createObjectURL(blob);
+                link.href = dataUrl;
                 document.body.appendChild(link);
                 link.click();
                 document.body.removeChild(link);
-
-                // Cleanup URL
-                setTimeout(() => URL.revokeObjectURL(link.href), 100);
             } catch (err) {
                 console.error('Download failed', err);
                 const msg = err instanceof Error ? err.message : String(err);
@@ -140,7 +135,7 @@ ${storeUrl}`;
             } finally {
                 setIsLoading(false);
             }
-        }, 1500);
+        }, 1000);
     };
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
