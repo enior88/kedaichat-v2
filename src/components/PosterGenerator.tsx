@@ -108,34 +108,118 @@ ${storeUrl}`;
         if (!el) return;
         setIsLoading(true);
 
-        // Wait for rendering and fonts
-        setTimeout(async () => {
-            try {
-                const canvas = await html2canvas(el, {
-                    useCORS: true,
-                    scale: 2, // High resolution
-                    backgroundColor: primaryColor,
-                    logging: false,
-                    allowTaint: true,
-                    windowWidth: 800, // Force specific width for consistent layout
-                    windowHeight: 1000,
+        try {
+            // Create a high-res canvas
+            const canvas = document.createElement('canvas');
+            const scale = 2;
+            canvas.width = 800 * scale;
+            canvas.height = 1000 * scale;
+            const ctx = canvas.getContext('2d');
+            if (!ctx) throw new Error('Could not get canvas context');
+
+            // 1. Background
+            ctx.fillStyle = primaryColor;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // 2. Background Image (if any)
+            if (posterBg) {
+                const img = new Image();
+                img.crossOrigin = "anonymous";
+                await new Promise((resolve, reject) => {
+                    img.onload = resolve;
+                    img.onerror = reject;
+                    img.src = posterBg;
                 });
 
-                const dataUrl = canvas.toDataURL('image/png');
-                const link = document.createElement('a');
-                link.download = `${storeInfo?.businessName || 'kedai'}-flyer-${Date.now()}.png`;
-                link.href = dataUrl;
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
-            } catch (err) {
-                console.error('Download failed', err);
-                const msg = err instanceof Error ? err.message : String(err);
-                alert(`Err: ${msg}. Please refresh or try another browser.`);
-            } finally {
-                setIsLoading(false);
+                // Draw aspect fill
+                const imgAspect = img.width / img.height;
+                const canvasAspect = canvas.width / canvas.height;
+                let drawW, drawH, drawX, drawY;
+                if (imgAspect > canvasAspect) {
+                    drawH = canvas.height;
+                    drawW = canvas.height * imgAspect;
+                    drawX = (canvas.width - drawW) / 2;
+                    drawY = 0;
+                } else {
+                    drawW = canvas.width;
+                    drawH = canvas.width / imgAspect;
+                    drawX = 0;
+                    drawY = (canvas.height - drawH) / 2;
+                }
+                ctx.drawImage(img, drawX, drawY, drawW, drawH);
+
+                // Dark overlay
+                ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
             }
-        }, 1000);
+
+            // 3. Header Text
+            ctx.fillStyle = 'white';
+            ctx.font = `bold ${24 * scale}px sans-serif`;
+            ctx.fillText(storeInfo?.businessName || 'Your Store', 40 * scale, 80 * scale);
+
+            ctx.font = `900 ${48 * scale}px sans-serif`;
+            ctx.fillText(customHeading, 40 * scale, 180 * scale);
+
+            // Underline heading
+            ctx.fillRect(40 * scale, 210 * scale, 60 * scale, 8 * scale);
+
+            // 4. Items List
+            const itemsToDraw = selectedItems.length > 0 ? selectedItems.slice(0, 5) : ['Selection 1', 'Selection 2', 'Selection 3'];
+            itemsToDraw.forEach((item, idx) => {
+                const y = 320 * scale + (idx * 80 * scale);
+
+                // Number circle
+                ctx.beginPath();
+                ctx.arc(60 * scale, y - 10 * scale, 18 * scale, 0, Math.PI * 2);
+                ctx.fillStyle = 'white';
+                ctx.fill();
+
+                ctx.fillStyle = '#111827';
+                ctx.font = `bold ${14 * scale}px sans-serif`;
+                ctx.textAlign = 'center';
+                ctx.fillText(String(idx + 1), 60 * scale, y - 5 * scale);
+
+                // Item text
+                ctx.fillStyle = 'white';
+                ctx.textAlign = 'left';
+                ctx.font = `900 ${28 * scale}px sans-serif`;
+                ctx.fillText(item, 100 * scale, y - 2 * scale);
+            });
+
+            // 5. Footer Info
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
+            ctx.font = `900 ${10 * scale}px sans-serif`;
+            ctx.fillText('DELIVERY/PICKUP', 40 * scale, 750 * scale);
+            ctx.fillText('ORDER BEFORE', 400 * scale, 750 * scale);
+
+            ctx.fillStyle = 'white';
+            ctx.font = `900 ${24 * scale}px sans-serif`;
+            ctx.fillText(pickupTime, 40 * scale, 800 * scale);
+            ctx.fillText(deadline, 400 * scale, 800 * scale);
+
+            // 6. Branding
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
+            ctx.font = `900 ${12 * scale}px sans-serif`;
+            ctx.textAlign = 'center';
+            ctx.fillText('POWERED BY KEDAICHAT', canvas.width / 2, 950 * scale);
+
+            // Download
+            const dataUrl = canvas.toDataURL('image/png');
+            const link = document.createElement('a');
+            link.download = `${storeInfo?.businessName || 'kedai'}-flyer.png`;
+            link.href = dataUrl;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+
+        } catch (err) {
+            console.error('Download failed', err);
+            const msg = err instanceof Error ? err.message : String(err);
+            alert(`Err: ${msg}. Refreshing page may help.`);
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
