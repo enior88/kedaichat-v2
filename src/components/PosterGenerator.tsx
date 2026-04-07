@@ -202,10 +202,38 @@ ${storeUrl}`;
             ctx.lineWidth = 1 * scale;
             ctx.stroke();
 
-            ctx.fillStyle = 'white';
-            ctx.font = `black ${24 * scale}px sans-serif`;
-            ctx.textAlign = 'center';
-            ctx.fillText(storeInfo?.businessName?.[0] || 'K', 64 * scale, 73 * scale);
+            // Try to draw actual Logo Image
+            let logoLoaded = false;
+            if (storeInfo?.logoUrl) {
+                try {
+                    const logoImg = new Image();
+                    logoImg.crossOrigin = "anonymous";
+                    await new Promise((resolve, reject) => {
+                        logoImg.onload = resolve;
+                        logoImg.onerror = reject;
+                        logoImg.src = storeInfo.logoUrl;
+                    });
+
+                    // Draw logo inside the box (with padding)
+                    const pad = 8 * scale;
+                    ctx.save();
+                    ctx.beginPath();
+                    ctx.roundRect(40 * scale, 40 * scale, 48 * scale, 48 * scale, 12 * scale);
+                    ctx.clip();
+                    ctx.drawImage(logoImg, 40 * scale, 40 * scale, 48 * scale, 48 * scale);
+                    ctx.restore();
+                    logoLoaded = true;
+                } catch (e) {
+                    console.warn("Logo failed to load for canvas", e);
+                }
+            }
+
+            if (!logoLoaded) {
+                ctx.fillStyle = 'white';
+                ctx.font = `black ${24 * scale}px sans-serif`;
+                ctx.textAlign = 'center';
+                ctx.fillText(storeInfo?.businessName?.[0] || 'K', 64 * scale, 73 * scale);
+            }
 
             ctx.textAlign = 'left';
             ctx.fillStyle = 'rgba(255,255,255,0.7)';
