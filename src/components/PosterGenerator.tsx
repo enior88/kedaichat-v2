@@ -110,28 +110,33 @@ ${storeUrl}`;
         // Wait for rendering and fonts
         setTimeout(async () => {
             try {
-                const dataUrl = await htmlToImage.toPng(posterRef.current!, {
-                    canvasWidth: 1000,
-                    canvasHeight: 1250,
-                    pixelRatio: 2,
+                // Use toBlob as it's more memory efficient on mobile than toPng (dataURLs)
+                const blob = await htmlToImage.toBlob(posterRef.current!, {
+                    pixelRatio: 1.5, // Reduced from 2.0 to save memory
                     backgroundColor: primaryColor,
                     cacheBust: true,
                     style: {
                         borderRadius: '0',
-                        width: '1000px',
-                        height: '1250px',
+                        width: '800px', // Reduced from 1000px
+                        height: '1000px', // Reduced from 1250px
                     }
                 });
 
+                if (!blob) throw new Error('Could not generate image blob');
+
                 const link = document.createElement('a');
                 link.download = `${storeInfo?.businessName || 'kedai'}-flyer-${Date.now()}.png`;
-                link.href = dataUrl;
+                link.href = URL.createObjectURL(blob);
                 document.body.appendChild(link);
                 link.click();
                 document.body.removeChild(link);
+
+                // Cleanup URL
+                setTimeout(() => URL.revokeObjectURL(link.href), 100);
             } catch (err) {
                 console.error('Download failed', err);
-                alert('Download failed. Try taking a screenshot instead or use a different browser.');
+                const msg = err instanceof Error ? err.message : String(err);
+                alert(`Err: ${msg}. Please refresh or try another browser.`);
             } finally {
                 setIsLoading(false);
             }
@@ -295,15 +300,7 @@ ${storeUrl}`;
                                     borderRadius: '24px'
                                 }}
                             >
-                                {/* Pattern Overlay */}
-                                <div style={{
-                                    position: 'absolute',
-                                    inset: 0,
-                                    opacity: 0.1,
-                                    zIndex: 0,
-                                    backgroundImage: 'radial-gradient(circle at 2px 2px, white 1px, transparent 0)',
-                                    backgroundSize: '24px 24px'
-                                }}></div>
+                                {/* Background Image with Overlay */}
 
                                 {/* Background Image with Overlay */}
                                 {posterBg && (
