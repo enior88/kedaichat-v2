@@ -5,8 +5,11 @@ export default function manifest(): MetadataRoute.Manifest {
         name: 'KedaiChat',
         short_name: 'KedaiChat',
         description: 'Transform your business with KedaiChat - The ultimate WhatsApp OS.',
+        id: '/',
         start_url: '/',
+        scope: '/',
         display: 'standalone',
+        orientation: 'portrait',
         background_color: '#ffffff',
         theme_color: '#25D366',
         icons: [
