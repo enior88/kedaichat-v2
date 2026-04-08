@@ -16,6 +16,7 @@ export const viewport: Viewport = {
 export const metadata: Metadata = {
     title: "KedaiChat - WhatsApp Business Shop & Order Management",
     description: "Launch your WhatsApp Shop in minutes. The easiest way to manage orders, resellers, and group orders for your WhatsApp Business. WhatsApp Biz solution for SMEs.",
+    manifest: "/manifest.json",
     keywords: ["WhatsApp Business", "WhatsApp Shop", "Whatapp Biz", "WhatsApp Catalog", "Social Commerce", "Order Management", "Reseller System"],
     appleWebApp: {
         capable: true,
