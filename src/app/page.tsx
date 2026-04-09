@@ -27,8 +27,9 @@ import LanguageToggle from '@/components/LanguageToggle';
 import { Metadata } from 'next';
 import OnboardingCarousel from '@/components/OnboardingCarousel';
 import { useSearchParams } from 'next/navigation';
+import { Suspense } from 'react';
 
-export default function LandingPage() {
+function LandingPageContent() {
     const { t } = useLanguage();
     const [isMenuOpen, setIsMenuOpen] = React.useState(false);
     const [showOnboarding, setShowOnboarding] = React.useState(false);
@@ -489,5 +490,13 @@ export default function LandingPage() {
                 </div>
             </main>
         </div>
+    );
+}
+
+export default function LandingPage() {
+    return (
+        <Suspense fallback={<div className="min-h-screen bg-white" />}>
+            <LandingPageContent />
+        </Suspense>
     );
 }
