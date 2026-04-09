@@ -25,10 +25,30 @@ import {
 import { useLanguage } from '@/lib/LanguageContext';
 import LanguageToggle from '@/components/LanguageToggle';
 import { Metadata } from 'next';
+import OnboardingCarousel from '@/components/OnboardingCarousel';
+import { useSearchParams } from 'next/navigation';
 
 export default function LandingPage() {
     const { t } = useLanguage();
     const [isMenuOpen, setIsMenuOpen] = React.useState(false);
+    const [showOnboarding, setShowOnboarding] = React.useState(false);
+    const searchParams = useSearchParams();
+
+    React.useEffect(() => {
+        // PWA Detection
+        const isStandalone = window.matchMedia('(display-mode: standalone)').matches;
+        const fromPwa = searchParams.get('v') === '2';
+        const isMobile = window.innerWidth < 768;
+
+        if ((isStandalone || fromPwa) && isMobile) {
+            // Check if they've already seen it this session to avoid annoyance
+            const seen = sessionStorage.getItem('kd_onboarding_seen');
+            if (!seen) {
+                setShowOnboarding(true);
+                sessionStorage.setItem('kd_onboarding_seen', 'true');
+            }
+        }
+    }, [searchParams]);
 
     const jsonLd = {
         "@context": "https://schema.org",
@@ -106,6 +126,7 @@ export default function LandingPage() {
 
     return (
         <div id="main-scroll-container" className="bg-white font-inter text-gray-900 md:h-screen md:overflow-y-auto md:snap-y md:snap-mandatory overflow-x-hidden min-h-screen" style={{ scrollBehavior: 'smooth' }}>
+            {showOnboarding && <OnboardingCarousel />}
             <script
                 type="application/ld+json"
                 dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
