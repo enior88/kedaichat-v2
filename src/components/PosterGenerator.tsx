@@ -41,7 +41,9 @@ export default function PosterGenerator() {
                 const prodData = await prodRes.json();
                 const dashData = await dashRes.json();
 
-                if (!prodData.error) setProducts(prodData.products || []);
+                if (!prodData.error) {
+                    setProducts(Array.isArray(prodData) ? prodData : (prodData.products || []));
+                }
                 if (!dashData.error) setStoreInfo(dashData);
             } catch (error) {
                 console.error('Failed to load poster data:', error);

@@ -15,7 +15,8 @@ export default function ProductManager() {
     const [showAddForm, setShowAddForm] = useState(searchParams.get('action') === 'add');
     const [products, setProducts] = useState<any[]>([]);
     const [isLoading, setIsLoading] = useState(true);
-    const [formData, setFormData] = useState({ id: '', name: '', price: '', description: '', category: 'Rice Items', image: '' });
+    const [isUploading, setIsUploading] = useState(false);
+    const [formData, setFormData] = useState({ id: '', name: '', price: '', description: '', category: 'Rice Items', imageUrl: '' });
     const [tagInput, setTagInput] = useState('');
 
     useEffect(() => {
@@ -46,19 +47,22 @@ export default function ProductManager() {
     };
 
     const handleSaveProduct = async () => {
-        if (!formData.name || !formData.price) return;
+        if (!formData.name || !formData.price || isUploading) return;
 
         try {
             const isEditing = !!formData.id;
             const res = await fetch('/api/products', {
                 method: isEditing ? 'PUT' : 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(formData),
+                body: JSON.stringify({
+                    ...formData,
+                    image: formData.imageUrl // Map to expected API field
+                }),
             });
 
             if (res.ok) {
                 setShowAddForm(false);
-                setFormData({ id: '', name: '', price: '', description: '', category: 'Rice Items', image: '' });
+                setFormData({ id: '', name: '', price: '', description: '', category: 'Rice Items', imageUrl: '' });
                 fetchProducts();
             }
         } catch (error) {
@@ -72,7 +76,7 @@ export default function ProductManager() {
             const res = await fetch(`/api/products?id=${id}`, { method: 'DELETE' });
             if (res.ok) {
                 setShowAddForm(false);
-                setFormData({ id: '', name: '', price: '', description: '', category: 'Rice Items', image: '' });
+                setFormData({ id: '', name: '', price: '', description: '', category: 'Rice Items', imageUrl: '' });
                 fetchProducts();
             }
         } catch (error) {
@@ -103,7 +107,7 @@ export default function ProductManager() {
             price: product.price.toString(),
             description: product.description || '',
             category: cat,
-            image: product.image || ''
+            imageUrl: product.imageUrl || ''
         });
         setShowAddForm(true);
     };
@@ -116,7 +120,7 @@ export default function ProductManager() {
                         <button
                             onClick={() => {
                                 setShowAddForm(false);
-                                setFormData({ id: '', name: '', price: '', description: '', category: 'Rice Items', image: '' });
+                                setFormData({ id: '', name: '', price: '', description: '', category: 'Rice Items', imageUrl: '' });
                             }}
                             className="w-10 h-10 bg-white rounded-2xl flex items-center justify-center text-gray-400 border border-gray-100 shadow-sm active:scale-90 transition-all"
                         >
@@ -128,53 +132,51 @@ export default function ProductManager() {
                     </div>
 
                     <div className="space-y-6">
-                        <label className="w-full aspect-square bg-gray-50 border-2 border-dashed border-gray-200 rounded-[32px] flex flex-col items-center justify-center text-gray-400 gap-2 cursor-pointer hover:bg-gray-100 transition-all overflow-hidden">
+                        <label className="w-full aspect-square bg-gray-50 border-2 border-dashed border-gray-200 rounded-[32px] flex flex-col items-center justify-center text-gray-400 gap-2 cursor-pointer hover:bg-gray-100 transition-all overflow-hidden relative">
                             <input
                                 type="file"
                                 accept="image/*"
                                 className="hidden"
-                                onChange={(e) => {
+                                disabled={isUploading}
+                                onChange={async (e) => {
                                     const file = e.target.files?.[0];
                                     if (file) {
-                                        const reader = new FileReader();
-                                        reader.onloadend = () => {
-                                            const img = new Image();
-                                            img.onload = () => {
-                                                const canvas = document.createElement('canvas');
-                                                let width = img.width;
-                                                let height = img.height;
-                                                const MAX_SIZE = 800;
+                                        setIsUploading(true);
+                                        try {
+                                            const formDataUpload = new FormData();
+                                            formDataUpload.append('file', file);
 
-                                                if (width > height && width > MAX_SIZE) {
-                                                    height *= MAX_SIZE / width;
-                                                    width = MAX_SIZE;
-                                                } else if (height > MAX_SIZE) {
-                                                    width *= MAX_SIZE / height;
-                                                    height = MAX_SIZE;
-                                                }
+                                            const res = await fetch('/api/upload', {
+                                                method: 'POST',
+                                                body: formDataUpload
+                                            });
 
-                                                canvas.width = width;
-                                                canvas.height = height;
-                                                const ctx = canvas.getContext('2d');
-                                                ctx?.drawImage(img, 0, 0, width, height);
-
-                                                // Compress as JPEG
-                                                const dataUrl = canvas.toDataURL('image/jpeg', 0.8);
-                                                setFormData(prev => ({ ...prev, image: dataUrl }));
-                                            };
-                                            img.src = reader.result as string;
-                                        };
-                                        reader.readAsDataURL(file);
+                                            if (res.ok) {
+                                                const data = await res.json();
+                                                setFormData(prev => ({ ...prev, imageUrl: data.fileUrl }));
+                                            }
+                                        } catch (error) {
+                                            console.error('Upload failed', error);
+                                        } finally {
+                                            setIsUploading(false);
+                                        }
                                     }
                                 }}
                             />
-                            {formData.image ? (
-                                <img src={formData.image} alt="Product" className="w-full h-full object-cover" />
+                            {formData.imageUrl ? (
+                                <img src={formData.imageUrl} alt="Product" className={`w-full h-full object-cover ${isUploading ? 'opacity-50' : ''}`} />
                             ) : (
                                 <>
                                     <ImageIcon size={32} />
-                                    <span className="text-[10px] font-bold uppercase tracking-wider">Upload Photo</span>
+                                    <span className="text-[10px] font-bold uppercase tracking-wider">
+                                        {isUploading ? 'Uploading...' : 'Upload Photo'}
+                                    </span>
                                 </>
+                            )}
+                            {isUploading && (
+                                <div className="absolute inset-0 flex items-center justify-center bg-black/5">
+                                    <div className="w-8 h-8 border-4 border-[#25D366] border-t-transparent rounded-full animate-spin"></div>
+                                </div>
                             )}
                         </label>
 
@@ -346,8 +348,8 @@ export default function ProductManager() {
                             products.filter(p => p.name.toLowerCase().includes(search.toLowerCase())).map((product) => (
                                 <div key={product.id} className="premium-card !p-3 flex items-center">
                                     <div className="w-16 h-16 bg-gray-100 rounded-2xl mr-4 flex-shrink-0 flex items-center justify-center text-gray-400 overflow-hidden">
-                                        {product.image ? (
-                                            <img src={product.image} alt={product.name} className="w-full h-full object-cover" />
+                                        {product.imageUrl ? (
+                                            <img src={product.imageUrl} alt={product.name} className="w-full h-full object-cover" />
                                         ) : (
                                             <Package size={24} />
                                         )}
