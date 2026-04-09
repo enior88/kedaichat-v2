@@ -30,6 +30,30 @@ export default function Dashboard() {
         };
     });
     const [showToast, setShowToast] = useState(false);
+    const [installable, setInstallable] = useState(false);
+
+    useEffect(() => {
+        // Check if already installable from global
+        if ((window as any).deferredPrompt) {
+            setInstallable(true);
+        }
+
+        const handleInstallable = () => setInstallable(true);
+        window.addEventListener('pwa-installable', handleInstallable);
+        return () => window.removeEventListener('pwa-installable', handleInstallable);
+    }, []);
+
+    const handleInstallApp = async () => {
+        const deferredPrompt = (window as any).deferredPrompt;
+        if (!deferredPrompt) return;
+
+        deferredPrompt.prompt();
+        const { outcome } = await deferredPrompt.userChoice;
+        if (outcome === 'accepted') {
+            (window as any).deferredPrompt = null;
+            setInstallable(false);
+        }
+    };
 
     const handleLogout = async () => {
         try {
@@ -186,6 +210,28 @@ export default function Dashboard() {
                         </button>
                     </div>
                 </div>
+
+                {/* PWA Install Banner */}
+                {installable && (
+                    <div className="mb-6 bg-gradient-to-r from-gray-900 to-gray-800 rounded-3xl p-5 text-white shadow-xl shadow-gray-200 border border-white/5 relative overflow-hidden animate-in slide-in-from-top-4 duration-500">
+                        <div className="relative z-10">
+                            <h3 className="text-sm font-bold flex items-center gap-2 mb-1">
+                                <Rocket size={16} className="text-[#25D366]" />
+                                Install KedaiChat App
+                            </h3>
+                            <p className="text-[10px] text-gray-400 font-medium mb-4">Fast access & better management directly from your home screen.</p>
+                            <button
+                                onClick={handleInstallApp}
+                                className="bg-[#25D366] text-white px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-wider shadow-lg shadow-green-500/20 active:scale-95 transition-all"
+                            >
+                                Install Now
+                            </button>
+                        </div>
+                        <div className="absolute right-[-20px] bottom-[-20px] opacity-10 rotate-12">
+                            <img src="/logo.png" alt="" className="w-32 h-32 object-contain" />
+                        </div>
+                    </div>
+                )}
 
                 {/* Stats Grid */}
                 <div className="grid grid-cols-2 gap-4">
