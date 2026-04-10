@@ -41,7 +41,7 @@ export default function OnboardingCarousel() {
     const currentSlide = slides[step];
 
     return (
-        <div className={`fixed inset-0 z-[200] bg-[#F9FAFB] flex flex-col font-inter transition-opacity duration-700 ${isLoaded ? 'opacity-100' : 'opacity-0'}`}>
+        <div className="fixed inset-0 z-[200] bg-[#F9FAFB] flex flex-col font-inter">
             <div className="w-full max-w-lg mx-auto h-full flex flex-col p-6 pt-12">
 
                 {/* Header */}
