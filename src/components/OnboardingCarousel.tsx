@@ -125,7 +125,7 @@ export default function OnboardingCarousel() {
 
                                 {/* Link Bubble */}
                                 <div className="bg-[#F8F9FA] p-3 rounded-2xl flex items-center justify-between border border-gray-100/50">
-                                    <span className="text-[9px] font-medium text-gray-400">kedaichat.com/my-shop</span>
+                                    <span className="text-[9px] font-medium text-gray-400">kedaichat.online/my-shop</span>
                                     <div className="bg-[#335F4B] text-white px-2 py-1 rounded-lg text-[8px] font-bold uppercase tracking-wide">Copy</div>
                                 </div>
 
