@@ -449,9 +449,9 @@ function LandingPageContent() {
                                 <Link href="/terms" className="hover:text-[#25D366] transition-colors">{t('terms')}</Link>
                                 <div className="flex items-center gap-2">
                                     <span>{t('contact')}:</span>
-                                    <a href="mailto:enginenior@gmail.com" className="text-gray-900 hover:text-[#25D366] bg-green-50 px-3 py-1.5 rounded-full transition-colors flex items-center gap-2">
+                                    <a href="mailto:kedaichat@gmail.com" className="text-gray-900 hover:text-[#25D366] bg-green-50 px-3 py-1.5 rounded-full transition-colors flex items-center gap-2">
                                         <Mail size={14} className="text-[#25D366]" />
-                                        enginenior@gmail.com
+                                        kedaichat@gmail.com
                                     </a>
                                 </div>
                             </div>

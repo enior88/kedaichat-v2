@@ -90,9 +90,9 @@ export default function TermsPage() {
                             <Mail size={40} className="mx-auto mb-6 text-white" />
                             <h2 className="text-3xl font-black mb-4">Contact Us</h2>
                             <p className="font-medium text-green-100 mb-8">If you have any questions about these Terms, please reach out to us.</p>
-                            <a href="mailto:enginenior@gmail.com" className="inline-flex w-full md:w-auto items-center justify-center gap-2 bg-white text-[#25D366] hover:bg-gray-50 px-4 md:px-8 py-4 rounded-xl font-black transition-all shadow-xl active:scale-95 text-sm md:text-lg overflow-hidden whitespace-nowrap overflow-ellipsis">
+                            <a href="mailto:kedaichat@gmail.com" className="inline-flex w-full md:w-auto items-center justify-center gap-2 bg-white text-[#25D366] hover:bg-gray-50 px-4 md:px-8 py-4 rounded-xl font-black transition-all shadow-xl active:scale-95 text-sm md:text-lg overflow-hidden whitespace-nowrap overflow-ellipsis">
                                 <Mail size={18} />
-                                enginenior@gmail.com
+                                kedaichat@gmail.com
                             </a>
                         </section>
                     </div>
