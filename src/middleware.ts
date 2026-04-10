@@ -19,7 +19,10 @@ export async function middleware(request: NextRequest) {
 
     // Reserved path check
     if (pathParts.length > 0) {
-        if (reservedPaths.includes(pathParts[0])) {
+        const firstPart = pathParts[0];
+        const isStaticAsset = /\.(jpg|jpeg|png|webp|svg|gif|ico|webmanifest|json|js)$/.test(firstPart);
+
+        if (reservedPaths.includes(firstPart) || isStaticAsset) {
             // Protected Routes Check
             const protectedRoutes = ['/dashboard', '/products', '/settings', '/orders', '/analytics'];
             const isProtectedRoute = protectedRoutes.some(route => path.startsWith(route));
