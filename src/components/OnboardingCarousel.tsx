@@ -15,7 +15,7 @@ export default function OnboardingCarousel() {
     const slides = [
         {
             headline: "Create your store in seconds",
-            subtext: "Set your name, logo, and brand color — done in under a minute.",
+            subtext: "From home-based to street pop-ups — launch your store in under a minute.",
             visualType: 'store'
         },
         {
@@ -74,8 +74,8 @@ export default function OnboardingCarousel() {
                                 </div>
                                 <div className="flex-1 w-full bg-gray-50 rounded-2xl overflow-hidden border border-gray-100 flex items-center justify-center relative group">
                                     <img
-                                        src="https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&fit=crop&q=80"
-                                        alt="Modern Storefront"
+                                        src="https://images.unsplash.com/photo-1517520216436-bb515714041d?auto=format&fit=crop&q=80"
+                                        alt="Motorcycle Coffee Entrepreneur"
                                         className="w-full h-full object-cover opacity-90 transition-transform duration-1000 group-hover:scale-110"
                                     />
                                     <div className="absolute inset-0 bg-gradient-to-t from-black/5 to-transparent" />
