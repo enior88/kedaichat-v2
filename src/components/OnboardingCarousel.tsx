@@ -99,10 +99,10 @@ export default function OnboardingCarousel() {
                                 {/* Main Card */}
                                 <div className="relative w-60 h-64 bg-white rounded-[28px] shadow-[0_24px_48px_-12px_rgba(0,0,0,0.08)] border border-gray-100 p-4">
                                     <div className="w-full h-36 bg-[#F2F4F7] rounded-2xl overflow-hidden mb-3 relative">
-                                        <img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&q=80" alt="Sneaker" className="w-full h-full object-cover mix-blend-multiply opacity-90" />
+                                        <img src="/kuih-gula-melaka.jpg" alt="Kuih Gula Melaka" className="w-full h-full object-cover opacity-90" />
                                     </div>
-                                    <h4 className="font-bold text-gray-900 text-sm mb-0.5">Red Runner</h4>
-                                    <p className="text-[10px] text-gray-400 font-medium">Footwear</p>
+                                    <h4 className="font-bold text-gray-900 text-sm mb-0.5">Kuih Gula Melaka</h4>
+                                    <p className="text-[10px] text-gray-400 font-medium">Traditional Dessert</p>
                                     <div className="absolute right-3 bottom-3 w-16 h-7 bg-white rounded-full shadow-md border border-gray-50 flex items-center px-1.5 gap-1.5">
                                         <div className="w-4 h-4 rounded-full bg-[#335F4B] scale-75" />
                                         <span className="text-[9px] font-bold text-gray-500">Edit</span>
