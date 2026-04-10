@@ -14,7 +14,7 @@ export async function middleware(request: NextRequest) {
 
     const path = url.pathname;
     const pwaAssets = ['manifest.webmanifest', 'manifest.json', 'icon-192.png', 'icon-512.png', 'icon-maskable.png', 'sw.js', 'workbox-'];
-    const reservedPaths = ['admin', 'api', 'billing', 'dashboard', 'login', 'onboarding', 'orders', 'products', 'reseller', 'wallet', 'tools', 'shop', 'analytics', 'settings', 'checkout', 'privacy', 'terms', '_next', 'favicon.ico', 'logo.png', 'favicon.png', 'hero_illustration.png', 'robots.txt', 'sitemap.xml', 'kuih-gula-melaka.jpg', ...pwaAssets];
+    const reservedPaths = ['admin', 'api', 'billing', 'dashboard', 'login', 'onboarding', 'orders', 'products', 'reseller', 'wallet', 'tools', 'shop', 'analytics', 'settings', 'checkout', 'privacy', 'terms', '_next', 'favicon.ico', 'logo.png', 'favicon.png', 'hero_illustration.png', 'robots.txt', 'sitemap.xml', 'kuih-gula-melaka.jpg', 'motorcycle-coffee.jpg', ...pwaAssets];
     const pathParts = path.split('/').filter(Boolean);
 
     // Reserved path check

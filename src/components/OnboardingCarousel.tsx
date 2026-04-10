@@ -74,7 +74,7 @@ export default function OnboardingCarousel() {
                                 </div>
                                 <div className="flex-1 w-full bg-gray-50 rounded-2xl overflow-hidden border border-gray-100 flex items-center justify-center relative group">
                                     <img
-                                        src="https://images.unsplash.com/photo-1517520216436-bb515714041d?auto=format&fit=crop&q=80"
+                                        src="/motorcycle-coffee.jpg"
                                         alt="Motorcycle Coffee Entrepreneur"
                                         className="w-full h-full object-cover opacity-90 transition-transform duration-1000 group-hover:scale-110"
                                     />
