@@ -67,13 +67,18 @@ export default function OnboardingCarousel() {
                         <div className={`absolute inset-0 flex items-center justify-center transition-all duration-700 transform ${step === 0 ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-8 scale-95 pointer-events-none'}`}>
                             <div className="w-60 h-72 bg-white rounded-[32px] shadow-[0_32px_64px_-16px_rgba(0,0,0,0.06)] border border-gray-100/50 flex flex-col p-6 space-y-4 overflow-hidden relative">
                                 <div className="flex items-center gap-3">
-                                    <div className="w-9 h-9 rounded-full bg-gray-900 flex items-center justify-center overflow-hidden">
+                                    <div className="w-9 h-9 rounded-full bg-[#335F4B] flex items-center justify-center overflow-hidden">
                                         <img src="/logo.png" alt="" className="w-5 h-5 object-contain invert" />
                                     </div>
                                     <div className="h-2 w-20 bg-gray-100 rounded-full" />
                                 </div>
-                                <div className="flex-1 w-full bg-gray-50/50 rounded-2xl border border-dashed border-gray-200 flex items-center justify-center">
-                                    <div className="w-10 h-8 bg-gray-100 rounded-lg opacity-40" />
+                                <div className="flex-1 w-full bg-gray-50 rounded-2xl overflow-hidden border border-gray-100 flex items-center justify-center relative group">
+                                    <img
+                                        src="https://images.unsplash.com/photo-1555529731-118a5bb67af7?auto=format&fit=crop&q=80"
+                                        alt="Modern Storefront"
+                                        className="w-full h-full object-cover opacity-90 transition-transform duration-1000 group-hover:scale-110"
+                                    />
+                                    <div className="absolute inset-0 bg-gradient-to-t from-black/5 to-transparent" />
                                 </div>
                                 <div className="h-2.5 w-full bg-[#335F4B]/10 rounded-full" />
 
