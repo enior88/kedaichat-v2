@@ -74,7 +74,7 @@ export default function OnboardingCarousel() {
                                 </div>
                                 <div className="flex-1 w-full bg-gray-50 rounded-2xl overflow-hidden border border-gray-100 flex items-center justify-center relative group">
                                     <img
-                                        src="https://images.unsplash.com/photo-1555529731-118a5bb67af7?auto=format&fit=crop&q=80"
+                                        src="https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&fit=crop&q=80"
                                         alt="Modern Storefront"
                                         className="w-full h-full object-cover opacity-90 transition-transform duration-1000 group-hover:scale-110"
                                     />
