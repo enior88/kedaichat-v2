@@ -319,7 +319,7 @@ const translations: Record<Language, Record<string, string>> = {
         obc_slide_3_subtext: "Kongsi pautan anda dan terima pesanan secara terus di WhatsApp.",
         obc_skip: "Langkau",
         obc_continue: "Seterusnya",
-        obc_get_started: "Bermula",
+        obc_get_started: "Mula",
 
         // Settings
         store_settings: 'Tetapan Kedai',
