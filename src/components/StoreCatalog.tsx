@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { MessageCircle, Plus, Search, ShoppingCart, Store, ChevronLeft, Share2, Check } from 'lucide-react';
+import { MessageCircle, Plus, Search, ShoppingCart, Store, ChevronLeft, ChevronRight, Share2, Check, Users, Clock, X } from 'lucide-react';
 import { mockProducts } from '@/data/mockData';
 import { useLanguage } from '@/lib/LanguageContext';
 
@@ -12,6 +12,10 @@ export default function StoreCatalog({ slug }: { slug?: string }) {
     const [cartItems, setCartItems] = useState<{ id: string, name: string, price: number, quantity: number }[]>([]);
     const [isSearching, setIsSearching] = useState(false);
     const [searchTerm, setSearchTerm] = useState('');
+    const [isGroupModalOpen, setIsGroupModalOpen] = useState(false);
+    const [groupTitle, setGroupTitle] = useState('');
+    const [groupDeadline, setGroupDeadline] = useState('');
+    const [isCreatingGroup, setIsCreatingGroup] = useState(false);
 
     const categories = [
         { id: 'All', label: t('cat_all') },
@@ -74,6 +78,37 @@ export default function StoreCatalog({ slug }: { slug?: string }) {
             refCode: refCode || null
         }));
         window.location.href = `/shop/${slug || store.slug}/checkout`;
+    };
+
+    const handleCreateGroupOrder = async () => {
+        if (!groupTitle || !groupDeadline) return;
+        setIsCreatingGroup(true);
+
+        try {
+            const hostToken = Math.random().toString(36).substring(2);
+            const res = await fetch('/api/group-orders', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    title: groupTitle,
+                    deadline: groupDeadline,
+                    pickupTime: 'TBD',
+                    storeId: store.id,
+                    hostToken
+                })
+            });
+
+            const data = await res.json();
+            if (!data.error) {
+                // Save host status locally
+                localStorage.setItem(`host_${data.inviteCode}`, hostToken);
+                window.location.href = `/group/${data.inviteCode}/host`;
+            }
+        } catch (err) {
+            console.error(err);
+        } finally {
+            setIsCreatingGroup(false);
+        }
     };
 
     const storeName = store?.name || 'Ali Nasi Lemak';
@@ -173,19 +208,77 @@ export default function StoreCatalog({ slug }: { slug?: string }) {
                         {store?.category || store?.description || 'Welcome to my store! We provide the best products and services for you.'}
                     </p>
 
-                    <button
-                        onClick={() => {
-                            if (store?.whatsappNumber) {
-                                const message = encodeURIComponent(`Hi ${storeName}, I have a question about your store.`);
-                                window.open(`https://wa.me/${store.whatsappNumber.replace(/[^0-9]/g, '')}?text=${message}`, '_blank');
-                            }
-                        }}
-                        className="w-[200px] flex items-center justify-center gap-2 bg-[#25D366] text-white py-[14px] rounded-full text-[15px] font-bold shadow-lg shadow-green-100 active:scale-[0.98] transition-all"
-                    >
-                        <MessageCircle size={18} strokeWidth={2.5} className="fill-white" />
-                        <span>Chat with Seller</span>
-                    </button>
+                    <div className="flex gap-3">
+                        <button
+                            onClick={() => {
+                                if (store?.whatsappNumber) {
+                                    const message = encodeURIComponent(`Hi ${storeName}, I have a question about your store.`);
+                                    window.open(`https://wa.me/${store.whatsappNumber.replace(/[^0-9]/g, '')}?text=${message}`, '_blank');
+                                }
+                            }}
+                            className="flex-1 flex items-center justify-center gap-2 bg-[#25D366] text-white py-[14px] rounded-2xl text-[14px] font-bold shadow-lg shadow-green-100 active:scale-[0.98] transition-all"
+                        >
+                            <MessageCircle size={18} strokeWidth={2.5} className="fill-white" />
+                            <span>Chat</span>
+                        </button>
+                        <button
+                            onClick={() => setIsGroupModalOpen(true)}
+                            className="flex-1 flex items-center justify-center gap-2 bg-gray-900 text-white py-[14px] rounded-2xl text-[14px] font-bold shadow-lg shadow-gray-200 active:scale-[0.98] transition-all"
+                        >
+                            <Users size={18} strokeWidth={2.5} />
+                            <span>Group Order</span>
+                        </button>
+                    </div>
                 </div>
+
+                {/* Group Order Modal */}
+                {isGroupModalOpen && (
+                    <div className="fixed inset-0 z-[200] bg-black/60 backdrop-blur-sm flex items-end justify-center animate-in fade-in duration-300">
+                        <div className="w-full max-w-md bg-white rounded-t-[40px] p-8 pb-12 animate-in slide-in-from-bottom-10 duration-500">
+                            <div className="flex justify-between items-center mb-8">
+                                <h3 className="text-xl font-black text-gray-900 tracking-tight">Setup Group Order</h3>
+                                <button onClick={() => setIsGroupModalOpen(false)} className="bg-gray-100 p-2 rounded-full text-gray-400 hover:text-gray-900">
+                                    <X size={20} />
+                                </button>
+                            </div>
+
+                            <div className="space-y-6">
+                                <div>
+                                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1 mb-2 block">Group Session Title</label>
+                                    <input
+                                        type="text"
+                                        placeholder="e.g. Office Lunch Flow"
+                                        className="w-full h-14 bg-gray-50 border-2 border-transparent rounded-2xl px-5 font-bold text-gray-900 focus:border-[#25D366] focus:bg-white focus:outline-none transition-all"
+                                        value={groupTitle}
+                                        onChange={(e) => setGroupTitle(e.target.value)}
+                                    />
+                                </div>
+
+                                <div>
+                                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1 mb-2 block">Order Deadline</label>
+                                    <input
+                                        type="datetime-local"
+                                        className="w-full h-14 bg-gray-50 border-2 border-transparent rounded-2xl px-5 font-bold text-gray-900 focus:border-[#25D366] focus:bg-white focus:outline-none transition-all"
+                                        value={groupDeadline}
+                                        onChange={(e) => setGroupDeadline(e.target.value)}
+                                    />
+                                </div>
+
+                                <button
+                                    onClick={handleCreateGroupOrder}
+                                    disabled={isCreatingGroup || !groupTitle || !groupDeadline}
+                                    className="w-full h-16 bg-[#25D366] text-white rounded-[24px] font-black uppercase tracking-widest shadow-xl shadow-green-200 active:scale-95 transition-all disabled:opacity-50 flex items-center justify-center gap-3 mt-4"
+                                >
+                                    {isCreatingGroup ? 'Initializing...' : (
+                                        <>
+                                            Start Session <ChevronRight size={18} strokeWidth={3} />
+                                        </>
+                                    )}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                )}
 
                 {/* Category Pills */}
                 <div className="flex gap-2 overflow-x-auto no-scrollbar py-2 -mx-6 px-6">

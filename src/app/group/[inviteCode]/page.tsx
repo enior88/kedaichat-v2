@@ -1,11 +1,12 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'next/navigation';
-import { Loader2, Users, ShoppingBag, Plus, Minus, ArrowLeft, Send } from 'lucide-react';
+import { useParams, useRouter } from 'next/navigation';
+import { Loader2, Users, ShoppingBag, Plus, Minus, ArrowLeft, Send, Clock } from 'lucide-react';
 
 export default function GroupOrderParticipantPage() {
     const params = useParams();
+    const router = useRouter();
     const inviteCode = params?.inviteCode as string;
 
     const [sessionData, setSessionData] = useState<any>(null);
@@ -148,21 +149,37 @@ export default function GroupOrderParticipantPage() {
 
     // Stage 2: Selection
     return (
-        <div className="min-h-screen bg-[#F8F9FA] pb-32">
+        <div className="min-h-screen bg-[#F8F9FA] pb-32 max-w-md mx-auto relative shadow-2xl overflow-hidden border-x border-gray-100">
             <div className="bg-white px-6 py-6 shadow-sm sticky top-0 z-50">
-                <div className="flex items-center gap-4 mb-4">
-                    <div className="w-10 h-10 bg-green-50 rounded-full flex items-center justify-center text-[#25D366]">
-                        {participantName[0]?.toUpperCase()}
+                <div className="flex items-center justify-between mb-4">
+                    <div className="flex items-center gap-4">
+                        <div className="w-10 h-10 bg-green-50 rounded-2xl flex items-center justify-center text-[#25D366]">
+                            <span className="font-black">{participantName[0]?.toUpperCase()}</span>
+                        </div>
+                        <div>
+                            <h2 className="text-sm font-black text-gray-900 tracking-tight">{sessionData.title}</h2>
+                            <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest leading-none mt-0.5">{store.businessName}</p>
+                        </div>
                     </div>
-                    <div>
-                        <h2 className="text-sm font-black text-gray-900">{sessionData.title}</h2>
-                        <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest">{store.businessName}</p>
-                    </div>
+                    {typeof window !== 'undefined' && localStorage.getItem(`host_${inviteCode}`) && (
+                        <button
+                            onClick={() => router.push(`/group/${inviteCode}/host`)}
+                            className="bg-gray-900 text-white p-2 rounded-xl"
+                            title="Manage Session"
+                        >
+                            <Users size={18} />
+                        </button>
+                    )}
                 </div>
                 {/* Notice Banner */}
-                <div className="bg-gray-900 rounded-xl p-3 flex justify-between items-center text-white">
-                    <span className="text-[10px] font-bold uppercase tracking-wider">Deadline</span>
-                    <span className="text-xs font-black bg-white/20 px-2 py-1 rounded-md">{new Date(sessionData.deadline).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+                <div className="bg-gray-900 rounded-2xl p-3.5 flex justify-between items-center text-white">
+                    <div className="flex items-center gap-2">
+                        <Clock size={14} className="text-[#25D366]" />
+                        <span className="text-[10px] font-bold uppercase tracking-wider opacity-80">Deadline</span>
+                    </div>
+                    <span className="text-xs font-black bg-white/10 px-3 py-1 rounded-lg">
+                        {new Date(sessionData.deadline).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                    </span>
                 </div>
             </div>
 
