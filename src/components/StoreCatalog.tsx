@@ -208,7 +208,7 @@ export default function StoreCatalog({ slug }: { slug?: string }) {
                         {store?.category || store?.description || 'Welcome to my store! We provide the best products and services for you.'}
                     </p>
 
-                    <div className="flex gap-3">
+                    <div className="flex gap-4 w-full px-4">
                         <button
                             onClick={() => {
                                 if (store?.whatsappNumber) {
@@ -216,16 +216,16 @@ export default function StoreCatalog({ slug }: { slug?: string }) {
                                     window.open(`https://wa.me/${store.whatsappNumber.replace(/[^0-9]/g, '')}?text=${message}`, '_blank');
                                 }
                             }}
-                            className="flex-1 flex items-center justify-center gap-2 bg-[#25D366] text-white py-[14px] rounded-2xl text-[14px] font-bold shadow-lg shadow-green-100 active:scale-[0.98] transition-all"
+                            className="flex-1 flex items-center justify-center gap-2.5 bg-[#25D366] text-white py-[15px] rounded-[24px] text-[15px] font-black shadow-xl shadow-green-100/50 active:scale-[0.96] transition-all"
                         >
-                            <MessageCircle size={18} strokeWidth={2.5} className="fill-white" />
+                            <MessageCircle size={19} strokeWidth={2.5} className="fill-white" />
                             <span>Chat</span>
                         </button>
                         <button
                             onClick={() => setIsGroupModalOpen(true)}
-                            className="flex-1 flex items-center justify-center gap-2 bg-gray-900 text-white py-[14px] rounded-2xl text-[14px] font-bold shadow-lg shadow-gray-200 active:scale-[0.98] transition-all"
+                            className="flex-1 flex items-center justify-center gap-2.5 bg-gray-900 text-white py-[15px] rounded-[24px] text-[15px] font-black shadow-xl shadow-gray-200/50 active:scale-[0.96] transition-all"
                         >
-                            <Users size={18} strokeWidth={2.5} />
+                            <Users size={19} strokeWidth={2.5} />
                             <span>Group Order</span>
                         </button>
                     </div>
