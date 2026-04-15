@@ -2,8 +2,11 @@
 
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { useLanguage } from '@/lib/LanguageContext';
+import LanguageToggle from '@/components/LanguageToggle';
 
 export default function OnboardingCarousel() {
+    const { t } = useLanguage();
     const router = useRouter();
     const [step, setStep] = useState(0);
     const [isLoaded, setIsLoaded] = useState(false);
@@ -14,18 +17,18 @@ export default function OnboardingCarousel() {
 
     const slides = [
         {
-            headline: "Create your store in seconds",
-            subtext: "From home-based to street pop-ups — launch your store in under a minute.",
+            headline: t('obc_slide_1_headline'),
+            subtext: t('obc_slide_1_subtext'),
             visualType: 'store'
         },
         {
-            headline: "Add products effortlessly",
-            subtext: "Upload photos, set prices, and manage everything in one place.",
+            headline: t('obc_slide_2_headline'),
+            subtext: t('obc_slide_2_subtext'),
             visualType: 'products'
         },
         {
-            headline: "Start selling instantly",
-            subtext: "Share your link and receive orders directly on WhatsApp.",
+            headline: t('obc_slide_3_headline'),
+            subtext: t('obc_slide_3_subtext'),
             visualType: 'sell'
         }
     ];
@@ -52,12 +55,15 @@ export default function OnboardingCarousel() {
                         </div>
                         <span className="text-xl font-bold tracking-tight text-[#1A1A1A]">KedaiChat</span>
                     </div>
-                    <button
-                        onClick={() => router.push('/login')}
-                        className="text-sm font-semibold text-[#335F4B] opacity-80 hover:opacity-100 transition-opacity"
-                    >
-                        Skip
-                    </button>
+                    <div className="flex items-center gap-4">
+                        <LanguageToggle />
+                        <button
+                            onClick={() => router.push('/login')}
+                            className="text-sm font-semibold text-[#335F4B] opacity-80 hover:opacity-100 transition-opacity"
+                        >
+                            {t('obc_skip')}
+                        </button>
+                    </div>
                 </div>
 
                 {/* Visual Content Area */}
@@ -179,7 +185,7 @@ export default function OnboardingCarousel() {
                         onClick={next}
                         className="w-full h-[64px] bg-[#335F4B] text-white rounded-[24px] font-bold text-[17px] shadow-[0_12px_24px_-8px_rgba(51,95,75,0.4)] active:scale-[0.97] transition-all flex items-center justify-center"
                     >
-                        {step === slides.length - 1 ? 'Get Started' : 'Continue'}
+                        {step === slides.length - 1 ? t('obc_get_started') : t('obc_continue')}
                     </button>
                 </div>
             </div>

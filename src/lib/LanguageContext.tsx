@@ -131,10 +131,19 @@ const translations: Record<Language, Record<string, string>> = {
         ob_continue: 'Continue',
         ob_launching: 'Launching...',
         ob_launch_store: 'Launch My Store',
-        ob_welcome_title: 'Welcome to KedaiChat 👋',
-        ob_welcome_subtitle: 'Start selling on WhatsApp in minutes.',
         ob_welcome_action: '👉 Add your first product and receive orders today.',
         ob_go_dashboard: 'Go to Dashboard',
+
+        // Onboarding Carousel
+        obc_slide_1_headline: "Create your store in seconds",
+        obc_slide_1_subtext: "From home-based to street pop-ups — launch your store in under a minute.",
+        obc_slide_2_headline: "Add products effortlessly",
+        obc_slide_2_subtext: "Upload photos, set prices, and manage everything in one place.",
+        obc_slide_3_headline: "Start selling instantly",
+        obc_slide_3_subtext: "Share your link and receive orders directly on WhatsApp.",
+        obc_skip: "Skip",
+        obc_continue: "Continue",
+        obc_get_started: "Get Started",
 
         // Settings
         store_settings: 'Store Settings',
@@ -298,10 +307,19 @@ const translations: Record<Language, Record<string, string>> = {
         ob_continue: 'Seterusnya',
         ob_launching: 'Melancarkan...',
         ob_launch_store: 'Lancar Kedai Saya',
-        ob_welcome_title: 'Selamat Datang ke KedaiChat 👋',
-        ob_welcome_subtitle: 'Mula berniaga di WhatsApp dalam beberapa minit.',
         ob_welcome_action: '👉 Tambah produk pertama anda dan terima pesanan hari ini.',
         ob_go_dashboard: 'Ke Papan Pemuka',
+
+        // Onboarding Carousel
+        obc_slide_1_headline: "Bina kedai anda dalam beberapa saat",
+        obc_slide_1_subtext: "Dari rumah ke gerai jalanan — lancarkan kedai anda dalam masa kurang seminit.",
+        obc_slide_2_headline: "Tambah produk dengan mudah",
+        obc_slide_2_subtext: "Muat naik gambar, tetapkan harga, dan urus semuanya di satu tempat.",
+        obc_slide_3_headline: "Mula menjual serta-merta",
+        obc_slide_3_subtext: "Kongsi pautan anda dan terima pesanan secara terus di WhatsApp.",
+        obc_skip: "Langkau",
+        obc_continue: "Seterusnya",
+        obc_get_started: "Bermula",
 
         // Settings
         store_settings: 'Tetapan Kedai',
