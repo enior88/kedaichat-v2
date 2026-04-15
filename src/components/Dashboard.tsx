@@ -100,7 +100,7 @@ export default function Dashboard() {
         if (action === 'Add Product') {
             router.push('/products?action=add');
         } else if (action === 'Share Link') {
-            const url = `${window.location.origin}/shop/${stats.slug}`;
+            const url = `${window.location.origin}/${stats.slug}`;
 
             const copyToClipboard = async () => {
                 try {
@@ -147,7 +147,7 @@ export default function Dashboard() {
         } else if (action === 'Analytics') {
             router.push('/analytics');
         } else if (action === 'WhatsApp Status' || action === 'Status WhatsApp') {
-            const url = `${window.location.origin}/shop/${stats.slug}`;
+            const url = `${window.location.origin}/${stats.slug}`;
 
             const text = encodeURIComponent(`Check out my store on KedaiChat! 🛍️\n\n${url}`);
             window.open(`https://wa.me/?text=${text}`, '_blank');

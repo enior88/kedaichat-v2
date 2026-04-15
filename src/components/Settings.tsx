@@ -262,7 +262,7 @@ export default function Settings() {
                                     placeholder="my-coffee-shop"
                                 />
                                 <div className="absolute right-4 top-1/2 -translate-y-1/2 text-[10px] font-black text-gray-300 uppercase">
-                                    /shop/
+                                    /
                                 </div>
                             </div>
                         </div>
