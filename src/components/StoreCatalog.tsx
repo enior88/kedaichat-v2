@@ -16,6 +16,7 @@ export default function StoreCatalog({ slug }: { slug?: string }) {
     const [groupTitle, setGroupTitle] = useState('');
     const [groupDeadline, setGroupDeadline] = useState('');
     const [isCreatingGroup, setIsCreatingGroup] = useState(false);
+    const [isLoadingData, setIsLoadingData] = useState(true);
 
     const categories = [
         { id: 'All', label: t('cat_all') },
@@ -38,12 +39,16 @@ export default function StoreCatalog({ slug }: { slug?: string }) {
 
     useEffect(() => {
         if (slug) {
+            setIsLoadingData(true);
             fetch(`/api/store?slug=${slug}`)
                 .then(res => res.json())
                 .then(data => {
                     if (!data.error) setStore(data);
                 })
-                .catch(console.error);
+                .catch(console.error)
+                .finally(() => setIsLoadingData(false));
+        } else {
+            setIsLoadingData(false);
         }
 
         // Capture ?ref= referral code from URL and persist it
@@ -134,6 +139,15 @@ export default function StoreCatalog({ slug }: { slug?: string }) {
 
     return (
         <div className="min-h-screen bg-[#F8F9FA] pb-32 font-inter relative max-w-md mx-auto shadow-2xl overflow-hidden border-x border-gray-100">
+            {/* Loading State */}
+            {isLoadingData && (
+                <div className="fixed inset-0 z-[110] bg-[#F8F9FA] flex flex-col items-center justify-center p-12 text-center">
+                    <div className="w-16 h-16 border-4 border-[#25D366] border-t-transparent rounded-full animate-spin mb-8 shadow-sm"></div>
+                    <div className="h-4 w-32 bg-gray-200 rounded-full animate-pulse mb-2"></div>
+                    <div className="h-3 w-48 bg-gray-100 rounded-full animate-pulse"></div>
+                </div>
+            )}
+
             {/* Archived Store Overlay */}
             {store?.archived && (
                 <div className="fixed inset-0 z-[100] bg-white/95 backdrop-blur-sm flex items-center justify-center p-12 text-center animate-in fade-in duration-500">
