@@ -114,7 +114,7 @@ const translations: Record<Language, Record<string, string>> = {
         // Onboarding
         ob_store_name_title: "What's your store name?",
         ob_store_name_desc: "We'll use this for your link",
-        ob_store_name_placeholder: "e.g. Ali Nasi Lemak",
+        ob_store_name_placeholder: "e.g. My Awesome Store",
         ob_category_title: 'Pick a category',
         ob_category_desc: 'Helps customers find you',
         cat_food: 'Food',
@@ -290,7 +290,7 @@ const translations: Record<Language, Record<string, string>> = {
         // Onboarding
         ob_store_name_title: 'Apakah nama kedai anda?',
         ob_store_name_desc: 'Kami akan gunakan ini untuk pautan anda',
-        ob_store_name_placeholder: 'cth. Nasi Lemak Ali',
+        ob_store_name_placeholder: 'cth. Kedai Makan Sedap',
         ob_category_title: 'Pilih kategori',
         ob_category_desc: 'Membantu pelanggan cari anda',
         cat_food: 'Makanan',

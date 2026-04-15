@@ -245,7 +245,7 @@ export default function Settings() {
                                     value={formData.businessName}
                                     onChange={(e) => setFormData({ ...formData, businessName: e.target.value })}
                                     className="w-full h-14 bg-gray-50 rounded-2xl pl-12 pr-4 text-sm font-bold focus:ring-2 focus:ring-[#25D366] transition-all outline-none border-transparent"
-                                    placeholder="e.g. Ali Nasi Lemak"
+                                    placeholder="e.g. My Coffee Shop"
                                 />
                             </div>
                         </div>
@@ -259,10 +259,10 @@ export default function Settings() {
                                     value={formData.slug}
                                     onChange={(e) => setFormData({ ...formData, slug: e.target.value.toLowerCase().replace(/\s/g, '-') })}
                                     className="w-full h-14 bg-gray-50 rounded-2xl pl-12 pr-4 text-sm font-bold focus:ring-2 focus:ring-[#25D366] transition-all outline-none border-transparent"
-                                    placeholder="ali-nasi-lemak"
+                                    placeholder="my-coffee-shop"
                                 />
                                 <div className="absolute right-4 top-1/2 -translate-y-1/2 text-[10px] font-black text-gray-300 uppercase">
-                                    .kedaichat.online
+                                    /shop/
                                 </div>
                             </div>
                         </div>

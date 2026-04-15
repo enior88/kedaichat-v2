@@ -111,7 +111,7 @@ export default function StoreCatalog({ slug }: { slug?: string }) {
         }
     };
 
-    const storeName = store?.name || 'Ali Nasi Lemak';
+    const storeName = store?.name || 'My Store';
     const storeInitials = storeName[0];
 
     const handleShare = async () => {
