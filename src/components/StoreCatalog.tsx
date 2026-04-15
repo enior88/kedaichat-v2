@@ -143,7 +143,8 @@ export default function StoreCatalog({ slug }: { slug?: string }) {
             {isLoadingData && (
                 <div className="fixed inset-0 z-[110] bg-[#F8F9FA] flex flex-col items-center justify-center p-12 text-center">
                     <div className="w-16 h-16 border-4 border-[#25D366] border-t-transparent rounded-full animate-spin mb-8 shadow-sm"></div>
-                    <div className="h-4 w-32 bg-gray-200 rounded-full animate-pulse mb-2"></div>
+                    <h2 className="text-2xl font-black text-gray-900 mb-2 tracking-tight">Rilek Lok !</h2>
+                    <div className="h-1 w-12 bg-[#25D366] rounded-full animate-pulse mb-6 mx-auto"></div>
                     <div className="h-3 w-48 bg-gray-100 rounded-full animate-pulse"></div>
                 </div>
             )}
