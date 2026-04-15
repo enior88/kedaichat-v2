@@ -18,7 +18,11 @@ export async function GET(req: Request) {
                     select: { products: true, orders: true }
                 },
                 orders: {
-                    where: { paymentStatus: 'PAID' } // Simple revenue calc MVP
+                    orderBy: { createdAt: 'desc' },
+                    take: 5,
+                    include: {
+                        items: true
+                    }
                 }
             }
         });
@@ -32,7 +36,9 @@ export async function GET(req: Request) {
             select: { role: true }
         });
 
-        const revenueToday = store.orders.reduce((sum: number, order: any) => sum + (order.total || 0), 0);
+        const revenueToday = store.orders
+            .filter((o: any) => o.paymentStatus === 'PAID')
+            .reduce((sum: number, order: any) => sum + (order.total || 0), 0);
         const plan = store.subscription?.status === 'ACTIVE' ? store.subscription.plan : 'FREE';
 
         return NextResponse.json({
@@ -44,7 +50,14 @@ export async function GET(req: Request) {
             totalOrders: store._count.orders,
             revenueToday,
             plan,
-            isAdmin: user?.role === 'ADMIN'
+            isAdmin: user?.role === 'ADMIN',
+            recentOrders: store.orders.map((o: any) => ({
+                id: o.id,
+                customerName: o.customerName,
+                total: o.total,
+                paymentStatus: o.paymentStatus,
+                createdAt: o.createdAt
+            }))
         });
 
     } catch (error: any) {

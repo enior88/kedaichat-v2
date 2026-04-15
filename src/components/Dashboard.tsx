@@ -344,29 +344,41 @@ export default function Dashboard() {
                     )}
                 </div>
 
-                {/* Recent Orders List placeholder */}
+                {/* Recent Orders List */}
                 <section>
                     <div className="flex justify-between items-center mb-4 px-1">
                         <h3 className="text-[10px] font-black text-gray-400 uppercase tracking-[2px]">{t('recent_orders')}</h3>
-                        <ChevronRight size={16} className="text-gray-300" />
+                        <button onClick={() => router.push('/orders')} className="text-gray-300 hover:text-gray-900 transition-colors">
+                            <ChevronRight size={16} />
+                        </button>
                     </div>
                     <div className="space-y-3">
-                        {[1, 2].map(i => (
-                            <div key={i} className="bg-white p-5 rounded-[24px] shadow-sm border border-gray-50 flex items-center justify-between">
-                                <div className="flex items-center gap-4">
-                                    <div className="w-10 h-10 bg-gray-50 rounded-full flex items-center justify-center">
-                                        <Users size={18} className="text-gray-400" />
-                                    </div>
-                                    <div>
-                                        <h4 className="text-sm font-bold text-gray-900">Customer #{i + 100}</h4>
-                                        <p className="text-[10px] text-gray-400 font-bold uppercase tracking-wider mt-0.5">RM {(12 * i).toFixed(2)} • 2 mins ago</p>
-                                    </div>
-                                </div>
-                                <div className="bg-green-50 text-[#25D366] text-[10px] font-black px-2.5 py-1 rounded-full uppercase">
-                                    {t('paid')}
-                                </div>
+                        {(!stats.recentOrders || stats.recentOrders.length === 0) ? (
+                            <div className="bg-white p-8 rounded-[32px] border border-dashed border-gray-100 text-center">
+                                <p className="text-sm font-bold text-gray-300">No orders yet.</p>
                             </div>
-                        ))}
+                        ) : (
+                            stats.recentOrders.map((order: any) => (
+                                <div key={order.id} onClick={() => router.push('/orders')} className="bg-white p-5 rounded-[24px] shadow-sm border border-gray-50 flex items-center justify-between active:scale-[0.98] transition-all cursor-pointer">
+                                    <div className="flex items-center gap-4">
+                                        <div className="w-10 h-10 bg-gray-50 rounded-full flex items-center justify-center">
+                                            <Users size={18} className="text-gray-400" />
+                                        </div>
+                                        <div>
+                                            <h4 className="text-sm font-bold text-gray-900 truncate max-w-[120px]">
+                                                {order.customerName || `Customer #${order.id.slice(0, 4)}`}
+                                            </h4>
+                                            <p className="text-[10px] text-gray-400 font-bold uppercase tracking-wider mt-0.5">
+                                                RM {order.total.toFixed(2)} • {new Date(order.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <div className={`text-[10px] font-black px-2.5 py-1 rounded-full uppercase ${order.paymentStatus === 'PAID' ? 'bg-green-50 text-[#25D366]' : 'bg-orange-50 text-orange-500'}`}>
+                                        {order.paymentStatus === 'PAID' ? t('paid') : order.paymentStatus}
+                                    </div>
+                                </div>
+                            ))
+                        )}
                     </div>
                 </section>
             </div>
