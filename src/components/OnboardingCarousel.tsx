@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useLanguage } from '@/lib/LanguageContext';
 import LanguageToggle from '@/components/LanguageToggle';
+import { ChevronRight } from 'lucide-react';
 
 export default function OnboardingCarousel() {
     const { t } = useLanguage();
@@ -59,9 +60,10 @@ export default function OnboardingCarousel() {
                         <LanguageToggle />
                         <button
                             onClick={() => router.push('/login')}
-                            className="text-sm font-semibold text-[#335F4B] opacity-80 hover:opacity-100 transition-opacity"
+                            className="w-10 h-10 flex items-center justify-center rounded-xl bg-gray-50 text-[#335F4B]/60 hover:text-[#335F4B] hover:bg-gray-100 transition-all active:scale-90"
+                            aria-label={t('obc_skip')}
                         >
-                            {t('obc_skip')}
+                            <ChevronRight size={24} strokeWidth={2.5} />
                         </button>
                     </div>
                 </div>
