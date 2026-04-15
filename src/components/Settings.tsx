@@ -22,6 +22,7 @@ export default function Settings() {
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
     const [showSuccess, setShowSuccess] = useState(false);
+    const [plan, setPlan] = useState('FREE');
 
     const [formData, setFormData] = useState({
         businessName: '',
@@ -55,6 +56,7 @@ export default function Settings() {
                         storeLogo: data.storeLogo || '',
                         paymentQrUrl: data.paymentQrUrl || ''
                     });
+                    setPlan(data.plan || 'FREE');
                 }
                 setLoading(false);
             })
@@ -218,7 +220,12 @@ export default function Settings() {
                     </div>
                     <div className="text-center mt-4">
                         <h2 className="text-xl font-bold text-gray-900">{formData.businessName}</h2>
-                        <p className="text-xs text-gray-400 font-bold uppercase tracking-widest mt-1">Free Tier Account</p>
+                        {plan === 'FREE' && (
+                            <p className="text-xs text-gray-400 font-bold uppercase tracking-widest mt-1">Free Tier Account</p>
+                        )}
+                        {plan === 'PRO' && (
+                            <p className="text-xs text-[#25D366] font-bold uppercase tracking-widest mt-1">Pro Account</p>
+                        )}
                     </div>
                 </div>
             </div>
