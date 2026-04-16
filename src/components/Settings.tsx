@@ -284,7 +284,11 @@ export default function Settings() {
                                 <input
                                     type="text"
                                     value={formData.businessName}
-                                    onChange={(e) => setFormData({ ...formData, businessName: e.target.value })}
+                                    onChange={(e) => {
+                                        const name = e.target.value;
+                                        const autoSlug = name.toLowerCase().replace(/[^a-z0-9-]/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '');
+                                        setFormData({ ...formData, businessName: name, slug: autoSlug });
+                                    }}
                                     className="w-full h-14 bg-gray-50 rounded-2xl pl-12 pr-4 text-sm font-bold focus:ring-2 focus:ring-[#25D366] transition-all outline-none border-transparent"
                                     placeholder="e.g. My Coffee Shop"
                                 />
