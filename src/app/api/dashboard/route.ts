@@ -52,6 +52,7 @@ export async function GET(req: Request) {
             description: store.category, // Fetch from the repurposed field
             whatsappNumber: store.whatsappNumber,
             storeLogo: store.logoUrl,
+            paymentQrUrl: store.paymentQrUrl || '',
             loginPhone: user?.whatsappNumber || '',
             totalProducts: store._count.products,
             totalOrders: store._count.orders,
