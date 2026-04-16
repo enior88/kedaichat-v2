@@ -42,6 +42,11 @@ export default function Settings() {
     const [passError, setPassError] = useState('');
     const [passSuccess, setPassSuccess] = useState(false);
 
+    const [loginPhone, setLoginPhone] = useState('');
+    const [loginPhoneChanging, setLoginPhoneChanging] = useState(false);
+    const [loginPhoneError, setLoginPhoneError] = useState('');
+    const [loginPhoneSuccess, setLoginPhoneSuccess] = useState(false);
+
     useEffect(() => {
         // Fetch current settings
         fetch('/api/dashboard')
@@ -57,6 +62,7 @@ export default function Settings() {
                         paymentQrUrl: data.paymentQrUrl || ''
                     });
                     setPlan(data.plan || 'FREE');
+                    if (data.loginPhone) setLoginPhone(data.loginPhone);
                 }
                 setLoading(false);
             })
@@ -120,6 +126,34 @@ export default function Settings() {
             setPassError('Connection error');
         } finally {
             setPassChanging(false);
+        }
+    };
+
+    const handleLoginPhoneChange = async () => {
+        if (!loginPhone || loginPhone.length < 8) {
+            setLoginPhoneError("Enter a valid phone number");
+            return;
+        }
+
+        setLoginPhoneChanging(true);
+        setLoginPhoneError('');
+        try {
+            const res = await fetch('/api/change-phone', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ newPhoneNumber: loginPhone })
+            });
+            const data = await res.json();
+            if (res.ok) {
+                setLoginPhoneSuccess(true);
+                setTimeout(() => setLoginPhoneSuccess(false), 3000);
+            } else {
+                setLoginPhoneError(data.error || 'Update failed');
+            }
+        } catch (err) {
+            setLoginPhoneError('Connection error');
+        } finally {
+            setLoginPhoneChanging(false);
         }
     };
 
@@ -361,6 +395,46 @@ export default function Settings() {
                                 </p>
                             </div>
                         </div>
+                    </div>
+                </div>
+
+                {/* Account Login Identity Section */}
+                <div className="space-y-4 pt-4">
+                    <h3 className="text-[10px] font-black text-gray-400 uppercase tracking-[2px] ml-1 text-blue-400">Account Login Phone</h3>
+                    <div className="premium-card space-y-4">
+                        {loginPhoneSuccess && (
+                            <div className="p-4 bg-green-50 text-[#25D366] text-[10px] font-black uppercase tracking-widest rounded-2xl flex items-center gap-2">
+                                <ShieldCheck size={14} /> Login Phone updated successfully
+                            </div>
+                        )}
+                        {loginPhoneError && (
+                            <div className="p-4 bg-red-50 text-red-500 text-[10px] font-black uppercase tracking-widest rounded-2xl">
+                                {loginPhoneError}
+                            </div>
+                        )}
+
+                        <div className="space-y-2">
+                            <label className="text-[10px] font-black text-gray-400 uppercase tracking-wider block ml-1">Login WhatsApp Number</label>
+                            <div className="relative">
+                                <MessageSquare className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-300" size={18} />
+                                <input
+                                    type="text"
+                                    value={loginPhone}
+                                    onChange={(e) => setLoginPhone(e.target.value)}
+                                    className="w-full h-14 bg-gray-50 rounded-2xl pl-12 pr-4 text-sm font-bold focus:ring-2 focus:ring-blue-200 transition-all outline-none border-transparent"
+                                    placeholder="60123456789"
+                                />
+                            </div>
+                            <p className="text-[10px] text-gray-400 ml-1 mt-1 font-medium">This number is used to log into your dashboard.</p>
+                        </div>
+
+                        <button
+                            onClick={handleLoginPhoneChange}
+                            disabled={loginPhoneChanging || !loginPhone}
+                            className="w-full h-12 bg-blue-500 text-white text-[10px] font-black uppercase tracking-widest rounded-xl hover:bg-blue-600 active:scale-95 transition-all disabled:opacity-50 disabled:active:scale-100"
+                        >
+                            {loginPhoneChanging ? 'Updating...' : 'Update Login Phone'}
+                        </button>
                     </div>
                 </div>
 

@@ -33,7 +33,7 @@ export async function GET(req: Request) {
 
         const user = await prisma.user.findUnique({
             where: { id: session.userId },
-            select: { role: true }
+            select: { role: true, whatsappNumber: true }
         });
 
         const revenueToday = store.orders
@@ -46,6 +46,9 @@ export async function GET(req: Request) {
             slug: store.slug,
             archived: store.archived,
             description: store.category, // Fetch from the repurposed field
+            whatsappNumber: store.whatsappNumber,
+            storeLogo: store.logoUrl,
+            loginPhone: user?.whatsappNumber || '',
             totalProducts: store._count.products,
             totalOrders: store._count.orders,
             revenueToday,
