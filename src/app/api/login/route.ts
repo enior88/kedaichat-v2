@@ -6,7 +6,7 @@ import bcrypt from 'bcryptjs';
 export async function POST(req: Request) {
     try {
         const { identifier, password } = await req.json();
-        const identStr = identifier?.toString() || '';
+        const identStr = (identifier?.toString() || '').trim();
         const digitsOnly = identStr.replace(/\D/g, '');
 
         // Build phone variants to cover common formats (with/without country code)
@@ -15,7 +15,7 @@ export async function POST(req: Request) {
         const user = await prisma.user.findFirst({
             where: {
                 OR: [
-                    { email: identStr },
+                    { email: { equals: identStr, mode: 'insensitive' } },
                     { whatsappNumber: identStr },
                     // Match regardless of stored country code format (60xxx, 0xxx, +60xxx, etc.)
                     ...(last9.length >= 8 ? [{ whatsappNumber: { contains: last9 } }] : []),
