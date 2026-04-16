@@ -58,12 +58,33 @@ export default function LandingPageClient() {
         "name": "KedaiChat",
         "operatingSystem": "Web",
         "applicationCategory": "BusinessApplication",
-        "description": "WhatsApp-first Business OS. Manage orders, resellers, and group orders via WhatsApp.",
-        "offers": {
-            "@type": "Offer",
-            "price": "0",
-            "priceCurrency": "MYR"
-        }
+        "description": "WhatsApp-first Business OS untuk peniaga Malaysia. Urus order, ejen, dan group order terus dari WhatsApp.",
+        "url": "https://kedaichat.online",
+        "offers": [
+            { "@type": "Offer", "name": "Free", "price": "0", "priceCurrency": "MYR", "description": "30 orders/month, basic dashboard" },
+            { "@type": "Offer", "name": "Basic", "price": "29", "priceCurrency": "MYR", "description": "Unlimited orders, group order system, reseller links" },
+            { "@type": "Offer", "name": "Pro", "price": "49", "priceCurrency": "MYR", "description": "Analytics, broadcast tools, advanced reseller system" }
+        ],
+        "aggregateRating": {
+            "@type": "AggregateRating",
+            "ratingValue": "4.8",
+            "reviewCount": "2000",
+            "bestRating": "5"
+        },
+        "review": [
+            {
+                "@type": "Review",
+                "author": { "@type": "Person", "name": "Kak Ros" },
+                "reviewRating": { "@type": "Rating", "ratingValue": "5" },
+                "reviewBody": "Dulu order berselerak dalam WhatsApp, sekarang semua tersusun. Jimat lebih 2 jam sehari!"
+            },
+            {
+                "@type": "Review",
+                "author": { "@type": "Person", "name": "Hafiz" },
+                "reviewRating": { "@type": "Rating", "ratingValue": "5" },
+                "reviewBody": "RM29 sebulan tu worth it sangat. Minggu pertama dah recover balik dari jualan extra."
+            }
+        ]
     };
 
     const scrollToSection = (e: React.MouseEvent<HTMLAnchorElement>, id: string) => {
@@ -82,7 +103,6 @@ export default function LandingPageClient() {
         }
 
         // Desktop (container scrolling with snap)
-        const wrapper = document.getElementById(`wrapper-${id}`);
         const containerElem = document.getElementById('main-scroll-container');
 
         if (containerElem) {
@@ -90,7 +110,8 @@ export default function LandingPageClient() {
             if (id === 'how-it-works') targetScroll = window.innerHeight * 2;
             else if (id === 'problem') targetScroll = window.innerHeight * 3;
             else if (id === 'features') targetScroll = window.innerHeight * 4;
-            else if (id === 'pricing') targetScroll = window.innerHeight * 5;
+            else if (id === 'testimonials') targetScroll = window.innerHeight * 5;
+            else if (id === 'pricing') targetScroll = window.innerHeight * 6;
 
             const startY = containerElem.scrollTop;
             const distance = targetScroll - startY;
@@ -329,27 +350,112 @@ export default function LandingPageClient() {
                     </section>
                 </div>
 
+                {/* ─── Testimonials ─── */}
+                <div id="wrapper-testimonials" className="relative md:h-[200vh] md:-mt-[100vh] h-auto z-[15] md:snap-start">
+                    <section id="testimonials" className="md:sticky md:top-0 md:h-screen relative h-auto bg-white flex flex-col justify-center px-6 py-24 md:py-24 overflow-hidden md:shadow-[0_-20px_40px_rgba(0,0,0,0.08)] border-t border-gray-100 md:border-none">
+                        <div className="max-w-7xl mx-auto w-full text-center">
+                            <div className="mb-12 md:mb-16">
+                                <h2 className="text-[10px] md:text-xs font-black text-[#25D366] uppercase tracking-[0.4em] mb-4">{t('testimonials_title')}</h2>
+                                <h3 className="text-3xl md:text-5xl font-black leading-tight">{t('testimonials_subtitle')}</h3>
+                                {/* Star row */}
+                                <div className="flex items-center justify-center gap-1 mt-4">
+                                    {[1, 2, 3, 4, 5].map(s => (
+                                        <svg key={s} className="w-5 h-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
+                                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                                        </svg>
+                                    ))}
+                                    <span className="ml-2 text-sm font-black text-gray-500">4.8 / 5 &bull; 2,000+ peniaga</span>
+                                </div>
+                            </div>
+                            <div className="grid md:grid-cols-3 gap-6 md:gap-8 text-left">
+                                {[
+                                    {
+                                        quote: t('testimonial_1_quote'),
+                                        name: t('testimonial_1_name'),
+                                        biz: t('testimonial_1_biz'),
+                                        initials: 'KR',
+                                        color: 'bg-orange-500',
+                                        stars: 5
+                                    },
+                                    {
+                                        quote: t('testimonial_2_quote'),
+                                        name: t('testimonial_2_name'),
+                                        biz: t('testimonial_2_biz'),
+                                        initials: 'HZ',
+                                        color: 'bg-blue-500',
+                                        stars: 5
+                                    },
+                                    {
+                                        quote: t('testimonial_3_quote'),
+                                        name: t('testimonial_3_name'),
+                                        biz: t('testimonial_3_biz'),
+                                        initials: 'SA',
+                                        color: 'bg-[#25D366]',
+                                        stars: 5
+                                    }
+                                ].map((item, idx) => (
+                                    <div key={idx} className="bg-gray-50 border border-gray-100 rounded-[28px] p-6 md:p-8 flex flex-col gap-4 hover:shadow-lg transition-all duration-500">
+                                        {/* Stars */}
+                                        <div className="flex gap-0.5">
+                                            {Array.from({ length: item.stars }).map((_, i) => (
+                                                <svg key={i} className="w-4 h-4 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                                                </svg>
+                                            ))}
+                                        </div>
+                                        {/* Quote */}
+                                        <p className="text-gray-700 font-semibold leading-relaxed text-sm md:text-base flex-1 italic">{item.quote}</p>
+                                        {/* Author */}
+                                        <div className="flex items-center gap-3 pt-2 border-t border-gray-200">
+                                            <div className={`w-10 h-10 rounded-full ${item.color} flex items-center justify-center text-white text-xs font-black flex-shrink-0`}>
+                                                {item.initials}
+                                            </div>
+                                            <div>
+                                                <p className="text-sm font-black text-gray-900">{item.name}</p>
+                                                <p className="text-xs font-bold text-gray-400">{item.biz}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    </section>
+                </div>
+
                 <div id="wrapper-pricing" className="relative md:h-[200vh] md:-mt-[100vh] h-auto z-[10] md:snap-start">
                     <section id="pricing" className="md:sticky md:top-0 md:h-screen relative h-auto bg-gray-900 text-white flex flex-col justify-center px-6 py-24 md:py-24 overflow-hidden border-t border-gray-800 md:border-none">
                         <div className="max-w-7xl mx-auto w-full text-center">
-                            <div className="mb-12 md:mb-20">
+                            <div className="mb-10 md:mb-14">
                                 <h2 className="text-[10px] md:text-xs font-black text-[#25D366] uppercase tracking-[0.4em] mb-4">{t('pricing_title')}</h2>
                                 <h3 className="text-3xl md:text-5xl font-black leading-tight">{t('pricing_subtitle')}</h3>
                             </div>
                             <div className="grid md:grid-cols-3 gap-6 md:gap-8 text-left">
                                 {[
-                                    { name: t('pricing_free_title'), price: "0", features: [t('price_free_feature_1'), t('price_free_feature_2'), t('price_free_feature_3')], cta: t('start_free'), popular: false },
-                                    { name: t('pricing_basic_title'), price: "29", features: [t('price_basic_feature_1'), t('price_basic_feature_2'), t('price_basic_feature_3'), t('price_basic_feature_4')], cta: t('cta_choose_basic'), popular: true },
-                                    { name: t('pricing_pro_title'), price: "49", features: [t('price_pro_feature_1'), t('price_pro_feature_2'), t('price_pro_feature_3'), t('price_pro_feature_4')], cta: t('cta_go_pro'), popular: false }
+                                    { name: t('pricing_free_title'), price: "0", features: [t('price_free_feature_1'), t('price_free_feature_2'), t('price_free_feature_3')], cta: t('start_free'), popular: false, valueBadge: null, roiBadge: null },
+                                    { name: t('pricing_basic_title'), price: "29", features: [t('price_basic_feature_1'), t('price_basic_feature_2'), t('price_basic_feature_3'), t('price_basic_feature_4')], cta: t('cta_choose_basic'), popular: true, valueBadge: t('pricing_value_badge'), roiBadge: t('pricing_roi_badge') },
+                                    { name: t('pricing_pro_title'), price: "49", features: [t('price_pro_feature_1'), t('price_pro_feature_2'), t('price_pro_feature_3'), t('price_pro_feature_4')], cta: t('cta_go_pro'), popular: false, valueBadge: null, roiBadge: null }
                                 ].map((plan, idx) => (
                                     <div key={idx} className={`pricing-card p-8 md:p-10 rounded-[32px] md:rounded-[40px] border-2 transition-all duration-500 ${plan.popular ? 'bg-white text-gray-900 border-[#25D366] md:scale-105 shadow-2xl shadow-green-900/40 z-10' : 'bg-gray-800 text-white border-transparent'}`}>
-                                        {plan.popular && <span className="inline-block bg-[#25D366] text-white text-[10px] font-black uppercase px-3 py-1 rounded-full mb-6">{t('popular')}</span>}
+                                        {plan.popular && <span className="inline-block bg-[#25D366] text-white text-[10px] font-black uppercase px-3 py-1 rounded-full mb-4">{t('popular')}</span>}
                                         <h4 className="text-xl md:text-2xl font-black mb-2">{plan.name}</h4>
-                                        <div className="flex items-end gap-1 mb-8">
+                                        <div className="flex items-end gap-1 mb-2">
                                             <span className="text-3xl md:text-4xl font-black">RM {plan.price}</span>
                                             <span className={`text-[10px] font-bold uppercase pb-1.5 ${plan.popular ? 'text-gray-400' : 'text-gray-500'}`}>{t('pricing_per_month')}</span>
                                         </div>
-                                        <ul className="space-y-3 md:space-y-4 mb-8 md:mb-10">
+                                        {/* Value badge */}
+                                        {plan.valueBadge && (
+                                            <div className="flex items-center gap-2 mb-2">
+                                                <span className="inline-flex items-center gap-1 bg-green-50 text-[#25D366] text-[10px] font-black px-2 py-1 rounded-full">
+                                                    <Zap size={10} fill="currentColor" />
+                                                    {plan.valueBadge}
+                                                </span>
+                                            </div>
+                                        )}
+                                        {/* ROI line */}
+                                        {plan.roiBadge && (
+                                            <p className="text-xs text-gray-400 italic mb-4">{plan.roiBadge}</p>
+                                        )}
+                                        <ul className={`space-y-3 md:space-y-4 mb-8 md:mb-10 ${plan.valueBadge ? '' : 'mt-6'}`}>
                                             {plan.features.map(f => (
                                                 <li key={f} className="flex items-center gap-3 text-xs md:text-sm font-bold">
                                                     <Check size={18} className="text-[#25D366]" />
@@ -366,6 +472,11 @@ export default function LandingPageClient() {
                                     </div>
                                 ))}
                             </div>
+                            {/* Guarantee strip */}
+                            <p className="mt-8 text-sm font-bold text-gray-400 flex items-center justify-center gap-2">
+                                <Check size={16} className="text-[#25D366]" />
+                                {t('pricing_guarantee')}
+                            </p>
                         </div>
                     </section>
                 </div>

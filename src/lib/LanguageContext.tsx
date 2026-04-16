@@ -97,6 +97,24 @@ const translations: Record<Language, Record<string, string>> = {
         terms: 'Terms',
         contact: 'Contact',
 
+        // Pricing value props
+        pricing_value_badge: 'Save ~10 hrs/week',
+        pricing_roi_badge: 'Most sellers break even in the first week',
+        pricing_guarantee: '30-day free trial • No credit card required • Cancel anytime',
+
+        // Testimonials
+        testimonials_title: 'Testimonials',
+        testimonials_subtitle: 'Real sellers. Real results.',
+        testimonial_1_quote: '"Dulu order berselerak dalam WhatsApp, sekarang semua tersusun. Jimat lebih 2 jam sehari!"',
+        testimonial_1_name: 'Kak Ros',
+        testimonial_1_biz: 'Nasi Lemak Gerai Chow Kit',
+        testimonial_2_quote: '"RM29 sebulan tu worth it sangat. Minggu pertama dah recover balik dari jualan extra."',
+        testimonial_2_name: 'Hafiz',
+        testimonial_2_biz: 'Tudung Online Selangor',
+        testimonial_3_quote: '"Pelanggan suka sebab boleh ulang order dengan satu klik je. Repeat order naik 40%."',
+        testimonial_3_name: 'Siti Aishah',
+        testimonial_3_biz: 'Homemade Kuih Johor Bahru',
+
         // Dashboard
         revenue: 'Revenue Today',
         total_orders: 'Total Orders',
@@ -229,6 +247,24 @@ const translations: Record<Language, Record<string, string>> = {
         privacy: 'Privasi',
         terms: 'Terma',
         contact: 'Hubungi',
+
+        // Pricing value props
+        pricing_value_badge: 'Jimat ~10 jam/minggu',
+        pricing_roi_badge: 'Kebanyakan penjual untung balik dalam minggu pertama',
+        pricing_guarantee: 'Cuba percuma 30 hari • Tiada kad kredit • Batal bila-bila masa',
+
+        // Testimonials
+        testimonials_title: 'Testimoni',
+        testimonials_subtitle: 'Penjual sebenar. Hasil sebenar.',
+        testimonial_1_quote: '"Dulu order berselerak dalam WhatsApp, sekarang semua tersusun. Jimat lebih 2 jam sehari!"',
+        testimonial_1_name: 'Kak Ros',
+        testimonial_1_biz: 'Nasi Lemak Gerai Chow Kit',
+        testimonial_2_quote: '"RM29 sebulan tu worth it sangat. Minggu pertama dah recover balik dari jualan extra."',
+        testimonial_2_name: 'Hafiz',
+        testimonial_2_biz: 'Tudung Online Selangor',
+        testimonial_3_quote: '"Pelanggan suka sebab boleh ulang order dengan satu klik je. Repeat order naik 40%."',
+        testimonial_3_name: 'Siti Aishah',
+        testimonial_3_biz: 'Homemade Kuih Johor Bahru',
         how_step_1_title: '1. Bina Kedai',
         how_step_1_desc: 'Masukkan nama perniagaan dan nombor WhatsApp anda untuk mula dalam beberapa saat.',
         how_step_2_title: '2. Tambah Produk',

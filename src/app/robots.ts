@@ -5,7 +5,7 @@ export default function robots(): MetadataRoute.Robots {
         rules: {
             userAgent: '*',
             allow: '/',
-            disallow: ['/api'],
+            disallow: ['/api/', '/admin/', '/dashboard/', '/onboarding/', '/settings/', '/orders/', '/products/', '/billing/', '/wallet/', '/analytics/'],
         },
         sitemap: 'https://kedaichat.online/sitemap.xml',
     };

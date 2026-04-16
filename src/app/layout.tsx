@@ -13,10 +13,27 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-    title: "KedaiChat - WhatsApp Business Shop & Order Management",
-    description: "Launch your WhatsApp Shop in minutes. The easiest way to manage orders, resellers, and group orders for your WhatsApp Business. WhatsApp Biz solution for SMEs.",
+    title: "KedaiChat - WhatsApp Business Shop & Order Management Malaysia",
+    description: "KedaiChat membantu peniaga Malaysia urus order WhatsApp dengan mudah. Launch your WhatsApp Shop in minutes — manage orders, resellers, and group orders. Cara urus order WhatsApp terbaik untuk PKS Malaysia.",
     manifest: "/manifest.webmanifest",
-    keywords: ["WhatsApp Business", "WhatsApp Shop", "Whatapp Biz", "WhatsApp Catalog", "Social Commerce", "Order Management", "Reseller System"],
+    keywords: [
+        "WhatsApp Business Malaysia",
+        "WhatsApp Shop Malaysia",
+        "cara urus order WhatsApp",
+        "sistem order WhatsApp Malaysia",
+        "buat kedai online WhatsApp",
+        "WhatsApp order management Malaysia",
+        "kedai online WhatsApp percuma",
+        "WhatsApp Catalog",
+        "Social Commerce Malaysia",
+        "Order Management",
+        "Reseller System Malaysia",
+        "PKS Malaysia",
+        "SME Malaysia online shop",
+    ],
+    alternates: {
+        canonical: "https://kedaichat.online",
+    },
     appleWebApp: {
         capable: true,
         statusBarStyle: "default",
@@ -36,8 +53,8 @@ export const metadata: Metadata = {
         ],
     },
     openGraph: {
-        title: "KedaiChat - WhatsApp-first Business OS",
-        description: "Manage orders, resellers, and group orders via WhatsApp.",
+        title: "KedaiChat — Urus Order WhatsApp Dengan Mudah",
+        description: "2,000+ peniaga Malaysia guna KedaiChat untuk urus order, ejen, dan group order WhatsApp. Cuba percuma hari ini!",
         url: "https://kedaichat.online",
         siteName: "KedaiChat",
         images: [
@@ -45,9 +62,10 @@ export const metadata: Metadata = {
                 url: "/logo.png",
                 width: 800,
                 height: 600,
+                alt: "KedaiChat — WhatsApp Order Management Malaysia",
             },
         ],
-        locale: "en_US",
+        locale: "ms_MY",
         type: "website",
     },
 };
@@ -58,7 +76,7 @@ export default function RootLayout({
     children: React.ReactNode;
 }>) {
     return (
-        <html lang="en">
+        <html lang="ms">
             <body className={inter.className}>
                 <LanguageProvider>
                     <LayoutWrapper>
