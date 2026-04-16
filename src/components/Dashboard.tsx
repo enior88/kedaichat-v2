@@ -75,8 +75,13 @@ export default function Dashboard() {
                     return;
                 }
 
-                if (res.status === 404 && data.error === 'Store not found') {
-                    window.location.href = '/onboarding';
+                if (res.status === 404) {
+                    // Admin has no store — redirect to admin console, not onboarding
+                    if (data.isAdmin) {
+                        window.location.href = '/admin';
+                    } else {
+                        window.location.href = '/onboarding';
+                    }
                     return;
                 }
 

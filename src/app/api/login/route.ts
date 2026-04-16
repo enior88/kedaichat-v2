@@ -33,7 +33,7 @@ export async function POST(req: Request) {
         if (!isValid) return NextResponse.json({ success: false, error: 'Invalid password' }, { status: 401 });
 
         await createSession(user.id);
-        return NextResponse.json({ success: true, role: user.role });
+        return NextResponse.json({ success: true, role: user.role, isAdmin: user.role === 'ADMIN' });
     } catch (e: any) {
         return NextResponse.json({ success: false, error: e.message }, { status: 500 });
     }

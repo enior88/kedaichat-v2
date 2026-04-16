@@ -27,14 +27,18 @@ export async function GET(req: Request) {
             }
         });
 
-        if (!store) {
-            return NextResponse.json({ error: 'Store not found' }, { status: 404 });
-        }
-
         const user = await prisma.user.findUnique({
             where: { id: session.userId },
             select: { role: true, whatsappNumber: true }
         });
+
+        if (!store) {
+            // Admin has no store — return role so frontend can redirect to /admin
+            if (user?.role === 'ADMIN') {
+                return NextResponse.json({ error: 'Store not found', isAdmin: true, role: 'ADMIN' }, { status: 404 });
+            }
+            return NextResponse.json({ error: 'Store not found' }, { status: 404 });
+        }
 
         const revenueToday = store.orders
             .filter((o: any) => o.paymentStatus === 'PAID')

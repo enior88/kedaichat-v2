@@ -35,8 +35,12 @@ export default function Login() {
 
             const data = await response.json();
             if (data.success) {
-                // Hard redirect to clear any mobile cache
-                window.location.replace('/dashboard');
+                // Admin goes directly to admin console, bypassing store dashboard
+                if (data.isAdmin) {
+                    window.location.replace('/admin');
+                } else {
+                    window.location.replace('/dashboard');
+                }
             } else {
                 setError(data.error || 'Login failed');
             }
