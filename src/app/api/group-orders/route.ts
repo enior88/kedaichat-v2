@@ -45,9 +45,17 @@ export async function GET(req: Request) {
 // POST create a new group order session
 export async function POST(req: Request) {
     try {
-        const { title, deadline, pickupTime, storeId, hostToken } = await req.json();
+        const session = await getSession();
+        if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
-        if (!storeId) return NextResponse.json({ error: 'storeId is required' }, { status: 400 });
+        const { title, deadline, pickupTime } = await req.json();
+
+        // Get the store owned by the current user
+        const store = await prisma.store.findFirst({
+            where: { ownerId: session.userId }
+        });
+
+        if (!store) return NextResponse.json({ error: 'Store not found' }, { status: 404 });
 
         const inviteCode = generateInviteCode();
 
@@ -57,14 +65,10 @@ export async function POST(req: Request) {
                 title,
                 deadline: new Date(deadline),
                 pickupTime,
-                storeId,
+                storeId: store.id,
                 status: 'ACTIVE',
-                // We'll store the hostToken in the db if we add a column later, 
-                // for now we'll just return it so the client knows it's the host.
             }
         });
-
-        return NextResponse.json(groupOrder);
 
         return NextResponse.json(groupOrder);
     } catch (error: any) {
