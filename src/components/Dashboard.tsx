@@ -26,7 +26,8 @@ export default function Dashboard() {
             slug: '',
             plan: 'FREE',
             isAdmin: false,
-            archived: false
+            archived: false,
+            storeLogo: ''
         };
     });
     const [showToast, setShowToast] = useState(false);
@@ -184,9 +185,9 @@ export default function Dashboard() {
             <div className="bg-white px-6 pt-12 pb-6 shadow-sm rounded-b-[40px]">
                 <div className="flex justify-between items-center mb-8">
                     <div className="flex items-center gap-3">
-                        <div className="w-12 h-12 bg-gradient-to-br from-[#25D366] to-[#128C7E] rounded-2xl flex items-center justify-center text-white shadow-lg shadow-green-100 shrink-0">
-                            {stats.logoUrl ? (
-                                <img src={stats.logoUrl} alt="Store Logo" className="w-full h-full object-cover rounded-2xl" />
+                        <div className="w-12 h-12 bg-gradient-to-br from-[#25D366] to-[#128C7E] rounded-2xl flex items-center justify-center text-white shadow-lg shadow-green-100 shrink-0 overflow-hidden">
+                            {stats.storeLogo ? (
+                                <img src={stats.storeLogo} alt="Store Logo" className="w-full h-full object-cover" />
                             ) : (
                                 <span className="text-xl font-black uppercase">{(stats.businessName || 'K')[0]}</span>
                             )}
