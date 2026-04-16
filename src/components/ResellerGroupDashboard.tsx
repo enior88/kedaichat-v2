@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { Share2, Users, Send, ChevronRight, TrendingUp, Loader2, Info } from 'lucide-react';
+import { Share2, Users, Send, ChevronRight, TrendingUp, Loader2, Info, Trash2, XCircle } from 'lucide-react';
 import BottomNav from './BottomNav';
 
 export default function ResellerGroupDashboard() {
@@ -74,6 +74,26 @@ export default function ResellerGroupDashboard() {
             setSessionForm({ title: '', deadline: '', pickupTime: '' });
             fetchGroupOrders();
         }
+        setIsSaving(false);
+    };
+
+    const handleUpdateSession = async (inviteCode: string, data: any) => {
+        setIsSaving(true);
+        const res = await fetch(`/api/group-orders/${inviteCode}`, {
+            method: 'PATCH',
+            body: JSON.stringify(data)
+        });
+        if (res.ok) fetchGroupOrders();
+        setIsSaving(false);
+    };
+
+    const handleDeleteSession = async (inviteCode: string) => {
+        if (!confirm('Are you sure you want to delete this session? All participation data will be lost.')) return;
+        setIsSaving(true);
+        const res = await fetch(`/api/group-orders/${inviteCode}`, {
+            method: 'DELETE'
+        });
+        if (res.ok) fetchGroupOrders();
         setIsSaving(false);
     };
 
@@ -303,8 +323,17 @@ export default function ResellerGroupDashboard() {
                                                     Deadline: {new Date(session.deadline).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} • Pickup: {session.pickupTime}
                                                 </p>
                                             </div>
-                                            <div className={`p-2 rounded-xl ${session.status === 'ACTIVE' ? 'bg-green-50 text-[#25D366]' : 'bg-gray-50 text-gray-400'}`}>
-                                                <TrendingUp size={22} />
+                                            <div className="flex items-center gap-2">
+                                                <button
+                                                    onClick={() => handleDeleteSession(session.inviteCode)}
+                                                    className="p-2 rounded-xl bg-red-50 text-red-500 hover:bg-red-100 transition-all"
+                                                    title="Delete Session"
+                                                >
+                                                    <Trash2 size={18} />
+                                                </button>
+                                                <div className={`p-2 rounded-xl ${session.status === 'ACTIVE' ? 'bg-green-50 text-[#25D366]' : 'bg-gray-50 text-gray-400'}`}>
+                                                    <TrendingUp size={22} />
+                                                </div>
                                             </div>
                                         </div>
 
@@ -323,6 +352,14 @@ export default function ResellerGroupDashboard() {
                                             >
                                                 Copy Invite Link
                                             </button>
+                                            {session.status === 'ACTIVE' && (
+                                                <button
+                                                    onClick={() => handleUpdateSession(session.inviteCode, { status: 'CLOSED' })}
+                                                    className="text-[10px] text-orange-500 font-black uppercase bg-orange-50 px-2 py-1 rounded-md flex items-center gap-1"
+                                                >
+                                                    <XCircle size={12} /> Close Early
+                                                </button>
+                                            )}
                                         </div>
 
                                         {session.status === 'ACTIVE' && (
