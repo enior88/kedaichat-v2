@@ -31,6 +31,7 @@ export default function Dashboard() {
             storeLogo: ''
         };
     });
+    const [error, setError] = useState<string | null>(null);
     const [showToast, setShowToast] = useState(false);
     const [installable, setInstallable] = useState(false);
 
@@ -69,7 +70,19 @@ export default function Dashboard() {
     useEffect(() => {
         const fetchDashboard = async () => {
             try {
-                const res = await fetch(`/api/dashboard?t=${Date.now()}`);
+                const res = await fetch(`/api/dashboard?t=${Date.now()}`, {
+                    headers: {
+                        'Cache-Control': 'no-cache, no-store, must-revalidate',
+                        'Pragma': 'no-cache',
+                        'Expires': '0'
+                    }
+                });
+
+                const contentType = res.headers.get('content-type');
+                if (!contentType || !contentType.includes('application/json')) {
+                    throw new Error('Received non-JSON response from server (possible offline cache interpolation)');
+                }
+
                 const data = await res.json();
 
                 if (res.status === 401) {
@@ -89,15 +102,18 @@ export default function Dashboard() {
 
                 if (!data.error) {
                     setStats(data);
+                    setError(null);
                     // Update the global cache for instant restoration next time
                     if (typeof window !== 'undefined') {
                         (window as any).kd_stats_cache = data;
                     }
                 } else {
                     console.error('Dashboard error:', data.error);
+                    setError(data.error);
                 }
-            } catch (err) {
+            } catch (err: any) {
                 console.error('Fetch error:', err);
+                setError(err.message || 'Failed to connect. Please check your internet connection and refresh.');
             }
         };
         fetchDashboard();
@@ -163,6 +179,33 @@ export default function Dashboard() {
 
     return (
         <div className="min-h-screen bg-[#F8F9FA] pb-32 font-inter max-w-md mx-auto relative shadow-2xl overflow-hidden border-x border-gray-100">
+            {/* Fetch Error Overlay */}
+            {error && (
+                <div className="fixed inset-0 z-[100] bg-white/95 backdrop-blur-md flex flex-col items-center justify-center p-8 text-center animate-in fade-in zoom-in duration-500">
+                    <div className="max-w-xs w-full">
+                        <div className="w-20 h-20 bg-red-50 rounded-[32px] flex items-center justify-center mx-auto mb-6 text-red-500 shadow-xl shadow-red-50">
+                            <span className="text-4xl font-black">!</span>
+                        </div>
+                        <h2 className="text-xl font-black text-gray-900 mb-3 tracking-tight">Loading Error</h2>
+                        <p className="text-gray-500 font-medium mb-8 leading-relaxed text-xs">
+                            {error}
+                        </p>
+                        <button
+                            onClick={() => window.location.reload()}
+                            className="w-full bg-[#25D366] text-white py-4 rounded-[20px] font-black uppercase tracking-widest shadow-xl shadow-green-200 active:scale-95 transition-all mb-3 text-sm"
+                        >
+                            Tap to Retry
+                        </button>
+                        <button
+                            onClick={handleLogout}
+                            className="w-full bg-transparent text-gray-400 py-3 rounded-[20px] font-black uppercase tracking-widest active:scale-95 transition-all text-[10px]"
+                        >
+                            Log Out
+                        </button>
+                    </div>
+                </div>
+            )}
+
             {/* Archived Store Overlay */}
             {stats.archived && (
                 <div className="fixed inset-0 z-[100] bg-white/95 backdrop-blur-md flex flex-items-center justify-center p-8 text-center animate-in fade-in zoom-in duration-500">
