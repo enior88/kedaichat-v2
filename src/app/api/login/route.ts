@@ -32,8 +32,19 @@ export async function POST(req: Request) {
 
         if (!isValid) return NextResponse.json({ success: false, error: 'Invalid password' }, { status: 401 });
 
+        const userWithStore = await prisma.user.findFirst({
+            where: { id: user.id },
+            include: { stores: { select: { slug: true }, take: 1 } }
+        });
+        const storeSlug = userWithStore?.stores[0]?.slug;
+
         await createSession(user.id);
-        return NextResponse.json({ success: true, role: user.role, isAdmin: user.role === 'ADMIN' });
+        return NextResponse.json({
+            success: true,
+            role: user.role,
+            isAdmin: user.role === 'ADMIN',
+            storeSlug
+        });
     } catch (e: any) {
         return NextResponse.json({ success: false, error: e.message }, { status: 500 });
     }
