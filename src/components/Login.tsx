@@ -35,14 +35,9 @@ export default function Login() {
 
             const data = await response.json();
             if (data.success) {
-                // Detect mobile for direct-to-store routing
-                const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent) || window.innerWidth < 768;
-
+                // Admin goes directly to admin console, bypassing store dashboard
                 if (data.isAdmin) {
                     window.location.replace('/admin');
-                } else if (isMobile && data.storeSlug) {
-                    // Direct to their store catalog on mobile
-                    window.location.replace(`/shop/${data.storeSlug}`);
                 } else {
                     window.location.replace('/dashboard');
                 }
