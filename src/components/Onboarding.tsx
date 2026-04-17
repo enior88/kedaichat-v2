@@ -7,11 +7,9 @@ import LanguageToggle from '@/components/LanguageToggle';
 import { useSearchParams, useRouter } from 'next/navigation';
 
 export default function Onboarding() {
-    console.log('Onboarding component rendering');
     const router = useRouter();
     const { t } = useLanguage();
     const searchParams = useSearchParams();
-    console.log('Onboarding: searchParams initialized');
     const [step, setStep] = useState(1);
     const [isLoading, setIsLoading] = useState(false);
 
