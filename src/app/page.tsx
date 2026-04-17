@@ -1,7 +1,14 @@
 import React, { Suspense } from 'react';
-import LandingPageClient from '@/components/LandingPageClient';
-import OnboardingCarousel from '@/components/OnboardingCarousel';
 import { Metadata } from 'next';
+import dynamic from 'next/dynamic';
+
+const LandingPageClient = dynamic(() => import('@/components/LandingPageClient'), {
+    loading: () => <div className="min-h-screen bg-white" />
+});
+
+const OnboardingCarousel = dynamic(() => import('@/components/OnboardingCarousel'), {
+    loading: () => <div className="min-h-screen bg-[#F9FAFB]" />
+});
 
 export const metadata: Metadata = {
     title: "KedaiChat - WhatsApp Business Shop & Order Management",
@@ -17,7 +24,11 @@ export default function LandingPage({
     const fromPwa = searchParams.v === '2';
 
     if (fromPwa) {
-        return <OnboardingCarousel />;
+        return (
+            <Suspense fallback={<div className="min-h-screen bg-[#F9FAFB]" />}>
+                <OnboardingCarousel />
+            </Suspense>
+        );
     }
 
     return (

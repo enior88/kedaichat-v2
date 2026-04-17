@@ -24,7 +24,11 @@ import {
 } from 'lucide-react';
 import { useLanguage } from '@/lib/LanguageContext';
 import LanguageToggle from '@/components/LanguageToggle';
-import OnboardingCarousel from '@/components/OnboardingCarousel';
+import dynamic from 'next/dynamic';
+
+const OnboardingCarousel = dynamic(() => import('@/components/OnboardingCarousel'), {
+    loading: () => <div className="min-h-screen bg-[#F9FAFB]" />
+});
 import { useSearchParams } from 'next/navigation';
 import Image from 'next/image';
 

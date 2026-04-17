@@ -2,7 +2,11 @@
 
 import { usePathname } from 'next/navigation';
 import { useEffect } from 'react';
-import BottomNav from '@/components/BottomNav';
+import dynamic from 'next/dynamic';
+
+const BottomNav = dynamic(() => import('@/components/BottomNav'), {
+    ssr: false
+});
 
 export default function LayoutWrapper({ children }: { children: React.ReactNode }) {
     const pathname = usePathname();
