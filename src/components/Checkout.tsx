@@ -160,7 +160,7 @@ export default function Checkout({ params }: { params: { name: string } }) {
         img.crossOrigin = "anonymous";
         img.src = cartState.paymentQrUrl;
 
-        img.onload = () => {
+        img.onload = async () => {
             const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
             gradient.addColorStop(0, '#ffffff');
             gradient.addColorStop(1, '#f3f4f6');
@@ -206,11 +206,48 @@ export default function Checkout({ params }: { params: { name: string } }) {
             ctx.font = '500 18px Inter, system-ui, sans-serif';
             ctx.fillText('Powered by KedaiChat', canvas.width / 2, 990);
 
-            const link = document.createElement('a');
-            link.download = `Payment-QR-${cartState.storeSlug || 'shop'}.png`;
-            link.href = canvas.toDataURL('image/png', 1.0);
-            link.click();
-            setIsDownloading(false);
+            try {
+                const fileName = `Payment-QR-${cartState.storeSlug || 'shop'}.png`;
+
+                // For Mobile: Use Web Share API if available
+                if (navigator.share && navigator.canShare) {
+                    canvas.toBlob(async (blob) => {
+                        if (blob) {
+                            const file = new File([blob], fileName, { type: 'image/png' });
+                            if (navigator.canShare({ files: [file] })) {
+                                try {
+                                    await navigator.share({
+                                        files: [file],
+                                        title: 'Payment QR',
+                                        text: 'Save this QR to your gallery for payment.'
+                                    });
+                                    setIsDownloading(false);
+                                    return;
+                                } catch (err: any) {
+                                    if (err.name !== 'AbortError') console.error('Share failed:', err);
+                                }
+                            }
+                        }
+                        // Fallback to standard download if blob/share fails
+                        const link = document.createElement('a');
+                        link.download = fileName;
+                        link.href = canvas.toDataURL('image/png', 1.0);
+                        link.click();
+                        setIsDownloading(false);
+                    }, 'image/png');
+                } else {
+                    // Desktop/Unsupported: Standard download
+                    const link = document.createElement('a');
+                    link.download = fileName;
+                    link.href = canvas.toDataURL('image/png', 1.0);
+                    link.click();
+                    setIsDownloading(false);
+                }
+            } catch (error) {
+                console.error('Download processing failed:', error);
+                alert('Failed to process QR for download. Please try long-pressing the image to save.');
+                setIsDownloading(false);
+            }
         };
 
         img.onerror = () => {
