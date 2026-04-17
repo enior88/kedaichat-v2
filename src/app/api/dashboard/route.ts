@@ -77,6 +77,8 @@ export async function GET(req: Request) {
             totalOrders: store._count.orders,
             revenueToday,
             plan,
+            isDeliveryEnabled: store.isDeliveryEnabled,
+            deliveryFee: store.deliveryFee,
             isAdmin: user?.role === 'ADMIN',
             recentOrders: store.orders.map((o: any) => ({
                 id: o.id,

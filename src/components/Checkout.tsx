@@ -20,15 +20,33 @@ export default function Checkout({ params }: { params: { name: string } }) {
     const [customerName, setCustomerName] = useState('');
     const [customerPhone, setCustomerPhone] = useState('');
     const [notes, setNotes] = useState('');
+    const [deliveryType, setDeliveryType] = useState<'PICKUP' | 'DELIVERY'>('PICKUP');
+    const [deliveryAddress, setDeliveryAddress] = useState('');
+    const [storeSettings, setStoreSettings] = useState<any>(null);
 
     React.useEffect(() => {
         const saved = localStorage.getItem('kd_cart');
         if (saved) {
-            setCartState(JSON.parse(saved));
+            const parsed = JSON.parse(saved);
+            setCartState(parsed);
+
+            // Also fetch current store settings to check delivery availability
+            if (parsed.storeId) {
+                fetch(`/api/dashboard?publicStoreId=${parsed.storeId}`)
+                    .then(res => res.json())
+                    .then(data => {
+                        if (!data.error) {
+                            setStoreSettings(data);
+                        }
+                    })
+                    .catch(err => console.error('Failed to fetch store settings:', err));
+            }
         }
     }, []);
 
-    const cartTotal = cartState?.items?.reduce((sum: number, item: any) => sum + item.price * item.quantity, 0) || 0;
+    const cartSubtotal = cartState?.items?.reduce((sum: number, item: any) => sum + item.price * item.quantity, 0) || 0;
+    const deliveryFee = (deliveryType === 'DELIVERY' && storeSettings?.isDeliveryEnabled) ? (storeSettings.deliveryFee || 0) : 0;
+    const cartTotal = cartSubtotal + deliveryFee;
 
     const handlePaymentSubmit = async () => {
         setIsSubmitting(true);
@@ -38,7 +56,9 @@ export default function Checkout({ params }: { params: { name: string } }) {
             let text = `*New Order - ${cartState?.storeName || 'KedaiChat'}*\n\n`;
             text += `*Customer:* ${customerName || 'Anonymous'}\n`;
             if (customerPhone) text += `*Phone:* ${customerPhone}\n`;
-            text += `Total: *RM ${cartTotal.toFixed(2)}*\n\n`;
+            text += `*Type:* ${deliveryType === 'DELIVERY' ? '🚚 Delivery' : '🏪 Self-Pickup'}\n`;
+            if (deliveryType === 'DELIVERY') text += `*Address:* ${deliveryAddress}\n`;
+            text += `Total: *RM ${cartTotal.toFixed(2)}* (Fee: RM ${deliveryFee.toFixed(2)})\n\n`;
             text += `*Items:*\n`;
             cartState?.items?.forEach((item: any) => {
                 text += `- ${item.quantity}x ${item.name} (RM ${(item.price * item.quantity).toFixed(2)})\n`;
@@ -61,6 +81,8 @@ export default function Checkout({ params }: { params: { name: string } }) {
                     customerName,
                     customerPhone,
                     notes,
+                    deliveryType,
+                    deliveryAddress: deliveryType === 'DELIVERY' ? deliveryAddress : null,
                     refCode: cartState?.refCode || null,
                 })
             });
@@ -108,7 +130,9 @@ export default function Checkout({ params }: { params: { name: string } }) {
             let text = `*New Order - ${cartState?.storeName || 'KedaiChat'}*\n\n`;
             text += `*Customer:* ${customerName || 'Anonymous'}\n`;
             if (customerPhone) text += `*Phone:* ${customerPhone}\n`;
-            text += `Total: *RM ${cartTotal.toFixed(2)}*\n\n`;
+            text += `*Type:* ${deliveryType === 'DELIVERY' ? '🚚 Delivery' : '🏪 Self-Pickup'}\n`;
+            if (deliveryType === 'DELIVERY') text += `*Address:* ${deliveryAddress}\n`;
+            text += `Total: *RM ${cartTotal.toFixed(2)}* (Fee: RM ${deliveryFee.toFixed(2)})\n\n`;
             text += `*Items:*\n`;
             cartState?.items?.forEach((item: any) => {
                 text += `- ${item.quantity}x ${item.name} (RM ${(item.price * item.quantity).toFixed(2)})\n`;
@@ -131,6 +155,8 @@ export default function Checkout({ params }: { params: { name: string } }) {
                     customerName,
                     customerPhone,
                     notes,
+                    deliveryType,
+                    deliveryAddress: deliveryType === 'DELIVERY' ? deliveryAddress : null,
                     refCode: cartState?.refCode || null,
                 })
             });
@@ -298,10 +324,47 @@ export default function Checkout({ params }: { params: { name: string } }) {
                                         className="w-full bg-gray-50 border-2 border-transparent rounded-2xl p-4 font-bold text-gray-900 focus:border-[#25D366] focus:bg-white focus:outline-none transition-all placeholder:text-gray-300 resize-none"
                                     />
                                 </div>
+
+                                {storeSettings?.isDeliveryEnabled && (
+                                    <div className="pt-4 space-y-4">
+                                        <div className="flex gap-2">
+                                            <button
+                                                onClick={() => setDeliveryType('PICKUP')}
+                                                className={`flex-1 h-14 rounded-2xl font-black text-xs uppercase tracking-wider transition-all border-2 ${deliveryType === 'PICKUP' ? 'bg-[#25D366] text-white border-[#25D366]' : 'bg-gray-50 text-gray-400 border-transparent hover:bg-gray-100'}`}
+                                            >
+                                                🏪 Self-Pickup
+                                            </button>
+                                            <button
+                                                onClick={() => setDeliveryType('DELIVERY')}
+                                                className={`flex-1 h-14 rounded-2xl font-black text-xs uppercase tracking-wider transition-all border-2 ${deliveryType === 'DELIVERY' ? 'bg-[#25D366] text-white border-[#25D366]' : 'bg-gray-50 text-gray-400 border-transparent hover:bg-gray-100'}`}
+                                            >
+                                                🚚 Delivery
+                                            </button>
+                                        </div>
+
+                                        {deliveryType === 'DELIVERY' && (
+                                            <div className="animate-in slide-in-from-top-2 duration-300">
+                                                <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-4 mb-2 block">Delivery Address *</label>
+                                                <textarea
+                                                    value={deliveryAddress}
+                                                    onChange={(e) => setDeliveryAddress(e.target.value)}
+                                                    placeholder="Enter your full address..."
+                                                    rows={3}
+                                                    className="w-full bg-gray-50 border-2 border-transparent rounded-2xl p-4 font-bold text-gray-900 focus:border-[#25D366] focus:bg-white focus:outline-none transition-all placeholder:text-gray-300 resize-none"
+                                                />
+                                            </div>
+                                        )}
+                                    </div>
+                                )}
                             </div>
 
                             <div className="flex flex-col items-center gap-2 mt-8 mb-8">
                                 <p className="text-3xl font-black text-gray-900">RM {cartTotal.toFixed(2)}</p>
+                                {deliveryFee > 0 && (
+                                    <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">
+                                        Includes RM {deliveryFee.toFixed(2)} delivery fee
+                                    </p>
+                                )}
                                 <div className="flex items-center gap-2 bg-green-50 text-[#25D366] px-3 py-1 rounded-full text-[10px] font-bold">
                                     <ShoppingBag size={12} />
                                     Reviewing Order
@@ -310,7 +373,7 @@ export default function Checkout({ params }: { params: { name: string } }) {
 
                             <button
                                 onClick={() => setStep(2)}
-                                disabled={!customerName.trim()}
+                                disabled={!customerName.trim() || (deliveryType === 'DELIVERY' && !deliveryAddress.trim())}
                                 className="w-full h-16 bg-[#25D366] text-white font-bold rounded-[22px] flex items-center justify-center shadow-lg shadow-green-100 active:scale-[0.98] transition-all disabled:opacity-50"
                             >
                                 NEXT: PROCEED TO PAYMENT

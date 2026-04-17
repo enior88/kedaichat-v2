@@ -29,7 +29,7 @@ export async function GET(req: Request) {
 export async function POST(req: Request) {
     try {
         const body = await req.json();
-        const { storeId, items, total, customerName, customerPhone, notes, refCode } = body;
+        const { storeId, items, total, customerName, customerPhone, notes, refCode, deliveryType, deliveryAddress } = body;
 
         // Subscription enforcement
         const subscription = await prisma.subscription.findFirst({
@@ -67,6 +67,8 @@ export async function POST(req: Request) {
                 customerName: customerName || 'Walk-in Customer',
                 customerPhone: customerPhone || null,
                 notes: notes || null,
+                deliveryType: deliveryType || 'PICKUP',
+                deliveryAddress: deliveryAddress || null,
                 items: {
                     create: items.map((item: any) => ({
                         productId: item.id,

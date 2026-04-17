@@ -41,7 +41,9 @@ export async function POST(req: Request) {
                 slug: data.slug,
                 logoUrl: data.storeLogo,
                 paymentQrUrl: data.paymentQrUrl,
-                category: data.description // Repurposing unused category field for description
+                category: data.description, // Repurposing unused category field for description
+                isDeliveryEnabled: data.isDeliveryEnabled,
+                deliveryFee: parseFloat(data.deliveryFee) || 0
             }
         });
 

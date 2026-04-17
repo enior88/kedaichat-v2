@@ -102,21 +102,33 @@ export default function OrdersManagement() {
                     <div key={order.id} className="premium-card !p-4">
                         <div className="flex justify-between items-start mb-3">
                             <div className="flex-1">
-                                <h3 className="font-bold text-gray-900 text-lg line-clamp-1">
-                                    {order.items && order.items.length > 0
-                                        ? `${order.items[0].product?.name || 'Item'} x${order.items[0].quantity}${order.items.length > 1 ? ` + ${order.items.length - 1} more` : ''}`
-                                        : `Order ${order.id.slice(0, 6)}`}
-                                </h3>
+                                <div className="flex items-center gap-2 mb-1">
+                                    <h3 className="font-bold text-gray-900 text-lg line-clamp-1">
+                                        {order.items && order.items.length > 0
+                                            ? `${order.items[0].product?.name || 'Item'} x${order.items[0].quantity}${order.items.length > 1 ? ` + ${order.items.length - 1} more` : ''}`
+                                            : `Order ${order.id.slice(0, 6)}`}
+                                    </h3>
+                                    <span className={`text-[9px] font-black px-2 py-0.5 rounded-md uppercase tracking-wider ${order.deliveryType === 'DELIVERY' ? 'bg-blue-50 text-blue-500 border border-blue-100' : 'bg-gray-100 text-gray-500'}`}>
+                                        {order.deliveryType === 'DELIVERY' ? '🚚 Delivery' : '🏪 Pickup'}
+                                    </span>
+                                </div>
                                 <p className="text-xs text-gray-400 font-medium">{order.customerName || 'Customer'} • {new Date(order.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</p>
                             </div>
                             <div className="text-right">
                                 <p className="text-lg font-black text-gray-900 leading-tight">RM {order.total.toFixed(2)}</p>
-                                <span className={`text-[10px] font-black px-2.5 py-1 rounded-lg uppercase tracking-wider ${['PAID', 'COMPLETED'].includes(order.paymentStatus) ? 'bg-green-50 text-[#25D366]' : 'bg-orange-50 text-orange-500'
+                                <span className={`text-[10px] font-black px-2.5 py-1 rounded-lg uppercase tracking-wider ${['PAID', 'COMPLETED', 'PREPARING', 'DELIVERING'].includes(order.paymentStatus) ? 'bg-green-50 text-[#25D366]' : 'bg-orange-50 text-orange-500'
                                     }`}>
                                     {order.paymentStatus}
                                 </span>
                             </div>
                         </div>
+
+                        {order.deliveryType === 'DELIVERY' && order.deliveryAddress && (
+                            <div className="mb-3 p-3 bg-blue-50/50 rounded-xl border border-blue-100/50">
+                                <p className="text-[10px] font-black text-blue-400 uppercase tracking-widest mb-1">Delivery Address</p>
+                                <p className="text-xs font-bold text-gray-700 leading-relaxed">{order.deliveryAddress}</p>
+                            </div>
+                        )}
 
                         {order.items && order.items.length > 0 && (
                             <div className="bg-gray-50 rounded-xl p-3 mb-4 space-y-1">

@@ -28,7 +28,9 @@ model Store {
   logoUrl        String?
   paymentQrUrl   String?
   ownerId        String
-  archived       Boolean       @default(false)
+  isDeliveryEnabled Boolean  @default(false)
+  deliveryFee    Float     @default(0)
+  archived       Boolean   @default(false)
   createdAt      DateTime      @default(now())
   updatedAt      DateTime      @updatedAt
   groupOrders    GroupOrder[]
@@ -62,6 +64,8 @@ model Order {
   customerName    String
   customerPhone   String?
   notes           String?
+  deliveryType    String      @default("PICKUP")
+  deliveryAddress String?
   total           Float
   status          String      @default("PENDING")
   paymentStatus   String      @default("UNPAID")

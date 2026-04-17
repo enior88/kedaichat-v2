@@ -30,7 +30,9 @@ export default function Settings() {
         slug: '',
         description: '',
         storeLogo: '', // Base64 string
-        paymentQrUrl: ''
+        paymentQrUrl: '',
+        isDeliveryEnabled: false,
+        deliveryFee: 0
     });
 
     const [passFormData, setPassFormData] = useState({
@@ -59,7 +61,9 @@ export default function Settings() {
                         slug: data.slug || '',
                         description: data.description || 'Welcome to my store!',
                         storeLogo: data.storeLogo || '',
-                        paymentQrUrl: data.paymentQrUrl || ''
+                        paymentQrUrl: data.paymentQrUrl || '',
+                        isDeliveryEnabled: data.isDeliveryEnabled || false,
+                        deliveryFee: data.deliveryFee || 0
                     });
                     setPlan(data.plan || 'FREE');
                     if (data.loginPhone) setLoginPhone(data.loginPhone);
@@ -359,13 +363,13 @@ export default function Settings() {
                                         onChange={async (e) => {
                                             const file = e.target.files?.[0];
                                             if (file) {
-                                                const formData = new FormData();
-                                                formData.append('file', file);
+                                                const formDataUpload = new FormData();
+                                                formDataUpload.append('file', file);
 
                                                 try {
                                                     const res = await fetch('/api/upload', {
                                                         method: 'POST',
-                                                        body: formData
+                                                        body: formDataUpload
                                                     });
                                                     const data = await res.json();
                                                     if (data.success) {
@@ -399,6 +403,42 @@ export default function Settings() {
                                 </p>
                             </div>
                         </div>
+                    </div>
+                </div>
+
+                {/* Delivery Settings Section */}
+                <div className="space-y-4 pt-4">
+                    <h3 className="text-[10px] font-black text-gray-400 uppercase tracking-[2px] ml-1 text-[#25D366]">Delivery Settings</h3>
+                    <div className="premium-card space-y-6">
+                        <div className="flex items-center justify-between">
+                            <div>
+                                <h4 className="text-sm font-bold text-gray-900">Enable Delivery</h4>
+                                <p className="text-[10px] text-gray-400 font-medium">Allow customers to choose delivery at checkout</p>
+                            </div>
+                            <button
+                                onClick={() => setFormData(prev => ({ ...prev, isDeliveryEnabled: !prev.isDeliveryEnabled }))}
+                                className={`w-12 h-6 rounded-full transition-all relative ${formData.isDeliveryEnabled ? 'bg-[#25D366]' : 'bg-gray-200'}`}
+                            >
+                                <div className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-all ${formData.isDeliveryEnabled ? 'left-7' : 'left-1'}`} />
+                            </button>
+                        </div>
+
+                        {formData.isDeliveryEnabled && (
+                            <div className="space-y-2 pt-2 border-t border-gray-50">
+                                <label className="text-[10px] font-black text-gray-400 uppercase tracking-wider block ml-1">Delivery Fee (RM)</label>
+                                <div className="relative">
+                                    <div className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 font-bold text-sm">RM</div>
+                                    <input
+                                        type="number"
+                                        value={formData.deliveryFee}
+                                        onChange={(e) => setFormData({ ...formData, deliveryFee: parseFloat(e.target.value) || 0 })}
+                                        className="w-full h-14 bg-gray-50 rounded-2xl pl-12 pr-4 text-sm font-bold focus:ring-2 focus:ring-[#25D366] transition-all outline-none border-transparent"
+                                        placeholder="0.00"
+                                    />
+                                </div>
+                                <p className="text-[10px] text-gray-400 ml-1 font-medium">This flat fee will be added to delivery orders.</p>
+                            </div>
+                        )}
                     </div>
                 </div>
 
@@ -541,8 +581,6 @@ export default function Settings() {
                     </button>
                 </div>
             </div>
-
-
         </div>
     );
 }
