@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { ChevronLeft, QrCode, ShieldCheck, CheckCircle2, Copy, MessageCircle } from 'lucide-react';
+import { ChevronLeft, QrCode, ShieldCheck, CheckCircle2, Copy, MessageCircle, Download } from 'lucide-react';
 import Link from 'next/link';
 import { useLanguage } from '@/lib/LanguageContext';
 
@@ -12,6 +12,7 @@ export default function Checkout({ params }: { params: { name: string } }) {
     const [cartState, setCartState] = useState<any>(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [waLink, setWaLink] = useState('');
+    const [isDownloading, setIsDownloading] = useState(false);
 
     React.useEffect(() => {
         const saved = localStorage.getItem('kd_cart');
@@ -25,10 +26,8 @@ export default function Checkout({ params }: { params: { name: string } }) {
     const handlePaymentSubmit = async () => {
         setIsSubmitting(true);
         try {
-            // Simulated payment verification time
             await new Promise(resolve => setTimeout(resolve, 2000));
 
-            // Generate WhatsApp Message
             let text = `*New Order - ${cartState?.storeName || 'KedaiChat'}*\n\n`;
             text += `Total: *RM ${cartTotal.toFixed(2)}*\n\n`;
             text += `*Items:*\n`;
@@ -42,7 +41,6 @@ export default function Checkout({ params }: { params: { name: string } }) {
             const link = `https://wa.me/${phone}?text=${encodedText}`;
             setWaLink(link);
 
-            // Post order to database
             const res = await fetch('/api/orders', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -56,8 +54,6 @@ export default function Checkout({ params }: { params: { name: string } }) {
 
             if (res.ok) {
                 const data = await res.json();
-
-                // Save specific order id to local storage to show in Wallet
                 const myOrders = JSON.parse(localStorage.getItem('kd_my_orders') || '[]');
                 const enrichedOrder = {
                     ...data.order,
@@ -69,12 +65,11 @@ export default function Checkout({ params }: { params: { name: string } }) {
                 myOrders.push(enrichedOrder);
                 localStorage.setItem('kd_my_orders', JSON.stringify(myOrders));
                 localStorage.removeItem('kd_cart');
-                localStorage.removeItem('kd_ref'); // clear referral after use
+                localStorage.removeItem('kd_ref');
 
                 setStep(2);
                 setIsPaid(true);
 
-                // Auto open WhatsApp Link after a brief delay
                 setTimeout(() => {
                     window.open(link, '_blank');
                 }, 1500);
@@ -97,7 +92,6 @@ export default function Checkout({ params }: { params: { name: string } }) {
     const handleWhatsAppOnly = async () => {
         setIsSubmitting(true);
         try {
-            // Generate WhatsApp Message (Same as payment submit but no delay)
             let text = `*New Order - ${cartState?.storeName || 'KedaiChat'}*\n\n`;
             text += `Total: *RM ${cartTotal.toFixed(2)}*\n\n`;
             text += `*Items:*\n`;
@@ -111,7 +105,6 @@ export default function Checkout({ params }: { params: { name: string } }) {
             const link = `https://wa.me/${phone}?text=${encodedText}`;
             setWaLink(link);
 
-            // Post order to database for tracking
             const res = await fetch('/api/orders', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -125,8 +118,6 @@ export default function Checkout({ params }: { params: { name: string } }) {
 
             if (res.ok) {
                 const data = await res.json();
-
-                // Save to Wallet history
                 const myOrders = JSON.parse(localStorage.getItem('kd_my_orders') || '[]');
                 const enrichedOrder = {
                     ...data.order,
@@ -141,8 +132,6 @@ export default function Checkout({ params }: { params: { name: string } }) {
 
                 setStep(2);
                 setIsPaid(true);
-
-                // Open WhatsApp immediately
                 window.open(link, '_blank');
             } else {
                 const errorData = await res.json();
@@ -156,9 +145,82 @@ export default function Checkout({ params }: { params: { name: string } }) {
         }
     };
 
+    const handleDownloadQR = () => {
+        if (!cartState?.paymentQrUrl) return;
+        setIsDownloading(true);
+
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        if (!ctx) return;
+
+        canvas.width = 800;
+        canvas.height = 1100;
+
+        const img = new Image();
+        img.crossOrigin = "anonymous";
+        img.src = cartState.paymentQrUrl;
+
+        img.onload = () => {
+            const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
+            gradient.addColorStop(0, '#ffffff');
+            gradient.addColorStop(1, '#f3f4f6');
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            ctx.fillStyle = '#ffffff';
+            ctx.shadowColor = 'rgba(0,0,0,0.1)';
+            ctx.shadowBlur = 40;
+            ctx.beginPath();
+            if ((ctx as any).roundRect) (ctx as any).roundRect(40, 40, 720, 1020, 60);
+            else ctx.rect(40, 40, 720, 1020);
+            ctx.fill();
+            ctx.shadowBlur = 0;
+
+            ctx.fillStyle = '#111827';
+            ctx.font = '900 48px Inter, system-ui, sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText(cartState.storeName || 'KedaiChat', canvas.width / 2, 140);
+
+            ctx.fillStyle = '#25D366';
+            ctx.font = 'bold 24px Inter, system-ui, sans-serif';
+            ctx.fillText('STORE PAYMENT QR', canvas.width / 2, 185);
+
+            ctx.fillStyle = '#6B7280';
+            ctx.font = '500 20px Inter, system-ui, sans-serif';
+            ctx.fillText('Scan this QR code with any banking app', canvas.width / 2, 230);
+
+            const qrSize = 560;
+            const qrX = (canvas.width - qrSize) / 2;
+            const qrY = 280;
+
+            ctx.strokeStyle = '#f3f4f6';
+            ctx.lineWidth = 2;
+            ctx.strokeRect(qrX - 10, qrY - 10, qrSize + 20, qrSize + 20);
+            ctx.drawImage(img, qrX, qrY, qrSize, qrSize);
+
+            ctx.fillStyle = '#111827';
+            ctx.font = 'bold 32px Inter, system-ui, sans-serif';
+            ctx.fillText('kedaichat.online', canvas.width / 2, 950);
+
+            ctx.fillStyle = '#9CA3AF';
+            ctx.font = '500 18px Inter, system-ui, sans-serif';
+            ctx.fillText('Powered by KedaiChat', canvas.width / 2, 990);
+
+            const link = document.createElement('a');
+            link.download = `Payment-QR-${cartState.storeSlug || 'shop'}.png`;
+            link.href = canvas.toDataURL('image/png', 1.0);
+            link.click();
+            setIsDownloading(false);
+        };
+
+        img.onerror = () => {
+            alert('Failed to process QR for download. Please try long-pressing the image to save.');
+            setIsDownloading(false);
+        };
+    };
+
     return (
         <div className="min-h-screen bg-[#F8F9FA] font-inter max-w-md mx-auto relative shadow-2xl overflow-hidden border-x border-gray-100">
-            {/* Header */}
             <div className="bg-white p-6 border-b border-gray-50 flex items-center gap-4">
                 <Link href={`/shop/${params.name}`} className="text-gray-400">
                     <ChevronLeft size={24} />
@@ -174,12 +236,22 @@ export default function Checkout({ params }: { params: { name: string } }) {
                             <p className="text-xs text-gray-400 font-bold uppercase tracking-wider mb-8">{t('secure_qr')}</p>
 
                             {cartState?.paymentQrUrl ? (
-                                <div className="aspect-square bg-white rounded-[40px] border border-gray-100 shadow-sm flex items-center justify-center p-4 mb-8 relative group overflow-hidden">
-                                    <img src={cartState.paymentQrUrl} alt="Store Payment QR" className="w-full h-full object-contain" />
-                                    <div className="absolute inset-0 bg-white/40 backdrop-blur-[2px] opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center rounded-[40px]">
-                                        <button className="bg-gray-900 text-white px-4 py-2 rounded-xl text-[10px] font-bold">{t('zoom_qr')}</button>
+                                <>
+                                    <div className="aspect-square bg-white rounded-[40px] border border-gray-100 shadow-sm flex items-center justify-center p-4 mb-4 relative group overflow-hidden">
+                                        <img src={cartState.paymentQrUrl} alt="Store Payment QR" className="w-full h-full object-contain" />
+                                        <div className="absolute inset-0 bg-white/40 backdrop-blur-[2px] opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center rounded-[40px]">
+                                            <button className="bg-gray-900 text-white px-4 py-2 rounded-xl text-[10px] font-bold">{t('zoom_qr')}</button>
+                                        </div>
                                     </div>
-                                </div>
+                                    <button
+                                        onClick={handleDownloadQR}
+                                        disabled={isDownloading}
+                                        className="w-full h-12 bg-gray-50 text-gray-900 font-bold rounded-2xl flex items-center justify-center gap-2 hover:bg-gray-100 active:scale-95 transition-all mb-4 border border-gray-100"
+                                    >
+                                        <Download size={18} />
+                                        {isDownloading ? 'Processing...' : 'SAVE QR TO GALLERY'}
+                                    </button>
+                                </>
                             ) : (
                                 <div className="aspect-square bg-gray-50 rounded-[40px] border-2 border-dashed border-gray-200 flex flex-col items-center justify-center p-8 mb-8">
                                     <QrCode size={64} className="text-gray-300 mb-4" />
@@ -200,7 +272,7 @@ export default function Checkout({ params }: { params: { name: string } }) {
                                 <button
                                     onClick={handlePaymentSubmit}
                                     disabled={isSubmitting || cartTotal === 0}
-                                    className="w-full h-16 bg-[#25D366] text-white font-bold rounded-[2xl] flex items-center justify-center shadow-lg shadow-green-100 active:scale-95 transition-all disabled:opacity-50"
+                                    className="w-full h-16 bg-[#25D366] text-white font-bold rounded-[2xl] flex items-center justify-center shadow-lg shadow-green-100 active:scale-[0.98] transition-all disabled:opacity-50"
                                 >
                                     {isSubmitting ? 'Verifying payment...' : t('submit_proof')}
                                 </button>
@@ -213,8 +285,6 @@ export default function Checkout({ params }: { params: { name: string } }) {
                                 </button>
                             </div>
                         </section>
-
-
                     </div>
                 ) : (
                     <div className="animate-in zoom-in-95 fade-in duration-700 flex flex-col items-center justify-center pt-20 text-center">
@@ -225,9 +295,7 @@ export default function Checkout({ params }: { params: { name: string } }) {
                             {isPaid ? t('payment_confirmed') : t('verifying_payment')}
                         </h2>
                         <p className="text-gray-400 text-sm leading-relaxed max-w-[240px] mb-12">
-                            {isPaid
-                                ? t('order_prepared')
-                                : t('checking_txn')}
+                            {isPaid ? t('order_prepared') : t('checking_txn')}
                         </p>
 
                         {isPaid && (
