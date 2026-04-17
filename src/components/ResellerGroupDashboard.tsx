@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { Share2, Users, Send, ChevronRight, TrendingUp, Loader2, Info, Trash2, XCircle } from 'lucide-react';
+import { Share2, Users, Send, ChevronRight, TrendingUp, Loader2, Info, Trash2, XCircle, X, Calendar, Clock, Edit3 } from 'lucide-react';
 import BottomNav from './BottomNav';
 
 export default function ResellerGroupDashboard() {
@@ -422,52 +422,82 @@ export default function ResellerGroupDashboard() {
 
                         {/* New Session Modal */}
                         {showNewSessionModal && (
-                            <div className="fixed object-contain h-full z-50 flex items-end justify-center sm:items-center inset-0 px-0 sm:px-4 bg-black/60 backdrop-blur-md transition-all animate-in fade-in duration-300">
-                                <div className="absolute inset-0 max-w-md mx-auto" onClick={() => setShowNewSessionModal(false)} />
-                                <div className="bg-white w-full max-w-md rounded-t-[32px] sm:rounded-[32px] p-6 shadow-2xl relative z-10 animate-in slide-in-from-bottom-8 duration-300">
-                                    <div className="flex justify-between items-center mb-6">
-                                        <h2 className="text-xl font-bold text-gray-900">New Group Order</h2>
-                                        <button onClick={() => setShowNewSessionModal(false)} className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center text-gray-500 font-bold text-sm hover:bg-gray-200">
-                                            ✕
+                            <div className="fixed inset-0 z-[100] flex items-end justify-center sm:items-center bg-black/60 backdrop-blur-md transition-all animate-in fade-in duration-300">
+                                <div className="absolute inset-0" onClick={() => setShowNewSessionModal(false)} />
+                                <div className="bg-white w-full max-w-md rounded-t-[40px] sm:rounded-[40px] p-8 pb-12 shadow-2xl relative z-10 animate-in slide-in-from-bottom-10 duration-500">
+                                    {/* Drag Handle Visual */}
+                                    <div className="w-12 h-1.5 bg-gray-100 rounded-full mx-auto mb-8 sm:hidden" />
+
+                                    <div className="flex justify-between items-center mb-10">
+                                        <h2 className="text-2xl font-black text-gray-900 tracking-tight">New Group Order</h2>
+                                        <button
+                                            onClick={() => setShowNewSessionModal(false)}
+                                            className="w-10 h-10 bg-gray-50 rounded-full flex items-center justify-center text-gray-400 hover:text-gray-900 transition-colors"
+                                        >
+                                            <X size={20} />
                                         </button>
                                     </div>
-                                    <div className="space-y-4">
-                                        <div>
-                                            <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1 mb-1 block">Session Title</label>
-                                            <input
-                                                type="text"
-                                                placeholder="e.g. Friday Office Lunch"
-                                                className="w-full h-12 bg-gray-50 border border-gray-100 rounded-2xl px-4 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#25D366]"
-                                                value={sessionForm.title}
-                                                onChange={e => setSessionForm({ ...sessionForm, title: e.target.value })}
-                                            />
-                                        </div>
-                                        <div className="grid grid-cols-2 gap-3">
-                                            <div>
-                                                <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1 mb-1 block">Order Deadline</label>
+
+                                    <div className="space-y-8">
+                                        <div className="relative">
+                                            <label className="text-[10px] font-black text-gray-400 uppercase tracking-[2px] ml-1 mb-3 block">Session Title</label>
+                                            <div className="relative group">
+                                                <div className="absolute left-5 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-[#25D366] transition-colors">
+                                                    <Edit3 size={18} />
+                                                </div>
                                                 <input
-                                                    type="datetime-local"
-                                                    className="w-full h-12 bg-gray-50 border border-gray-100 rounded-2xl px-4 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#25D366]"
-                                                    value={sessionForm.deadline}
-                                                    onChange={e => setSessionForm({ ...sessionForm, deadline: e.target.value })}
-                                                />
-                                            </div>
-                                            <div>
-                                                <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1 mb-1 block">Expected Pickup</label>
-                                                <input
-                                                    type="time"
-                                                    className="w-full h-12 bg-gray-50 border border-gray-100 rounded-2xl px-4 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#25D366]"
-                                                    value={sessionForm.pickupTime}
-                                                    onChange={e => setSessionForm({ ...sessionForm, pickupTime: e.target.value })}
+                                                    type="text"
+                                                    placeholder="e.g. Friday Office Lunch"
+                                                    className="w-full h-[60px] bg-gray-50 border-2 border-transparent rounded-[20px] pl-12 pr-6 text-sm font-bold text-gray-900 focus:border-[#25D366] focus:bg-white focus:outline-none transition-all"
+                                                    value={sessionForm.title}
+                                                    onChange={e => setSessionForm({ ...sessionForm, title: e.target.value })}
                                                 />
                                             </div>
                                         </div>
+
+                                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                                            <div>
+                                                <label className="text-[10px] font-black text-gray-400 uppercase tracking-[2px] ml-1 mb-3 block">Order Deadline</label>
+                                                <div className="relative group">
+                                                    <div className="absolute left-5 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-[#25D366] transition-colors pointer-events-none">
+                                                        <Calendar size={18} />
+                                                    </div>
+                                                    <input
+                                                        type="datetime-local"
+                                                        className="w-full h-[60px] bg-gray-50 border-2 border-transparent rounded-[20px] pl-12 pr-6 text-sm font-bold text-gray-900 focus:border-[#25D366] focus:bg-white focus:outline-none transition-all appearance-none"
+                                                        value={sessionForm.deadline}
+                                                        onChange={e => setSessionForm({ ...sessionForm, deadline: e.target.value })}
+                                                    />
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <label className="text-[10px] font-black text-gray-400 uppercase tracking-[2px] ml-1 mb-3 block">Expected Pickup</label>
+                                                <div className="relative group">
+                                                    <div className="absolute left-5 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-[#25D366] transition-colors pointer-events-none">
+                                                        <Clock size={18} />
+                                                    </div>
+                                                    <input
+                                                        type="time"
+                                                        className="w-full h-[60px] bg-gray-50 border-2 border-transparent rounded-[20px] pl-12 pr-6 text-sm font-bold text-gray-900 focus:border-[#25D366] focus:bg-white focus:outline-none transition-all appearance-none"
+                                                        value={sessionForm.pickupTime}
+                                                        onChange={e => setSessionForm({ ...sessionForm, pickupTime: e.target.value })}
+                                                    />
+                                                </div>
+                                            </div>
+                                        </div>
+
                                         <button
                                             disabled={!sessionForm.title || !sessionForm.deadline || !sessionForm.pickupTime || isSaving}
                                             onClick={handleCreateSession}
-                                            className="w-full h-14 bg-[#25D366] text-white font-black rounded-2xl shadow-lg shadow-green-100 active:scale-95 transition-all mt-4 disabled:opacity-50"
+                                            className="w-full h-[64px] bg-[#25D366] text-white font-black rounded-[24px] shadow-xl shadow-green-100 flex items-center justify-center gap-3 active:scale-[0.98] transition-all mt-6 disabled:opacity-50 disabled:grayscale uppercase tracking-widest text-sm"
                                         >
-                                            {isSaving ? 'Creating...' : 'Create Session'}
+                                            {isSaving ? (
+                                                <Loader2 className="animate-spin" size={20} />
+                                            ) : (
+                                                <>
+                                                    Create Session <ChevronRight size={20} strokeWidth={3} />
+                                                </>
+                                            )}
                                         </button>
                                     </div>
                                 </div>
