@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { ChevronLeft, QrCode, ShieldCheck, CheckCircle2, Copy, MessageCircle, Download, Check, AlertCircle } from 'lucide-react';
+import { ChevronLeft, QrCode, ShieldCheck, CheckCircle2, Copy, MessageCircle, Download, Check, AlertCircle, ShoppingBag, ChevronRight } from 'lucide-react';
 import Link from 'next/link';
 import { useLanguage } from '@/lib/LanguageContext';
 
@@ -260,11 +260,12 @@ export default function Checkout({ params }: { params: { name: string } }) {
 
             <div className="p-6 text-center">
                 {step === 1 ? (
+                    /* Step 1: Order Details */
                     <div className="animate-in fade-in slide-in-from-bottom-4 space-y-6">
                         <section className="bg-white rounded-[32px] p-6 shadow-xl border border-gray-50">
                             <h2 className="text-lg font-bold text-gray-900 mb-6 text-left">Order Details</h2>
 
-                            <div className="space-y-4 mb-8">
+                            <div className="space-y-4 mb-4">
                                 <div className="text-left">
                                     <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-4 mb-2 block">Your Name *</label>
                                     <input
@@ -293,14 +294,34 @@ export default function Checkout({ params }: { params: { name: string } }) {
                                         value={notes}
                                         onChange={(e) => setNotes(e.target.value)}
                                         placeholder="No spicy, extra sauce, etc."
-                                        rows={2}
+                                        rows={3}
                                         className="w-full bg-gray-50 border-2 border-transparent rounded-2xl p-4 font-bold text-gray-900 focus:border-[#25D366] focus:bg-white focus:outline-none transition-all placeholder:text-gray-300 resize-none"
                                     />
                                 </div>
                             </div>
 
-                            <hr className="border-gray-50 mb-8" />
+                            <div className="flex flex-col items-center gap-2 mt-8 mb-8">
+                                <p className="text-3xl font-black text-gray-900">RM {cartTotal.toFixed(2)}</p>
+                                <div className="flex items-center gap-2 bg-green-50 text-[#25D366] px-3 py-1 rounded-full text-[10px] font-bold">
+                                    <ShoppingBag size={12} />
+                                    Reviewing Order
+                                </div>
+                            </div>
 
+                            <button
+                                onClick={() => setStep(2)}
+                                disabled={!customerName.trim()}
+                                className="w-full h-16 bg-[#25D366] text-white font-bold rounded-[22px] flex items-center justify-center shadow-lg shadow-green-100 active:scale-[0.98] transition-all disabled:opacity-50"
+                            >
+                                NEXT: PROCEED TO PAYMENT
+                                <ChevronRight size={20} className="ml-2" />
+                            </button>
+                        </section>
+                    </div>
+                ) : step === 2 ? (
+                    /* Step 2: Scan & Pay */
+                    <div className="animate-in fade-in slide-in-from-right-4 space-y-6">
+                        <section className="bg-white rounded-[32px] p-6 shadow-xl border border-gray-50">
                             <h2 className="text-lg font-bold text-gray-900 mb-1">{t('scan_pay')}</h2>
                             <p className="text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-6">Payment Proof is Required</p>
 
@@ -388,22 +409,30 @@ export default function Checkout({ params }: { params: { name: string } }) {
                             <div className="space-y-3">
                                 <button
                                     onClick={handlePaymentSubmit}
-                                    disabled={isSubmitting || cartTotal === 0 || !customerName.trim()}
+                                    disabled={isSubmitting || cartTotal === 0}
                                     className="w-full h-16 bg-[#25D366] text-white font-bold rounded-[22px] flex items-center justify-center shadow-lg shadow-green-100 active:scale-[0.98] transition-all disabled:opacity-50"
                                 >
                                     {isSubmitting ? 'Verifying payment...' : t('submit_proof')}
                                 </button>
                                 <button
                                     onClick={handleWhatsAppOnly}
-                                    disabled={isSubmitting || cartTotal === 0 || !customerName.trim()}
+                                    disabled={isSubmitting || cartTotal === 0}
                                     className="w-full py-4 text-gray-400 text-xs font-bold uppercase tracking-widest hover:text-gray-600 transition-colors disabled:opacity-50"
                                 >
                                     {t('pay_whatsapp')}
+                                </button>
+
+                                <button
+                                    onClick={() => setStep(1)}
+                                    className="text-gray-400 text-[10px] font-bold uppercase tracking-widest hover:text-gray-900 pt-4"
+                                >
+                                    Back to Info
                                 </button>
                             </div>
                         </section>
                     </div>
                 ) : (
+                    /* Step 3: Success */
                     <div className="animate-in zoom-in-95 fade-in duration-700 flex flex-col items-center justify-center pt-20">
                         <div className={`w-24 h-24 rounded-full flex items-center justify-center mb-8 transition-all duration-1000 ${isPaid ? 'bg-[#25D366] text-white scale-110 shadow-2xl shadow-green-200' : 'bg-gray-100 text-gray-300 animate-pulse'}`}>
                             <CheckCircle2 size={48} />
