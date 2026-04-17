@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { ChevronLeft, QrCode, ShieldCheck, CheckCircle2, Copy, MessageCircle, Download } from 'lucide-react';
+import { ChevronLeft, QrCode, ShieldCheck, CheckCircle2, Copy, MessageCircle, Download, X } from 'lucide-react';
 import Link from 'next/link';
 import { useLanguage } from '@/lib/LanguageContext';
 
@@ -13,6 +13,8 @@ export default function Checkout({ params }: { params: { name: string } }) {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [waLink, setWaLink] = useState('');
     const [isDownloading, setIsDownloading] = useState(false);
+    const [generatedQRUrl, setGeneratedQRUrl] = useState<string | null>(null);
+    const [showQRModal, setShowQRModal] = useState(false);
 
     React.useEffect(() => {
         const saved = localStorage.getItem('kd_cart');
@@ -160,7 +162,7 @@ export default function Checkout({ params }: { params: { name: string } }) {
         img.crossOrigin = "anonymous";
         img.src = cartState.paymentQrUrl;
 
-        img.onload = async () => {
+        img.onload = () => {
             try {
                 const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
                 gradient.addColorStop(0, '#ffffff');
@@ -207,77 +209,54 @@ export default function Checkout({ params }: { params: { name: string } }) {
                 ctx.font = '500 18px Inter, system-ui, sans-serif';
                 ctx.fillText('Powered by KedaiChat', canvas.width / 2, 990);
 
-                const fileName = `Payment-QR-${cartState.storeSlug || 'shop'}.png`;
                 const dataUrl = canvas.toDataURL('image/png', 1.0);
-
-                // Strategy 1: Web Share API (Mobile Premium)
-                if (navigator.share && navigator.canShare) {
-                    canvas.toBlob(async (blob) => {
-                        if (blob) {
-                            const file = new File([blob], fileName, { type: 'image/png' });
-                            if (navigator.canShare({ files: [file] })) {
-                                try {
-                                    alert('Ready! Select "Save Image" or "Save to Photos" from the menu.');
-                                    await navigator.share({
-                                        files: [file],
-                                        title: 'Payment QR',
-                                        text: 'Save this QR to your gallery for payment.'
-                                    });
-                                    setIsDownloading(false);
-                                    return;
-                                } catch (err: any) {
-                                    if (err.name !== 'AbortError') {
-                                        console.error('Share failed, falling back:', err);
-                                        const newWindow = window.open();
-                                        if (newWindow) {
-                                            newWindow.document.write(`<img src="${dataUrl}" style="width:100%; height:auto;" />`);
-                                            newWindow.document.write('<p style="text-align:center; font-family:sans-serif; margin-top:20px;"><b>Long-press the image to save to your gallery</b></p>');
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                        setIsDownloading(false);
-                    }, 'image/png');
-                }
-                // Strategy 2: Data URL Open (Mobile Fallback)
-                else if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
-                    alert('Generating QR... Please long-press the image to SAVE TO GALLERY.');
-                    const newWindow = window.open();
-                    if (newWindow) {
-                        newWindow.document.write(`<img src="${dataUrl}" style="width:100%; height:auto;" />`);
-                        newWindow.document.write('<p style="text-align:center; font-family:sans-serif; margin-top:20px;"><b>Long-press the image to save to your gallery</b></p>');
-                    } else {
-                        const link = document.createElement('a');
-                        link.download = fileName;
-                        link.href = dataUrl;
-                        link.click();
-                    }
-                    setIsDownloading(false);
-                }
-                // Strategy 3: Standard Download (Desktop)
-                else {
-                    const link = document.createElement('a');
-                    link.download = fileName;
-                    link.href = dataUrl;
-                    link.click();
-                    setIsDownloading(false);
-                }
+                setGeneratedQRUrl(dataUrl);
+                setShowQRModal(true);
+                setIsDownloading(false);
             } catch (error) {
-                console.error('Canvas processing failed:', error);
-                alert('Connection issue. Please long-press the QR code directly to save.');
+                console.error('Canvas failed', error);
+                alert('Connection issue. Please long-press the QR code directly below to save.');
                 setIsDownloading(false);
             }
         };
 
         img.onerror = () => {
-            alert('Failed to process QR for download. Please try long-pressing the original image to save.');
+            alert('Failed to process QR. Please try long-pressing the original image to save.');
             setIsDownloading(false);
         };
     };
 
     return (
         <div className="min-h-screen bg-[#F8F9FA] font-inter max-w-md mx-auto relative shadow-2xl overflow-hidden border-x border-gray-100">
+            {/* Modal Overlay */}
+            {showQRModal && generatedQRUrl && (
+                <div className="fixed inset-0 z-[100] bg-black/90 backdrop-blur-sm animate-in fade-in duration-300 flex flex-col items-center justify-center p-6">
+                    <button
+                        onClick={() => setShowQRModal(false)}
+                        className="absolute top-6 right-6 text-white bg-white/10 p-2 rounded-full hover:bg-white/20 transition-colors"
+                    >
+                        <X size={24} />
+                    </button>
+
+                    <div className="bg-white rounded-[40px] overflow-hidden shadow-2xl w-full max-w-sm mb-8 animate-in zoom-in-95 duration-500">
+                        <img src={generatedQRUrl} alt="Branded QR Card" className="w-full h-auto" />
+                    </div>
+
+                    <div className="text-center space-y-4">
+                        <div className="bg-white/10 px-6 py-4 rounded-3xl border border-white/10">
+                            <p className="text-white text-lg font-bold">Long-press image to save</p>
+                            <p className="text-white/60 text-sm">Save it to your gallery for easier payment.</p>
+                        </div>
+                        <button
+                            onClick={() => setShowQRModal(false)}
+                            className="text-white/40 text-xs font-bold uppercase tracking-widest hover:text-white transition-colors"
+                        >
+                            Close Preview
+                        </button>
+                    </div>
+                </div>
+            )}
+
             <div className="bg-white p-6 border-b border-gray-50 flex items-center gap-4">
                 <Link href={`/shop/${params.name}`} className="text-gray-400">
                     <ChevronLeft size={24} />
@@ -306,7 +285,7 @@ export default function Checkout({ params }: { params: { name: string } }) {
                                         className="w-full h-12 bg-gray-50 text-gray-900 font-bold rounded-2xl flex items-center justify-center gap-2 hover:bg-gray-100 active:scale-95 transition-all mb-4 border border-gray-100"
                                     >
                                         <Download size={18} />
-                                        {isDownloading ? 'Processing...' : 'SAVE QR TO GALLERY'}
+                                        {isDownloading ? 'Generating...' : 'SAVE QR TO GALLERY'}
                                     </button>
                                 </>
                             ) : (
