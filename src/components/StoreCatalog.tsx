@@ -367,9 +367,8 @@ export default function StoreCatalog({ slug }: { slug?: string }) {
                 </div>
             </div>
 
-            {/* Floating Cart Bar */}
             {cartCount > 0 && (
-                <div className="fixed bottom-6 left-6 right-6 animate-in slide-in-from-bottom-10 z-50">
+                <div className="fixed bottom-10 left-6 right-6 animate-in slide-in-from-bottom-10 z-[70]">
                     <button
                         onClick={handleCheckout}
                         className="w-full h-[64px] bg-[#25D366] text-white font-bold rounded-[32px] flex items-center justify-between px-6 shadow-xl shadow-green-200/50 active:scale-[0.98] transition-all"

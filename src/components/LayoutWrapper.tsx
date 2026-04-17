@@ -36,8 +36,12 @@ export default function LayoutWrapper({ children }: { children: React.ReactNode 
         return () => window.removeEventListener('beforeinstallprompt', handlePrompt);
     }, []);
 
-    // Pages where we don't want the bottom nav (Landing Page, Login, Shop pages)
-    const hideNav = pathname === '/' || pathname === '/login' || pathname.startsWith('/shop');
+    // Pages where we don't want the bottom nav (Landing Page, Login, Shop pages, and dynamic store slugs)
+    const reservedPaths = ['group', 'admin', 'api', 'billing', 'dashboard', 'login', 'onboarding', 'orders', 'products', 'reseller', 'wallet', 'tools', 'shop', 'analytics', 'settings', 'checkout', 'privacy', 'terms'];
+    const pathParts = pathname.split('/').filter(Boolean);
+    const isStorePage = pathParts.length > 0 && !reservedPaths.includes(pathParts[0]);
+
+    const hideNav = pathname === '/' || pathname === '/login' || isStorePage || pathname.startsWith('/shop');
 
     return (
         <>
