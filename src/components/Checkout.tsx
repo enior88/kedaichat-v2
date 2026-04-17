@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { ChevronLeft, QrCode, ShieldCheck, CheckCircle2, Copy, MessageCircle, Download, Check } from 'lucide-react';
+import { ChevronLeft, QrCode, ShieldCheck, CheckCircle2, Copy, MessageCircle, Download, Check, AlertCircle } from 'lucide-react';
 import Link from 'next/link';
 import { useLanguage } from '@/lib/LanguageContext';
 
@@ -14,6 +14,7 @@ export default function Checkout({ params }: { params: { name: string } }) {
     const [waLink, setWaLink] = useState('');
     const [isDownloading, setIsDownloading] = useState(false);
     const [readyImage, setReadyImage] = useState<string | null>(null);
+    const [debugError, setDebugError] = useState<string | null>(null);
 
     React.useEffect(() => {
         const saved = localStorage.getItem('kd_cart');
@@ -149,6 +150,7 @@ export default function Checkout({ params }: { params: { name: string } }) {
     const handleGenerateQR = () => {
         if (!cartState?.paymentQrUrl) return;
         setIsDownloading(true);
+        setDebugError(null);
 
         const canvas = document.createElement('canvas');
         const ctx = canvas.getContext('2d');
@@ -159,7 +161,7 @@ export default function Checkout({ params }: { params: { name: string } }) {
 
         const img = new Image();
         img.crossOrigin = "anonymous";
-        // Use JPEG for maximum compatibility and smaller file size
+        // Cache-buster to ensure the browser respects the crossOrigin header
         img.src = cartState.paymentQrUrl + (cartState.paymentQrUrl.includes('?') ? '&' : '?') + 't=' + Date.now();
 
         img.onload = () => {
@@ -176,7 +178,7 @@ export default function Checkout({ params }: { params: { name: string } }) {
 
                 ctx.fillStyle = '#25D366';
                 ctx.font = 'bold 24px sans-serif';
-                ctx.fillText('OFFICIAL PAYMENT QR', canvas.width / 2, 185);
+                ctx.fillText('STORE PAYMENT QR', canvas.width / 2, 185);
 
                 const qrSize = 560;
                 const qrX = (canvas.width - qrSize) / 2;
@@ -187,41 +189,44 @@ export default function Checkout({ params }: { params: { name: string } }) {
                 ctx.font = 'bold 32px sans-serif';
                 ctx.fillText('kedaichat.online', canvas.width / 2, 950);
 
-                // Export as JPEG (most reliable for saving on all OS)
-                const dataUrl = canvas.toDataURL('image/jpeg', 0.9);
-                setReadyImage(dataUrl);
-                setIsDownloading(false);
+                // Export as JPEG
+                canvas.toBlob(async (blob) => {
+                    if (blob) {
+                        try {
+                            const formData = new FormData();
+                            formData.append('file', blob, 'payment-qr.jpg');
 
-                // Desktop fallback: also trigger a real download
-                if (!/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
-                    const link = document.createElement('a');
-                    link.download = `Payment-QR-${cartState.storeSlug || 'shop'}.jpg`;
-                    link.href = dataUrl;
-                    link.click();
-                } else {
-                    // Try to share the file directly on mobile as well
-                    canvas.toBlob(async (blob) => {
-                        if (blob && navigator.share && navigator.canShare) {
-                            const file = new File([blob], 'payment-qr.jpg', { type: 'image/jpeg' });
-                            if (navigator.canShare({ files: [file] })) {
-                                try {
-                                    await navigator.share({
-                                        files: [file],
-                                        title: 'Payment QR'
-                                    });
-                                } catch (e) { }
+                            const res = await fetch('/api/public/upload-qr', {
+                                method: 'POST',
+                                body: formData
+                            });
+
+                            if (res.ok) {
+                                const data = await res.json();
+                                setReadyImage(data.fileUrl);
+                            } else {
+                                throw new Error('Cloudinary upload failed');
                             }
+                        } catch (e) {
+                            console.error('Upload error, falling back to data URL', e);
+                            setReadyImage(canvas.toDataURL('image/jpeg', 0.9));
                         }
-                    }, 'image/jpeg', 0.9);
-                }
-            } catch (error) {
-                console.error('Canvas failed', error);
+                    } else {
+                        throw new Error('Blob generation failed');
+                    }
+                    setIsDownloading(false);
+                }, 'image/jpeg', 0.9);
+
+            } catch (error: any) {
+                console.error('Canvas processing failed', error);
+                setDebugError(error.message || 'Processing error');
                 setReadyImage(cartState.paymentQrUrl);
                 setIsDownloading(false);
             }
         };
 
         img.onerror = () => {
+            setDebugError('Failed to load QR image');
             setReadyImage(cartState.paymentQrUrl);
             setIsDownloading(false);
         };
@@ -245,24 +250,50 @@ export default function Checkout({ params }: { params: { name: string } }) {
 
                             {readyImage ? (
                                 <div className="space-y-4 animate-in zoom-in-95 duration-500">
-                                    <div className="bg-green-50 rounded-[40px] p-2 border-2 border-dashed border-[#25D366]/30">
-                                        <img src={readyImage} alt="Payment QR" className="w-full h-auto rounded-[32px] shadow-sm" />
+                                    <div className="bg-green-50 rounded-[40px] p-2 border-2 border-dashed border-[#25D366]/30 relative group">
+                                        <img
+                                            src={readyImage}
+                                            alt="Payment QR"
+                                            className="w-full h-auto rounded-[32px] shadow-sm select-auto pointer-events-auto"
+                                            style={{ '-webkit-user-select': 'auto', 'user-select': 'auto' } as any}
+                                        />
                                     </div>
-                                    <div className="bg-gray-900 text-white rounded-2xl py-4 px-6 flex items-center justify-center gap-2">
-                                        <Check size={20} className="text-[#25D366]" />
-                                        <span className="text-sm font-bold">HOLD IMAGE TO SAVE TO GALLERY</span>
+                                    <div className="bg-gray-900 text-white rounded-2xl py-4 px-6 flex flex-col items-center gap-2">
+                                        <div className="flex items-center gap-2">
+                                            <Check size={20} className="text-[#25D366]" />
+                                            <span className="text-sm font-bold uppercase tracking-wide">Ready to Save!</span>
+                                        </div>
+                                        <p className="text-[10px] text-white/60 font-medium">Long-press image above and select <span className="text-white font-bold">"Download Image"</span></p>
                                     </div>
-                                    <button
-                                        onClick={() => setReadyImage(null)}
-                                        className="text-gray-400 text-[10px] font-bold uppercase tracking-widest hover:text-gray-900 transition-colors"
-                                    >
-                                        Go Back / Use Original QR
-                                    </button>
+                                    <div className="flex flex-col gap-2">
+                                        <a
+                                            href={readyImage}
+                                            download={`Payment-QR-${cartState.storeName}.jpg`}
+                                            className="w-full h-12 bg-gray-50 text-gray-900 font-bold rounded-2xl flex items-center justify-center gap-2 border border-gray-100"
+                                        >
+                                            <Download size={18} />
+                                            DIRECT DOWNLOAD
+                                        </a>
+                                        <button
+                                            onClick={() => setReadyImage(null)}
+                                            className="text-gray-400 text-[10px] font-bold uppercase tracking-widest hover:text-gray-900 transition-colors py-2"
+                                        >
+                                            Reset / Use Original QR
+                                        </button>
+                                    </div>
                                 </div>
                             ) : (
                                 <>
-                                    <div className="aspect-square bg-white rounded-[40px] border border-gray-100 shadow-sm flex items-center justify-center p-4 mb-4 relative overflow-hidden">
-                                        {cartState?.paymentQrUrl ? (
+                                    <div className="aspect-square bg-white rounded-[40px] border border-gray-100 shadow-sm flex flex-col items-center justify-center p-4 mb-4 relative overflow-hidden">
+                                        {isDownloading ? (
+                                            <div className="flex flex-col items-center gap-4">
+                                                <div className="w-12 h-12 border-4 border-[#25D366] border-t-transparent rounded-full animate-spin" />
+                                                <div className="space-y-1">
+                                                    <p className="text-sm font-bold text-gray-900 uppercase">Generating Branded QR</p>
+                                                    <p className="text-[10px] text-gray-400 font-medium tracking-tight">Optimizing for your phone gallery...</p>
+                                                </div>
+                                            </div>
+                                        ) : cartState?.paymentQrUrl ? (
                                             <img src={cartState.paymentQrUrl} alt="Store Payment QR" className="w-full h-full object-contain" />
                                         ) : (
                                             <div className="flex flex-col items-center gap-2">
@@ -271,19 +302,21 @@ export default function Checkout({ params }: { params: { name: string } }) {
                                             </div>
                                         )}
                                     </div>
+
+                                    {debugError && (
+                                        <div className="flex items-center justify-center gap-2 text-red-500 mb-4 bg-red-50 py-2 rounded-xl text-[10px] font-bold">
+                                            <AlertCircle size={14} />
+                                            {debugError}
+                                        </div>
+                                    )}
+
                                     <button
                                         onClick={handleGenerateQR}
                                         disabled={isDownloading || !cartState?.paymentQrUrl}
                                         className="w-full h-14 bg-gray-50 text-gray-900 font-bold rounded-2xl flex items-center justify-center gap-3 hover:bg-gray-100 active:scale-95 transition-all mb-4 border border-gray-100 shadow-sm disabled:opacity-50"
                                     >
-                                        {isDownloading ? (
-                                            <div className="w-5 h-5 border-2 border-gray-900 border-t-transparent rounded-full animate-spin" />
-                                        ) : (
-                                            <>
-                                                <Download size={20} />
-                                                SAVE QR TO GALLERY
-                                            </>
-                                        )}
+                                        <Download size={20} />
+                                        SAVE QR TO GALLERY
                                     </button>
                                 </>
                             )}
