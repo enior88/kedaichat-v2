@@ -85,8 +85,12 @@ export default function OrdersManagement() {
                 ) : filteredOrders.map((order) => (
                     <div key={order.id} className="premium-card !p-4">
                         <div className="flex justify-between items-start mb-3">
-                            <div>
-                                <h3 className="font-bold text-gray-900 text-lg">Order {order.id.slice(0, 6)}</h3>
+                            <div className="flex-1">
+                                <h3 className="font-bold text-gray-900 text-lg line-clamp-1">
+                                    {order.items && order.items.length > 0
+                                        ? `${order.items[0].product?.name || 'Item'} x${order.items[0].quantity}${order.items.length > 1 ? ` + ${order.items.length - 1} more` : ''}`
+                                        : `Order ${order.id.slice(0, 6)}`}
+                                </h3>
                                 <p className="text-xs text-gray-400 font-medium">{order.customerName || 'Customer'} • {new Date(order.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</p>
                             </div>
                             <div className="text-right">
@@ -98,11 +102,18 @@ export default function OrdersManagement() {
                             </div>
                         </div>
 
-                        {order.items && (
-                            <div className="bg-gray-50 rounded-xl p-3 mb-4">
-                                <p className="text-xs text-gray-600 font-medium leading-relaxed">
-                                    {(typeof order.items === 'string') ? order.items : 'Items list...'}
-                                </p>
+                        {order.items && order.items.length > 0 && (
+                            <div className="bg-gray-50 rounded-xl p-3 mb-4 space-y-1">
+                                {order.items.map((item: any) => (
+                                    <div key={item.id} className="flex justify-between text-xs font-medium">
+                                        <span className="text-gray-600 italic">
+                                            {item.product?.name} x{item.quantity}
+                                        </span>
+                                        <span className="text-gray-400">
+                                            RM {(item.price * item.quantity).toFixed(2)}
+                                        </span>
+                                    </div>
+                                ))}
                             </div>
                         )}
 

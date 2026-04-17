@@ -12,6 +12,13 @@ export async function GET(req: Request) {
 
     const orders = await prisma.order.findMany({
         where: { storeId: store.id },
+        include: {
+            items: {
+                include: {
+                    product: true
+                }
+            }
+        },
         orderBy: { createdAt: 'desc' }
     });
 
@@ -59,6 +66,16 @@ export async function POST(req: Request) {
                 paymentStatus: 'PAID',
                 customerName: customerPhone || 'Walk-in Customer',
                 customerPhone: customerPhone || null,
+                items: {
+                    create: items.map((item: any) => ({
+                        productId: item.id,
+                        quantity: item.quantity,
+                        price: parseFloat(item.price)
+                    }))
+                }
+            },
+            include: {
+                items: true
             }
         });
 
