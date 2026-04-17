@@ -40,9 +40,26 @@ export async function GET(req: Request) {
             return NextResponse.json({ error: 'Store not found' }, { status: 404 });
         }
 
-        const revenueToday = store.orders
-            .filter((o: any) => o.paymentStatus === 'PAID')
-            .reduce((sum: number, order: any) => sum + (order.total || 0), 0);
+        // Calculate revenue for today in Malaysia time (UTC+8)
+        const now = new Date();
+        const myTime = new Date(now.getTime() + 8 * 3600000);
+        const startOfMyDay = new Date(Date.UTC(myTime.getUTCFullYear(), myTime.getUTCMonth(), myTime.getUTCDate()));
+        const startOfTodayUTC = new Date(startOfMyDay.getTime() - 8 * 3600000);
+
+        const todayOrders = await prisma.order.findMany({
+            where: {
+                storeId: store.id,
+                paymentStatus: 'PAID',
+                createdAt: {
+                    gte: startOfTodayUTC
+                }
+            },
+            select: {
+                total: true
+            }
+        });
+
+        const revenueToday = todayOrders.reduce((sum: number, order: any) => sum + (order.total || 0), 0);
         const plan = store.subscription?.status === 'ACTIVE' ? store.subscription.plan : 'FREE';
 
         return NextResponse.json({
