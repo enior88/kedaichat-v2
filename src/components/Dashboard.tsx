@@ -9,6 +9,7 @@ import {
 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useLanguage } from '@/lib/LanguageContext';
+import Image from 'next/image';
 
 export default function Dashboard() {
     const router = useRouter();
@@ -187,7 +188,7 @@ export default function Dashboard() {
                     <div className="flex items-center gap-3">
                         <div className="w-12 h-12 bg-gradient-to-br from-[#25D366] to-[#128C7E] rounded-2xl flex items-center justify-center text-white shadow-lg shadow-green-100 shrink-0 overflow-hidden">
                             {stats.storeLogo ? (
-                                <img src={stats.storeLogo} alt="Store Logo" className="w-full h-full object-cover" />
+                                <Image src={stats.storeLogo} alt="Store Logo" width={48} height={48} className="w-full h-full object-cover" />
                             ) : (
                                 <span className="text-xl font-black uppercase">{(stats.businessName || 'K')[0]}</span>
                             )}
@@ -234,7 +235,7 @@ export default function Dashboard() {
                             </button>
                         </div>
                         <div className="absolute right-[-20px] bottom-[-20px] opacity-10 rotate-12">
-                            <img src="/logo.png" alt="" className="w-32 h-32 object-contain" />
+                            <Image src="/logo.png" alt="" width={128} height={128} className="w-32 h-32 object-contain" />
                         </div>
                     </div>
                 )}

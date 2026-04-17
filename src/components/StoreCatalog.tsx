@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { MessageCircle, Plus, Search, ShoppingCart, Store, ChevronLeft, ChevronRight, Share2, Check, Users, Clock, X } from 'lucide-react';
 import { mockProducts } from '@/data/mockData';
 import { useLanguage } from '@/lib/LanguageContext';
+import Image from 'next/image';
 
 export default function StoreCatalog({ slug }: { slug?: string }) {
     const { t } = useLanguage();
@@ -205,8 +206,8 @@ export default function StoreCatalog({ slug }: { slug?: string }) {
                 <div className="flex flex-col items-center text-center mb-8">
                     <div className="relative mb-4">
                         {store?.logoUrl ? (
-                            <div className="w-[100px] h-[100px] rounded-full overflow-hidden border-[3px] border-white shadow-lg bg-white">
-                                <img src={store.logoUrl} alt={storeName} className="w-full h-full object-cover" />
+                            <div className="w-[100px] h-[100px] rounded-full overflow-hidden border-[3px] border-white shadow-lg bg-white relative">
+                                <Image src={store.logoUrl} alt={storeName} fill className="object-cover" priority />
                             </div>
                         ) : (
                             <div className="w-[100px] h-[100px] bg-gradient-to-br from-[#25D366] to-[#128C7E] rounded-full overflow-hidden flex items-center justify-center border-[3px] border-white shadow-lg">
@@ -325,7 +326,7 @@ export default function StoreCatalog({ slug }: { slug?: string }) {
                             <div key={p.id} className="bg-white rounded-[32px] overflow-hidden shadow-sm border border-gray-100/80 flex flex-col p-2.5 pb-4">
                                 <div className="aspect-square bg-gray-100 rounded-[24px] overflow-hidden mb-3 relative">
                                     {p.imageUrl ? (
-                                        <img src={p.imageUrl} alt={p.name} className="w-full h-full object-cover" />
+                                        <Image src={p.imageUrl} alt={p.name} fill className="object-cover" />
                                     ) : (
                                         <div className="w-full h-full flex items-center justify-center text-gray-300">
                                             <ShoppingCart size={32} strokeWidth={1} />
@@ -388,8 +389,8 @@ export default function StoreCatalog({ slug }: { slug?: string }) {
             {/* Footer Branding */}
             <div className="py-12 flex flex-col items-center gap-2 opacity-30 grayscale hover:opacity-100 hover:grayscale-0 transition-all">
                 <div className="flex items-center gap-2">
-                    <div className="w-5 h-5 rounded-md overflow-hidden">
-                        <img src="/logo.png" alt="KedaiChat" className="w-full h-full object-cover" />
+                    <div className="w-5 h-5 rounded-md overflow-hidden relative">
+                        <Image src="/logo.png" alt="KedaiChat" fill className="object-cover" />
                     </div>
                     <span className="text-[10px] font-black tracking-tighter text-gray-400">KedaiChat</span>
                 </div>

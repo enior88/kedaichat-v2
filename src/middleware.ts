@@ -59,7 +59,8 @@ export async function middleware(request: NextRequest) {
     if (isSubdomain) {
         const subdomain = hostname.split('.')[0];
         if (subdomain !== 'app' && subdomain !== 'admin') {
-            return NextResponse.redirect(new URL(`/shop/${subdomain}${path}`, request.url));
+            const rewriteUrl = new URL(`/shop/${subdomain}${path}`, request.url);
+            return NextResponse.rewrite(rewriteUrl);
         }
     }
 
@@ -68,8 +69,8 @@ export async function middleware(request: NextRequest) {
         const firstPart = pathParts[0];
         if (!reservedPaths.includes(firstPart)) {
             const remainingPath = pathParts.slice(1).join('/');
-            const redirectUrl = new URL(`/shop/${firstPart}${remainingPath ? '/' + remainingPath : ''}`, request.url);
-            return NextResponse.redirect(redirectUrl);
+            const rewriteUrl = new URL(`/shop/${firstPart}${remainingPath ? '/' + remainingPath : ''}`, request.url);
+            return NextResponse.rewrite(rewriteUrl);
         }
     }
 

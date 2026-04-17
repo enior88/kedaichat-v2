@@ -26,6 +26,7 @@ import { useLanguage } from '@/lib/LanguageContext';
 import LanguageToggle from '@/components/LanguageToggle';
 import OnboardingCarousel from '@/components/OnboardingCarousel';
 import { useSearchParams } from 'next/navigation';
+import Image from 'next/image';
 
 export default function LandingPageClient() {
     const { t } = useLanguage();
@@ -156,7 +157,7 @@ export default function LandingPageClient() {
                 <div className="max-w-7xl mx-auto px-4 md:px-6 h-16 lg:h-20 flex items-center justify-between">
                     <div className="flex items-center gap-2">
                         <div className="w-10 h-10 rounded-xl overflow-hidden shadow-lg shadow-green-200">
-                            <img src="/logo.png" alt="KedaiChat Logo" className="w-full h-full object-cover" />
+                            <Image src="/logo.png" alt="KedaiChat Logo" width={40} height={40} className="w-full h-full object-cover" priority />
                         </div>
                         <span className="text-xl font-black tracking-tighter">KedaiChat</span>
                     </div>
@@ -259,7 +260,15 @@ export default function LandingPageClient() {
                             <div className="mt-4 md:mt-8 relative animate-in fade-in zoom-in duration-1000 delay-500 max-w-2xl mx-auto px-4">
                                 <div className="relative rounded-[20px] md:rounded-[40px] overflow-visible group">
                                     <div className="absolute inset-0 bg-green-100/50 blur-3xl -z-10 rounded-[100px] scale-90" />
-                                    <img src="/hero_illustration.png" alt="" className="w-auto max-h-[40vh] md:max-h-[45vh] mx-auto h-auto drop-shadow-2xl rounded-[16px] md:rounded-[32px] object-contain transition-transform duration-700 group-hover:scale-[1.02]" />
+                                    <div className="relative w-full aspect-[4/3] max-h-[40vh] md:max-h-[45vh]">
+                                        <Image
+                                            src="/hero_illustration.png"
+                                            alt="KedaiChat Interface"
+                                            fill
+                                            className="mx-auto drop-shadow-2xl rounded-[16px] md:rounded-[32px] object-contain transition-transform duration-700 group-hover:scale-[1.02]"
+                                            priority
+                                        />
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -500,7 +509,7 @@ export default function LandingPageClient() {
                         <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-8">
                             <div className="flex items-center gap-2">
                                 <div className="w-8 h-8 rounded-lg overflow-hidden">
-                                    <img src="/logo.png" alt="KedaiChat Logo" className="w-full h-full object-cover" />
+                                    <Image src="/logo.png" alt="KedaiChat Logo" width={32} height={32} className="w-full h-full object-cover" />
                                 </div>
                                 <span className="text-lg font-black tracking-tighter">KedaiChat</span>
                             </div>

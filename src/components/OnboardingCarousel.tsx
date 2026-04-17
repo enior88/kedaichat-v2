@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useLanguage } from '@/lib/LanguageContext';
 import LanguageToggle from '@/components/LanguageToggle';
 import { ChevronRight } from 'lucide-react';
+import Image from 'next/image';
 
 export default function OnboardingCarousel() {
     const { t } = useLanguage();
@@ -52,7 +53,7 @@ export default function OnboardingCarousel() {
                 <div className="flex justify-between items-center mb-8 px-2">
                     <div className="flex items-center gap-2.5">
                         <div className="w-9 h-9 flex items-center justify-center">
-                            <img src="/logo.png" alt="Logo" className="w-6 h-6 object-contain contrast-125" />
+                            <Image src="/logo.png" alt="Logo" width={24} height={24} className="w-6 h-6 object-contain contrast-125" priority />
                         </div>
                         <span className="text-xl font-bold tracking-tight text-[#1A1A1A]">KedaiChat</span>
                     </div>
@@ -76,15 +77,17 @@ export default function OnboardingCarousel() {
                             <div className="w-60 h-72 bg-white rounded-[32px] shadow-[0_32px_64px_-16px_rgba(0,0,0,0.06)] border border-gray-100/50 flex flex-col p-6 space-y-4 overflow-hidden relative">
                                 <div className="flex items-center gap-3">
                                     <div className="w-9 h-9 rounded-full bg-[#335F4B] flex items-center justify-center overflow-hidden">
-                                        <img src="/logo.png" alt="" className="w-5 h-5 object-contain invert" />
+                                        <Image src="/logo.png" alt="" width={20} height={20} className="w-5 h-5 object-contain invert" priority />
                                     </div>
                                     <div className="h-2 w-20 bg-gray-100 rounded-full" />
                                 </div>
                                 <div className="flex-1 w-full bg-gray-50 rounded-2xl overflow-hidden border border-gray-100 flex items-center justify-center relative group">
-                                    <img
+                                    <Image
                                         src="/motorcycle-coffee.jpg"
                                         alt="Motorcycle Coffee Entrepreneur"
-                                        className="w-full h-full object-cover opacity-90 transition-transform duration-1000 group-hover:scale-110"
+                                        fill
+                                        className="object-cover opacity-90 transition-transform duration-1000 group-hover:scale-110"
+                                        priority
                                     />
                                     <div className="absolute inset-0 bg-gradient-to-t from-black/5 to-transparent" />
                                 </div>
@@ -112,7 +115,7 @@ export default function OnboardingCarousel() {
                                 {/* Main Card */}
                                 <div className="relative w-60 h-64 bg-white rounded-[28px] shadow-[0_24px_48px_-12px_rgba(0,0,0,0.08)] border border-gray-100 p-4">
                                     <div className="w-full h-36 bg-[#F2F4F7] rounded-2xl overflow-hidden mb-3 relative">
-                                        <img src="/kuih-gula-melaka.jpg" alt="Kuih Gula Melaka" className="w-full h-full object-cover opacity-90" />
+                                        <Image src="/kuih-gula-melaka.jpg" alt="Kuih Gula Melaka" fill className="object-cover opacity-90" />
                                     </div>
                                     <h4 className="font-bold text-gray-900 text-sm mb-0.5">Kuih Gula Melaka</h4>
                                     <p className="text-[10px] text-gray-400 font-medium">Traditional Dessert</p>
