@@ -61,6 +61,7 @@ model Order {
   orderNumber     String      @unique
   customerName    String
   customerPhone   String?
+  notes           String?
   total           Float
   status          String      @default("PENDING")
   paymentStatus   String      @default("UNPAID")

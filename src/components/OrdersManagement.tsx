@@ -130,6 +130,11 @@ export default function OrdersManagement() {
                                         </span>
                                     </div>
                                 ))}
+                                {order.notes && (
+                                    <div className="mt-2 pt-2 border-t border-gray-100 italic text-gray-500">
+                                        "{order.notes}"
+                                    </div>
+                                )}
                             </div>
                         )}
 

@@ -16,6 +16,11 @@ export default function Checkout({ params }: { params: { name: string } }) {
     const [readyImage, setReadyImage] = useState<string | null>(null);
     const [debugError, setDebugError] = useState<string | null>(null);
 
+    // Customer Info
+    const [customerName, setCustomerName] = useState('');
+    const [customerPhone, setCustomerPhone] = useState('');
+    const [notes, setNotes] = useState('');
+
     React.useEffect(() => {
         const saved = localStorage.getItem('kd_cart');
         if (saved) {
@@ -31,11 +36,14 @@ export default function Checkout({ params }: { params: { name: string } }) {
             await new Promise(resolve => setTimeout(resolve, 2000));
 
             let text = `*New Order - ${cartState?.storeName || 'KedaiChat'}*\n\n`;
+            text += `*Customer:* ${customerName || 'Anonymous'}\n`;
+            if (customerPhone) text += `*Phone:* ${customerPhone}\n`;
             text += `Total: *RM ${cartTotal.toFixed(2)}*\n\n`;
             text += `*Items:*\n`;
             cartState?.items?.forEach((item: any) => {
                 text += `- ${item.quantity}x ${item.name} (RM ${(item.price * item.quantity).toFixed(2)})\n`;
             });
+            if (notes) text += `\n*Notes:*\n${notes}\n`;
             text += `\n_Please verify my payment attached._`;
 
             const encodedText = encodeURIComponent(text);
@@ -50,6 +58,9 @@ export default function Checkout({ params }: { params: { name: string } }) {
                     storeId: cartState?.storeId,
                     items: cartState?.items,
                     total: cartTotal,
+                    customerName,
+                    customerPhone,
+                    notes,
                     refCode: cartState?.refCode || null,
                 })
             });
@@ -95,11 +106,14 @@ export default function Checkout({ params }: { params: { name: string } }) {
         setIsSubmitting(true);
         try {
             let text = `*New Order - ${cartState?.storeName || 'KedaiChat'}*\n\n`;
+            text += `*Customer:* ${customerName || 'Anonymous'}\n`;
+            if (customerPhone) text += `*Phone:* ${customerPhone}\n`;
             text += `Total: *RM ${cartTotal.toFixed(2)}*\n\n`;
             text += `*Items:*\n`;
             cartState?.items?.forEach((item: any) => {
                 text += `- ${item.quantity}x ${item.name} (RM ${(item.price * item.quantity).toFixed(2)})\n`;
             });
+            if (notes) text += `\n*Notes:*\n${notes}\n`;
             text += `\n_I would like to pay via WhatsApp. Please verify._`;
 
             const encodedText = encodeURIComponent(text);
@@ -114,6 +128,9 @@ export default function Checkout({ params }: { params: { name: string } }) {
                     storeId: cartState?.storeId,
                     items: cartState?.items,
                     total: cartTotal,
+                    customerName,
+                    customerPhone,
+                    notes,
                     refCode: cartState?.refCode || null,
                 })
             });
@@ -245,6 +262,45 @@ export default function Checkout({ params }: { params: { name: string } }) {
                 {step === 1 ? (
                     <div className="animate-in fade-in slide-in-from-bottom-4 space-y-6">
                         <section className="bg-white rounded-[32px] p-6 shadow-xl border border-gray-50">
+                            <h2 className="text-lg font-bold text-gray-900 mb-6 text-left">Order Details</h2>
+
+                            <div className="space-y-4 mb-8">
+                                <div className="text-left">
+                                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-4 mb-2 block">Your Name *</label>
+                                    <input
+                                        type="text"
+                                        value={customerName}
+                                        onChange={(e) => setCustomerName(e.target.value)}
+                                        placeholder="e.g. Ahmad"
+                                        className="w-full h-14 bg-gray-50 border-2 border-transparent rounded-2xl px-6 font-bold text-gray-900 focus:border-[#25D366] focus:bg-white focus:outline-none transition-all placeholder:text-gray-300"
+                                    />
+                                </div>
+
+                                <div className="text-left">
+                                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-4 mb-2 block">Phone Number (Optional)</label>
+                                    <input
+                                        type="tel"
+                                        value={customerPhone}
+                                        onChange={(e) => setCustomerPhone(e.target.value)}
+                                        placeholder="012-3456789"
+                                        className="w-full h-14 bg-gray-50 border-2 border-transparent rounded-2xl px-6 font-bold text-gray-900 focus:border-[#25D366] focus:bg-white focus:outline-none transition-all placeholder:text-gray-300"
+                                    />
+                                </div>
+
+                                <div className="text-left">
+                                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-4 mb-2 block">Note to Seller (Optional)</label>
+                                    <textarea
+                                        value={notes}
+                                        onChange={(e) => setNotes(e.target.value)}
+                                        placeholder="No spicy, extra sauce, etc."
+                                        rows={2}
+                                        className="w-full bg-gray-50 border-2 border-transparent rounded-2xl p-4 font-bold text-gray-900 focus:border-[#25D366] focus:bg-white focus:outline-none transition-all placeholder:text-gray-300 resize-none"
+                                    />
+                                </div>
+                            </div>
+
+                            <hr className="border-gray-50 mb-8" />
+
                             <h2 className="text-lg font-bold text-gray-900 mb-1">{t('scan_pay')}</h2>
                             <p className="text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-6">Payment Proof is Required</p>
 
@@ -332,14 +388,14 @@ export default function Checkout({ params }: { params: { name: string } }) {
                             <div className="space-y-3">
                                 <button
                                     onClick={handlePaymentSubmit}
-                                    disabled={isSubmitting || cartTotal === 0}
+                                    disabled={isSubmitting || cartTotal === 0 || !customerName.trim()}
                                     className="w-full h-16 bg-[#25D366] text-white font-bold rounded-[22px] flex items-center justify-center shadow-lg shadow-green-100 active:scale-[0.98] transition-all disabled:opacity-50"
                                 >
                                     {isSubmitting ? 'Verifying payment...' : t('submit_proof')}
                                 </button>
                                 <button
                                     onClick={handleWhatsAppOnly}
-                                    disabled={isSubmitting || cartTotal === 0}
+                                    disabled={isSubmitting || cartTotal === 0 || !customerName.trim()}
                                     className="w-full py-4 text-gray-400 text-xs font-bold uppercase tracking-widest hover:text-gray-600 transition-colors disabled:opacity-50"
                                 >
                                     {t('pay_whatsapp')}
