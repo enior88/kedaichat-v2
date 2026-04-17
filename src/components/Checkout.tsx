@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { ChevronLeft, QrCode, ShieldCheck, CheckCircle2, Copy, MessageCircle, Download } from 'lucide-react';
+import { ChevronLeft, QrCode, ShieldCheck, CheckCircle2, Copy, MessageCircle, Download, Check } from 'lucide-react';
 import Link from 'next/link';
 import { useLanguage } from '@/lib/LanguageContext';
 
@@ -13,6 +13,7 @@ export default function Checkout({ params }: { params: { name: string } }) {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [waLink, setWaLink] = useState('');
     const [isDownloading, setIsDownloading] = useState(false);
+    const [readyImage, setReadyImage] = useState<string | null>(null);
 
     React.useEffect(() => {
         const saved = localStorage.getItem('kd_cart');
@@ -145,7 +146,7 @@ export default function Checkout({ params }: { params: { name: string } }) {
         }
     };
 
-    const handleDownloadQR = () => {
+    const handleGenerateQR = () => {
         if (!cartState?.paymentQrUrl) return;
         setIsDownloading(true);
 
@@ -158,30 +159,24 @@ export default function Checkout({ params }: { params: { name: string } }) {
 
         const img = new Image();
         img.crossOrigin = "anonymous";
-        // Add cache-buster to ensure the browser respects the crossOrigin header for the fresh fetch
+        // Use JPEG for maximum compatibility and smaller file size
         img.src = cartState.paymentQrUrl + (cartState.paymentQrUrl.includes('?') ? '&' : '?') + 't=' + Date.now();
 
         img.onload = () => {
             try {
-                // Initialize with solid background to prevent transparency/black screen
+                // Background
                 ctx.fillStyle = '#ffffff';
                 ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-                const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
-                gradient.addColorStop(0, '#ffffff');
-                gradient.addColorStop(1, '#f9fafb');
-                ctx.fillStyle = gradient;
-                ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-                // Card content
+                // Branding
                 ctx.fillStyle = '#111827';
-                ctx.font = 'bold 48px sans-serif'; // Use system fonts for reliability
+                ctx.font = 'bold 44px sans-serif';
                 ctx.textAlign = 'center';
                 ctx.fillText(cartState.storeName || 'KedaiChat', canvas.width / 2, 140);
 
                 ctx.fillStyle = '#25D366';
                 ctx.font = 'bold 24px sans-serif';
-                ctx.fillText('STORE PAYMENT QR', canvas.width / 2, 185);
+                ctx.fillText('OFFICIAL PAYMENT QR', canvas.width / 2, 185);
 
                 const qrSize = 560;
                 const qrX = (canvas.width - qrSize) / 2;
@@ -192,61 +187,42 @@ export default function Checkout({ params }: { params: { name: string } }) {
                 ctx.font = 'bold 32px sans-serif';
                 ctx.fillText('kedaichat.online', canvas.width / 2, 950);
 
-                const fileName = `Payment-QR-${cartState.storeSlug || 'shop'}.png`;
+                // Export as JPEG (most reliable for saving on all OS)
+                const dataUrl = canvas.toDataURL('image/jpeg', 0.9);
+                setReadyImage(dataUrl);
+                setIsDownloading(false);
 
-                canvas.toBlob(async (blob) => {
-                    if (blob) {
-                        const file = new File([blob], fileName, { type: 'image/png' });
-
-                        if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
-                            try {
-                                await navigator.share({
-                                    files: [file],
-                                    title: 'Payment QR',
-                                    text: 'Save this QR to pay ' + cartState.storeName
-                                });
-                                setIsDownloading(false);
-                                return;
-                            } catch (e) {
-                                console.error('Share failed', e);
+                // Desktop fallback: also trigger a real download
+                if (!/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
+                    const link = document.createElement('a');
+                    link.download = `Payment-QR-${cartState.storeSlug || 'shop'}.jpg`;
+                    link.href = dataUrl;
+                    link.click();
+                } else {
+                    // Try to share the file directly on mobile as well
+                    canvas.toBlob(async (blob) => {
+                        if (blob && navigator.share && navigator.canShare) {
+                            const file = new File([blob], 'payment-qr.jpg', { type: 'image/jpeg' });
+                            if (navigator.canShare({ files: [file] })) {
+                                try {
+                                    await navigator.share({
+                                        files: [file],
+                                        title: 'Payment QR'
+                                    });
+                                } catch (e) { }
                             }
                         }
-
-                        // Fallback: Direct Download or New Tab
-                        const dataUrl = canvas.toDataURL('image/png', 1.0);
-                        const link = document.createElement('a');
-                        link.href = dataUrl;
-                        link.download = fileName;
-
-                        if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
-                            // On mobile, if share fails, opening dataUrl in new tab is safest for holding to save
-                            const newWindow = window.open();
-                            if (newWindow) {
-                                newWindow.document.write(`<img src="${dataUrl}" style="width:100%; height:auto;" />`);
-                                newWindow.document.write('<p style="text-align:center; font-family:sans-serif; padding:20px;">Hold image to save to gallery</p>');
-                            } else {
-                                link.click();
-                            }
-                        } else {
-                            link.click();
-                        }
-                    } else {
-                        throw new Error('Blob generation failed');
-                    }
-                    setIsDownloading(false);
-                }, 'image/png');
-
+                    }, 'image/jpeg', 0.9);
+                }
             } catch (error) {
-                console.error('Canvas processing failed', error);
-                // Last ditch fallback: Just the raw QR image
-                window.open(cartState.paymentQrUrl, '_blank');
+                console.error('Canvas failed', error);
+                setReadyImage(cartState.paymentQrUrl);
                 setIsDownloading(false);
             }
         };
 
         img.onerror = () => {
-            console.error('Image load failed');
-            window.open(cartState.paymentQrUrl, '_blank');
+            setReadyImage(cartState.paymentQrUrl);
             setIsDownloading(false);
         };
     };
@@ -260,39 +236,59 @@ export default function Checkout({ params }: { params: { name: string } }) {
                 <h1 className="text-xl font-bold text-gray-900">{t('checkout_title')}</h1>
             </div>
 
-            <div className="p-6">
+            <div className="p-6 text-center">
                 {step === 1 ? (
-                    <div className="animate-in fade-in slide-in-from-bottom-4 space-y-8">
-                        <section className="bg-white rounded-[32px] p-8 shadow-xl border border-gray-50 text-center">
-                            <h2 className="text-lg font-bold text-gray-900 mb-2">{t('scan_pay')}</h2>
-                            <p className="text-xs text-gray-400 font-bold uppercase tracking-wider mb-8">{t('secure_qr')}</p>
+                    <div className="animate-in fade-in slide-in-from-bottom-4 space-y-6">
+                        <section className="bg-white rounded-[32px] p-6 shadow-xl border border-gray-50">
+                            <h2 className="text-lg font-bold text-gray-900 mb-1">{t('scan_pay')}</h2>
+                            <p className="text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-6">Payment Proof is Required</p>
 
-                            {cartState?.paymentQrUrl ? (
-                                <>
-                                    <div className="aspect-square bg-white rounded-[40px] border border-gray-100 shadow-sm flex items-center justify-center p-4 mb-4 relative group overflow-hidden">
-                                        <img src={cartState.paymentQrUrl} alt="Store Payment QR" className="w-full h-full object-contain" />
-                                        <div className="absolute inset-0 bg-white/40 backdrop-blur-[2px] opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center rounded-[40px]">
-                                            <button className="bg-gray-900 text-white px-4 py-2 rounded-xl text-[10px] font-bold">{t('zoom_qr')}</button>
-                                        </div>
+                            {readyImage ? (
+                                <div className="space-y-4 animate-in zoom-in-95 duration-500">
+                                    <div className="bg-green-50 rounded-[40px] p-2 border-2 border-dashed border-[#25D366]/30">
+                                        <img src={readyImage} alt="Payment QR" className="w-full h-auto rounded-[32px] shadow-sm" />
+                                    </div>
+                                    <div className="bg-gray-900 text-white rounded-2xl py-4 px-6 flex items-center justify-center gap-2">
+                                        <Check size={20} className="text-[#25D366]" />
+                                        <span className="text-sm font-bold">HOLD IMAGE TO SAVE TO GALLERY</span>
                                     </div>
                                     <button
-                                        onClick={handleDownloadQR}
-                                        disabled={isDownloading}
-                                        className="w-full h-12 bg-gray-50 text-gray-900 font-bold rounded-2xl flex items-center justify-center gap-2 hover:bg-gray-100 active:scale-95 transition-all mb-4 border border-gray-100 shadow-sm"
+                                        onClick={() => setReadyImage(null)}
+                                        className="text-gray-400 text-[10px] font-bold uppercase tracking-widest hover:text-gray-900 transition-colors"
                                     >
-                                        <Download size={18} />
-                                        {isDownloading ? 'Generating...' : 'SAVE QR TO GALLERY'}
+                                        Go Back / Use Original QR
+                                    </button>
+                                </div>
+                            ) : (
+                                <>
+                                    <div className="aspect-square bg-white rounded-[40px] border border-gray-100 shadow-sm flex items-center justify-center p-4 mb-4 relative overflow-hidden">
+                                        {cartState?.paymentQrUrl ? (
+                                            <img src={cartState.paymentQrUrl} alt="Store Payment QR" className="w-full h-full object-contain" />
+                                        ) : (
+                                            <div className="flex flex-col items-center gap-2">
+                                                <QrCode size={48} className="text-gray-200" />
+                                                <p className="text-[10px] font-bold text-gray-400 tracking-wider">NO QR UPLOADED</p>
+                                            </div>
+                                        )}
+                                    </div>
+                                    <button
+                                        onClick={handleGenerateQR}
+                                        disabled={isDownloading || !cartState?.paymentQrUrl}
+                                        className="w-full h-14 bg-gray-50 text-gray-900 font-bold rounded-2xl flex items-center justify-center gap-3 hover:bg-gray-100 active:scale-95 transition-all mb-4 border border-gray-100 shadow-sm disabled:opacity-50"
+                                    >
+                                        {isDownloading ? (
+                                            <div className="w-5 h-5 border-2 border-gray-900 border-t-transparent rounded-full animate-spin" />
+                                        ) : (
+                                            <>
+                                                <Download size={20} />
+                                                SAVE QR TO GALLERY
+                                            </>
+                                        )}
                                     </button>
                                 </>
-                            ) : (
-                                <div className="aspect-square bg-gray-50 rounded-[40px] border-2 border-dashed border-gray-200 flex flex-col items-center justify-center p-8 mb-8">
-                                    <QrCode size={64} className="text-gray-300 mb-4" />
-                                    <p className="text-sm font-bold text-gray-500">QR Code not provided</p>
-                                    <p className="text-xs text-gray-400 mt-2">Please contact the seller for payment.</p>
-                                </div>
                             )}
 
-                            <div className="flex flex-col items-center gap-2 mb-10">
+                            <div className="flex flex-col items-center gap-2 mt-8 mb-8">
                                 <p className="text-3xl font-black text-gray-900">RM {cartTotal.toFixed(2)}</p>
                                 <div className="flex items-center gap-2 bg-green-50 text-[#25D366] px-3 py-1 rounded-full text-[10px] font-bold">
                                     <ShieldCheck size={12} />
@@ -304,7 +300,7 @@ export default function Checkout({ params }: { params: { name: string } }) {
                                 <button
                                     onClick={handlePaymentSubmit}
                                     disabled={isSubmitting || cartTotal === 0}
-                                    className="w-full h-16 bg-[#25D366] text-white font-bold rounded-[2xl] flex items-center justify-center shadow-lg shadow-green-100 active:scale-[0.98] transition-all disabled:opacity-50"
+                                    className="w-full h-16 bg-[#25D366] text-white font-bold rounded-[22px] flex items-center justify-center shadow-lg shadow-green-100 active:scale-[0.98] transition-all disabled:opacity-50"
                                 >
                                     {isSubmitting ? 'Verifying payment...' : t('submit_proof')}
                                 </button>
@@ -319,25 +315,25 @@ export default function Checkout({ params }: { params: { name: string } }) {
                         </section>
                     </div>
                 ) : (
-                    <div className="animate-in zoom-in-95 fade-in duration-700 flex flex-col items-center justify-center pt-20 text-center">
+                    <div className="animate-in zoom-in-95 fade-in duration-700 flex flex-col items-center justify-center pt-20">
                         <div className={`w-24 h-24 rounded-full flex items-center justify-center mb-8 transition-all duration-1000 ${isPaid ? 'bg-[#25D366] text-white scale-110 shadow-2xl shadow-green-200' : 'bg-gray-100 text-gray-300 animate-pulse'}`}>
                             <CheckCircle2 size={48} />
                         </div>
                         <h2 className="text-3xl font-black text-gray-900 mb-4">
                             {isPaid ? t('payment_confirmed') : t('verifying_payment')}
                         </h2>
-                        <p className="text-gray-400 text-sm leading-relaxed max-w-[240px] mb-12">
+                        <p className="text-gray-400 text-sm leading-relaxed max-w-[240px] mb-12 mx-auto">
                             {isPaid ? t('order_prepared') : t('checking_txn')}
                         </p>
 
                         {isPaid && (
-                            <div className="w-full max-w-xs space-y-3">
+                            <div className="w-full max-w-xs space-y-3 mx-auto">
                                 {waLink && (
                                     <a
                                         href={waLink}
                                         target="_blank"
                                         rel="noopener noreferrer"
-                                        className="w-full h-16 bg-[#25D366] text-white font-bold rounded-[24px] flex items-center justify-center gap-2 shadow-lg shadow-green-100 active:scale-95 transition-all"
+                                        className="w-full h-16 bg-[#25D366] text-white font-bold rounded-[22px] flex items-center justify-center gap-2 shadow-lg shadow-green-100 active:scale-95 transition-all"
                                     >
                                         <MessageCircle size={18} />
                                         Send to WhatsApp
@@ -345,7 +341,7 @@ export default function Checkout({ params }: { params: { name: string } }) {
                                 )}
                                 <Link
                                     href="/wallet"
-                                    className="w-full h-16 bg-gray-900 text-white font-bold rounded-[24px] flex items-center justify-center gap-2 shadow-xl active:scale-95 transition-all"
+                                    className="w-full h-16 bg-gray-900 text-white font-bold rounded-[22px] flex items-center justify-center gap-2 shadow-xl active:scale-95 transition-all"
                                 >
                                     {t('track_order')}
                                     <ChevronLeft size={18} className="rotate-180" />
