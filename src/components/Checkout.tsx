@@ -214,28 +214,7 @@ export default function Checkout({ params }: { params: { name: string } }) {
                             </div>
                         </section>
 
-                        <section className="bg-gray-100 rounded-[24px] p-6">
-                            <div className="flex items-center gap-3 mb-3">
-                                <div className="w-2 h-2 rounded-full bg-[#25D366]"></div>
-                                <h3 className="text-xs font-bold text-gray-900 uppercase">{t('transfer_details')}</h3>
-                            </div>
-                            <div className="space-y-4">
-                                <div className="flex justify-between items-center bg-white p-4 rounded-xl shadow-xs">
-                                    <div>
-                                        <p className="text-[10px] text-gray-400 font-bold uppercase">{t('account_name')}</p>
-                                        <p className="text-sm font-bold text-gray-900">AIDA TECH ENT</p>
-                                    </div>
-                                    <Copy size={16} className="text-gray-300" />
-                                </div>
-                                <div className="flex justify-between items-center bg-white p-4 rounded-xl shadow-xs">
-                                    <div>
-                                        <p className="text-[10px] text-gray-400 font-bold uppercase">{t('reference_no')}</p>
-                                        <p className="text-sm font-bold text-gray-900">KC12456</p>
-                                    </div>
-                                    <Copy size={16} className="text-gray-300" />
-                                </div>
-                            </div>
-                        </section>
+
                     </div>
                 ) : (
                     <div className="animate-in zoom-in-95 fade-in duration-700 flex flex-col items-center justify-center pt-20 text-center">
