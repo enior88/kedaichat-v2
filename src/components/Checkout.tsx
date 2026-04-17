@@ -161,61 +161,63 @@ export default function Checkout({ params }: { params: { name: string } }) {
         img.src = cartState.paymentQrUrl;
 
         img.onload = async () => {
-            const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
-            gradient.addColorStop(0, '#ffffff');
-            gradient.addColorStop(1, '#f3f4f6');
-            ctx.fillStyle = gradient;
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-            ctx.fillStyle = '#ffffff';
-            ctx.shadowColor = 'rgba(0,0,0,0.1)';
-            ctx.shadowBlur = 40;
-            ctx.beginPath();
-            if ((ctx as any).roundRect) (ctx as any).roundRect(40, 40, 720, 1020, 60);
-            else ctx.rect(40, 40, 720, 1020);
-            ctx.fill();
-            ctx.shadowBlur = 0;
-
-            ctx.fillStyle = '#111827';
-            ctx.font = '900 48px Inter, system-ui, sans-serif';
-            ctx.textAlign = 'center';
-            ctx.fillText(cartState.storeName || 'KedaiChat', canvas.width / 2, 140);
-
-            ctx.fillStyle = '#25D366';
-            ctx.font = 'bold 24px Inter, system-ui, sans-serif';
-            ctx.fillText('STORE PAYMENT QR', canvas.width / 2, 185);
-
-            ctx.fillStyle = '#6B7280';
-            ctx.font = '500 20px Inter, system-ui, sans-serif';
-            ctx.fillText('Scan this QR code with any banking app', canvas.width / 2, 230);
-
-            const qrSize = 560;
-            const qrX = (canvas.width - qrSize) / 2;
-            const qrY = 280;
-
-            ctx.strokeStyle = '#f3f4f6';
-            ctx.lineWidth = 2;
-            ctx.strokeRect(qrX - 10, qrY - 10, qrSize + 20, qrSize + 20);
-            ctx.drawImage(img, qrX, qrY, qrSize, qrSize);
-
-            ctx.fillStyle = '#111827';
-            ctx.font = 'bold 32px Inter, system-ui, sans-serif';
-            ctx.fillText('kedaichat.online', canvas.width / 2, 950);
-
-            ctx.fillStyle = '#9CA3AF';
-            ctx.font = '500 18px Inter, system-ui, sans-serif';
-            ctx.fillText('Powered by KedaiChat', canvas.width / 2, 990);
-
             try {
-                const fileName = `Payment-QR-${cartState.storeSlug || 'shop'}.png`;
+                const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
+                gradient.addColorStop(0, '#ffffff');
+                gradient.addColorStop(1, '#f3f4f6');
+                ctx.fillStyle = gradient;
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-                // For Mobile: Use Web Share API if available
+                ctx.fillStyle = '#ffffff';
+                ctx.shadowColor = 'rgba(0,0,0,0.1)';
+                ctx.shadowBlur = 40;
+                ctx.beginPath();
+                if ((ctx as any).roundRect) (ctx as any).roundRect(40, 40, 720, 1020, 60);
+                else ctx.rect(40, 40, 720, 1020);
+                ctx.fill();
+                ctx.shadowBlur = 0;
+
+                ctx.fillStyle = '#111827';
+                ctx.font = '900 48px Inter, system-ui, sans-serif';
+                ctx.textAlign = 'center';
+                ctx.fillText(cartState.storeName || 'KedaiChat', canvas.width / 2, 140);
+
+                ctx.fillStyle = '#25D366';
+                ctx.font = 'bold 24px Inter, system-ui, sans-serif';
+                ctx.fillText('STORE PAYMENT QR', canvas.width / 2, 185);
+
+                ctx.fillStyle = '#6B7280';
+                ctx.font = '500 20px Inter, system-ui, sans-serif';
+                ctx.fillText('Scan this QR code with any banking app', canvas.width / 2, 230);
+
+                const qrSize = 560;
+                const qrX = (canvas.width - qrSize) / 2;
+                const qrY = 280;
+
+                ctx.strokeStyle = '#f3f4f6';
+                ctx.lineWidth = 2;
+                ctx.strokeRect(qrX - 10, qrY - 10, qrSize + 20, qrSize + 20);
+                ctx.drawImage(img, qrX, qrY, qrSize, qrSize);
+
+                ctx.fillStyle = '#111827';
+                ctx.font = 'bold 32px Inter, system-ui, sans-serif';
+                ctx.fillText('kedaichat.online', canvas.width / 2, 950);
+
+                ctx.fillStyle = '#9CA3AF';
+                ctx.font = '500 18px Inter, system-ui, sans-serif';
+                ctx.fillText('Powered by KedaiChat', canvas.width / 2, 990);
+
+                const fileName = `Payment-QR-${cartState.storeSlug || 'shop'}.png`;
+                const dataUrl = canvas.toDataURL('image/png', 1.0);
+
+                // Strategy 1: Web Share API (Mobile Premium)
                 if (navigator.share && navigator.canShare) {
                     canvas.toBlob(async (blob) => {
                         if (blob) {
                             const file = new File([blob], fileName, { type: 'image/png' });
                             if (navigator.canShare({ files: [file] })) {
                                 try {
+                                    alert('Ready! Select "Save Image" or "Save to Photos" from the menu.');
                                     await navigator.share({
                                         files: [file],
                                         title: 'Payment QR',
@@ -224,34 +226,52 @@ export default function Checkout({ params }: { params: { name: string } }) {
                                     setIsDownloading(false);
                                     return;
                                 } catch (err: any) {
-                                    if (err.name !== 'AbortError') console.error('Share failed:', err);
+                                    if (err.name !== 'AbortError') {
+                                        console.error('Share failed, falling back:', err);
+                                        const newWindow = window.open();
+                                        if (newWindow) {
+                                            newWindow.document.write(`<img src="${dataUrl}" style="width:100%; height:auto;" />`);
+                                            newWindow.document.write('<p style="text-align:center; font-family:sans-serif; margin-top:20px;"><b>Long-press the image to save to your gallery</b></p>');
+                                        }
+                                    }
                                 }
                             }
                         }
-                        // Fallback to standard download if blob/share fails
-                        const link = document.createElement('a');
-                        link.download = fileName;
-                        link.href = canvas.toDataURL('image/png', 1.0);
-                        link.click();
                         setIsDownloading(false);
                     }, 'image/png');
-                } else {
-                    // Desktop/Unsupported: Standard download
+                }
+                // Strategy 2: Data URL Open (Mobile Fallback)
+                else if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
+                    alert('Generating QR... Please long-press the image to SAVE TO GALLERY.');
+                    const newWindow = window.open();
+                    if (newWindow) {
+                        newWindow.document.write(`<img src="${dataUrl}" style="width:100%; height:auto;" />`);
+                        newWindow.document.write('<p style="text-align:center; font-family:sans-serif; margin-top:20px;"><b>Long-press the image to save to your gallery</b></p>');
+                    } else {
+                        const link = document.createElement('a');
+                        link.download = fileName;
+                        link.href = dataUrl;
+                        link.click();
+                    }
+                    setIsDownloading(false);
+                }
+                // Strategy 3: Standard Download (Desktop)
+                else {
                     const link = document.createElement('a');
                     link.download = fileName;
-                    link.href = canvas.toDataURL('image/png', 1.0);
+                    link.href = dataUrl;
                     link.click();
                     setIsDownloading(false);
                 }
             } catch (error) {
-                console.error('Download processing failed:', error);
-                alert('Failed to process QR for download. Please try long-pressing the image to save.');
+                console.error('Canvas processing failed:', error);
+                alert('Connection issue. Please long-press the QR code directly to save.');
                 setIsDownloading(false);
             }
         };
 
         img.onerror = () => {
-            alert('Failed to process QR for download. Please try long-pressing the image to save.');
+            alert('Failed to process QR for download. Please try long-pressing the original image to save.');
             setIsDownloading(false);
         };
     };
