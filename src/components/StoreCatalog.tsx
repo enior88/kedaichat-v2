@@ -2,13 +2,14 @@
 
 import React, { useState, useEffect } from 'react';
 import { MessageCircle, Plus, Search, ShoppingCart, Store, ChevronLeft, ChevronRight, Share2, Check, Users, Clock, X } from 'lucide-react';
-import { mockProducts } from '@/data/mockData';
 import { useLanguage } from '@/lib/LanguageContext';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 
-export default function StoreCatalog({ slug }: { slug?: string }) {
+export default function StoreCatalog({ slug, initialStoreData }: { slug?: string, initialStoreData?: any }) {
+    const router = useRouter();
     const { t } = useLanguage();
-    const [store, setStore] = useState<any>(null);
+    const [store, setStore] = useState<any>(initialStoreData || null);
     const [selectedCategory, setSelectedCategory] = useState('All');
     const [cartItems, setCartItems] = useState<{ id: string, name: string, price: number, quantity: number }[]>([]);
     const [isSearching, setIsSearching] = useState(false);
@@ -17,7 +18,7 @@ export default function StoreCatalog({ slug }: { slug?: string }) {
     const [groupTitle, setGroupTitle] = useState('');
     const [groupDeadline, setGroupDeadline] = useState('');
     const [isCreatingGroup, setIsCreatingGroup] = useState(false);
-    const [isLoadingData, setIsLoadingData] = useState(true);
+    const [isLoadingData, setIsLoadingData] = useState(!initialStoreData);
 
     const categories = [
         { id: 'All', label: t('cat_all') },
@@ -39,7 +40,7 @@ export default function StoreCatalog({ slug }: { slug?: string }) {
     ];
 
     useEffect(() => {
-        if (slug) {
+        if (slug && !initialStoreData) {
             setIsLoadingData(true);
             fetch(`/api/store?slug=${slug}`)
                 .then(res => res.json())
@@ -48,8 +49,6 @@ export default function StoreCatalog({ slug }: { slug?: string }) {
                 })
                 .catch(console.error)
                 .finally(() => setIsLoadingData(false));
-        } else {
-            setIsLoadingData(false);
         }
 
         // Capture ?ref= referral code from URL and persist it
@@ -58,7 +57,7 @@ export default function StoreCatalog({ slug }: { slug?: string }) {
         if (refCode) {
             localStorage.setItem('kd_ref', refCode);
         }
-    }, [slug]);
+    }, [slug, initialStoreData]);
 
     const addToCart = (product: any) => {
         setCartItems(prev => {
@@ -83,7 +82,7 @@ export default function StoreCatalog({ slug }: { slug?: string }) {
             paymentQrUrl: store.paymentQrUrl,
             refCode: refCode || null
         }));
-        window.location.href = `/shop/${slug || store.slug}/checkout`;
+        router.push(`/shop/${slug || store.slug}/checkout`);
     };
 
     const handleCreateGroupOrder = async () => {
@@ -108,7 +107,7 @@ export default function StoreCatalog({ slug }: { slug?: string }) {
             if (!data.error) {
                 // Save host status locally
                 localStorage.setItem(`host_${data.inviteCode}`, hostToken);
-                window.location.href = `/group/${data.inviteCode}/host`;
+                router.push(`/group/${data.inviteCode}/host`);
             }
         } catch (err) {
             console.error(err);
@@ -167,7 +166,7 @@ export default function StoreCatalog({ slug }: { slug?: string }) {
             {/* Header */}
             <div className="bg-[#F8F9FA] p-6 pb-2">
                 <div className="flex items-center justify-between mb-8">
-                    <button onClick={() => window.history.back()} className="text-gray-900 p-2 -ml-2 hover:bg-gray-100 rounded-full transition-colors shrink-0">
+                    <button onClick={() => router.back()} className="text-gray-900 p-2 -ml-2 hover:bg-gray-100 rounded-full transition-colors shrink-0">
                         <ChevronLeft size={24} />
                     </button>
 

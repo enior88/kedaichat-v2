@@ -79,7 +79,23 @@ export default function OrdersManagement() {
             {/* Orders List */}
             <div className="p-6 space-y-4">
                 {isLoading ? (
-                    <div className="text-center py-10 text-gray-400">Loading orders...</div>
+                    <div className="space-y-4">
+                        {[1, 2, 3].map((i) => (
+                            <div key={i} className="premium-card !p-4 animate-pulse">
+                                <div className="flex justify-between items-start mb-3">
+                                    <div className="flex-1 space-y-2">
+                                        <div className="h-5 bg-gray-100 rounded-md w-3/4"></div>
+                                        <div className="h-3 bg-gray-50 rounded-md w-1/2"></div>
+                                    </div>
+                                    <div className="text-right space-y-2">
+                                        <div className="h-6 bg-gray-100 rounded-md w-16 ml-auto"></div>
+                                        <div className="h-4 bg-gray-50 rounded-md w-12 ml-auto"></div>
+                                    </div>
+                                </div>
+                                <div className="h-20 bg-gray-50 rounded-xl"></div>
+                            </div>
+                        ))}
+                    </div>
                 ) : filteredOrders.length === 0 ? (
                     <div className="text-center py-10 text-gray-400">No {activeTab.toLowerCase()} orders.</div>
                 ) : filteredOrders.map((order) => (

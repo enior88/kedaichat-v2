@@ -60,7 +60,7 @@ export default function Dashboard() {
     const handleLogout = async () => {
         try {
             await fetch('/api/logout', { method: 'POST' });
-            window.location.href = '/login'; // Redirect regular user to login page
+            router.push('/login');
         } catch (error) {
             console.error('Logout failed:', error);
         }
@@ -73,16 +73,16 @@ export default function Dashboard() {
                 const data = await res.json();
 
                 if (res.status === 401) {
-                    window.location.href = '/login';
+                    router.push('/login');
                     return;
                 }
 
                 if (res.status === 404) {
                     // Admin has no store — redirect to admin console, not onboarding
                     if (data.isAdmin) {
-                        window.location.href = '/admin';
+                        router.push('/admin');
                     } else {
-                        window.location.href = '/onboarding';
+                        router.push('/onboarding');
                     }
                     return;
                 }

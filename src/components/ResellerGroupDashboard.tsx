@@ -3,8 +3,10 @@
 import React, { useState, useEffect } from 'react';
 import { Share2, Users, Send, ChevronRight, TrendingUp, Loader2, Info, Trash2, XCircle, X, Calendar, Clock, Edit3 } from 'lucide-react';
 import BottomNav from './BottomNav';
+import { useRouter } from 'next/navigation';
 
 export default function ResellerGroupDashboard() {
+    const router = useRouter();
     const [activeTab, setActiveTab] = useState('Resellers');
     const [storeInfo, setStoreInfo] = useState<any>(null);
     const [resellers, setResellers] = useState<any[]>([]);
@@ -130,7 +132,7 @@ export default function ResellerGroupDashboard() {
                         </p>
 
                         <button
-                            onClick={() => window.location.href = '/billing'}
+                            onClick={() => router.push('/billing')}
                             className="w-full max-w-xs bg-[#25D366] text-white py-5 rounded-[24px] font-black uppercase tracking-widest shadow-2xl shadow-green-200 active:scale-95 transition-all flex items-center justify-center gap-3"
                         >
                             Upgrade to Basic <ChevronRight size={20} />

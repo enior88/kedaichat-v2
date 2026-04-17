@@ -1,5 +1,7 @@
 import StoreCatalog from '@/components/StoreCatalog';
 import { Metadata } from 'next';
+import { prisma } from '@/lib/prisma';
+import { notFound } from 'next/navigation';
 
 type Props = {
     params: { name: string };
@@ -7,7 +9,6 @@ type Props = {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
     const name = params.name;
-    // Capitalize first letter for better appearance
     const displayName = name.charAt(0).toUpperCase() + name.slice(1);
 
     return {
@@ -20,7 +21,20 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     };
 }
 
-export default function ShopPage({ params }: Props) {
+export default async function ShopPage({ params }: Props) {
+    const store = await prisma.store.findUnique({
+        where: { slug: params.name },
+        include: {
+            products: {
+                where: { active: true }
+            },
+            subscription: true
+        }
+    });
 
-    return <StoreCatalog slug={params.name} />;
+    if (!store) {
+        notFound();
+    }
+
+    return <StoreCatalog slug={params.name} initialStoreData={JSON.parse(JSON.stringify(store))} />;
 }

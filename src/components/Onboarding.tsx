@@ -4,10 +4,11 @@ import React, { useState } from 'react';
 import { Store, ChevronRight, Check, Camera, ArrowLeft } from 'lucide-react';
 import { useLanguage } from '@/lib/LanguageContext';
 import LanguageToggle from '@/components/LanguageToggle';
-import { useSearchParams } from 'next/navigation';
+import { useSearchParams, useRouter } from 'next/navigation';
 
 export default function Onboarding() {
     console.log('Onboarding component rendering');
+    const router = useRouter();
     const { t } = useLanguage();
     const searchParams = useSearchParams();
     console.log('Onboarding: searchParams initialized');
@@ -225,7 +226,7 @@ export default function Onboarding() {
 
                     {step === 6 && (
                         <button
-                            onClick={() => window.location.href = '/dashboard'}
+                            onClick={() => router.push('/dashboard')}
                             className="w-full h-16 bg-gray-900 text-white font-bold rounded-[24px] flex items-center justify-center gap-2 shadow-xl active:scale-95 transition-all"
                         >
                             {t('ob_go_dashboard')}

@@ -5,6 +5,7 @@ import {
     TrendingUp, ExternalLink, XCircle, RefreshCw, Trash2, Archive, Key, LogOut,
     BarChart3, Store, CreditCard, CheckCircle2, Users, ShoppingBag, Search, Package, Settings, Upload, Menu, AlertCircle, FileText, Download, Eye, ShieldCheck
 } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 
 type Section = 'Overview' | 'Stores' | 'Subscriptions' | 'Payments' | 'Settings';
 
@@ -24,6 +25,7 @@ const STATUS_COLORS: Record<string, string> = {
 };
 
 export default function AdminPanel() {
+    const router = useRouter();
     const [activeSection, setActiveSection] = useState<Section>('Overview');
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const [adminData, setAdminData] = useState<any>(null);
@@ -45,7 +47,7 @@ export default function AdminPanel() {
     const handleLogout = async () => {
         try {
             await fetch('/api/logout', { method: 'POST' });
-            window.location.href = '/'; // Redirect admin to landing page
+            router.push('/'); // Redirect admin to landing page
         } catch (error) {
             console.error('Logout failed:', error);
         }
@@ -55,7 +57,7 @@ export default function AdminPanel() {
         setIsLoading(true);
         Promise.all([
             fetch('/api/admin').then(res => {
-                if (res.status === 401) { window.location.href = '/login'; return null; }
+                if (res.status === 401) { router.push('/login'); return null; }
                 return res.json();
             }),
             fetch('/api/admin/settings').then(res => res.ok ? res.json() : null)

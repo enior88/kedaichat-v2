@@ -32,7 +32,7 @@ export default function ProductManager() {
             const res = await fetch('/api/products');
             if (res.status === 404) {
                 // If store not found for products, go back to dashboard which handles the redirect logic
-                window.location.href = '/dashboard';
+                router.push('/dashboard');
                 return;
             }
             if (res.ok) {
@@ -341,7 +341,18 @@ export default function ProductManager() {
                     {/* Product List */}
                     <div className="px-6 space-y-4">
                         {isLoading ? (
-                            <div className="text-center py-10 text-gray-400">Loading products...</div>
+                            <div className="space-y-4">
+                                {[1, 2, 3, 4].map(i => (
+                                    <div key={i} className="premium-card !p-3 flex items-center animate-pulse">
+                                        <div className="w-16 h-16 bg-gray-100 rounded-2xl mr-4 flex-shrink-0"></div>
+                                        <div className="flex-1 space-y-2">
+                                            <div className="h-4 bg-gray-100 rounded w-3/4"></div>
+                                            <div className="h-3 bg-gray-50 rounded w-1/2"></div>
+                                        </div>
+                                        <div className="w-12 h-6 bg-gray-50 rounded-full"></div>
+                                    </div>
+                                ))}
+                            </div>
                         ) : products.length === 0 ? (
                             <div className="text-center py-10 text-gray-400">No products found. Add one above!</div>
                         ) : (
