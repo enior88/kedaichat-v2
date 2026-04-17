@@ -49,7 +49,9 @@ export async function GET(req: Request) {
         const todayOrders = await prisma.order.findMany({
             where: {
                 storeId: store.id,
-                paymentStatus: 'PAID',
+                paymentStatus: {
+                    in: ['PAID', 'PREPARING', 'DELIVERING', 'COMPLETED']
+                },
                 createdAt: {
                     gte: startOfTodayUTC
                 }
