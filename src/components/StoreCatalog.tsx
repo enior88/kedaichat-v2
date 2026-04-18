@@ -117,7 +117,7 @@ export default function StoreCatalog({ slug, initialStoreData }: { slug?: string
     };
 
     const storeName = store?.name || 'My Store';
-    const storeInitials = storeName[0];
+    const storeInitials = storeName[0] || 'S';
 
     const handleShare = async () => {
         const shareData = {
@@ -138,172 +138,94 @@ export default function StoreCatalog({ slug, initialStoreData }: { slug?: string
     };
 
     return (
-        <div className="min-h-screen bg-[#F8F9FA] pb-32 font-inter relative max-w-md mx-auto shadow-2xl overflow-hidden border-x border-gray-100">
+        <div className="min-h-screen bg-gray-50 pb-36 font-inter relative max-w-md mx-auto shadow-2xl overflow-hidden sm:border-x sm:border-gray-100">
             {/* Loading State */}
             {isLoadingData && (
-                <div className="fixed inset-0 z-[110] bg-[#F8F9FA] flex flex-col items-center justify-center p-12 text-center">
-                    <div className="w-16 h-16 border-4 border-[#25D366] border-t-transparent rounded-full animate-spin mb-8 shadow-sm"></div>
-                    <h2 className="text-2xl font-black text-gray-900 mb-2 tracking-tight flex items-center justify-center gap-2">Rilek Dolok ! <span className="inline-block animate-bounce">😁</span></h2>
-                    <div className="h-1 w-12 bg-[#25D366] rounded-full animate-pulse mb-6 mx-auto"></div>
-                    <div className="h-3 w-48 bg-gray-100 rounded-full animate-pulse"></div>
+                <div className="fixed inset-0 z-[110] bg-white flex flex-col items-center justify-center p-12 text-center animate-in fade-in">
+                    <div className="w-20 h-20 mb-8 relative">
+                        <div className="absolute inset-0 border-4 border-[#25D366]/20 rounded-full"></div>
+                        <div className="absolute inset-0 border-4 border-[#25D366] border-t-transparent rounded-full animate-spin"></div>
+                    </div>
+                    <h2 className="text-2xl font-black text-gray-900 mb-2 tracking-tight">Rilek Dolok ! <span className="inline-block animate-bounce">😁</span></h2>
+                    <div className="flex gap-1.5 mt-4">
+                        <div className="w-2 h-2 rounded-full bg-[#25D366] animate-bounce" style={{ animationDelay: "0ms" }}></div>
+                        <div className="w-2 h-2 rounded-full bg-[#25D366] animate-bounce" style={{ animationDelay: "150ms" }}></div>
+                        <div className="w-2 h-2 rounded-full bg-[#25D366] animate-bounce" style={{ animationDelay: "300ms" }}></div>
+                    </div>
                 </div>
             )}
 
             {/* Archived Store Overlay */}
             {store?.archived && (
-                <div className="fixed inset-0 z-[100] bg-white/95 backdrop-blur-sm flex items-center justify-center p-12 text-center animate-in fade-in duration-500">
+                <div className="fixed inset-0 z-[100] bg-white/95 backdrop-blur-md flex items-center justify-center p-12 text-center animate-in fade-in duration-500">
                     <div className="max-w-xs">
-                        <div className="w-24 h-24 bg-gray-50 rounded-[40px] flex items-center justify-center mx-auto mb-8 text-gray-300 shadow-sm border border-gray-100">
+                        <div className="w-24 h-24 bg-gray-50/80 rounded-[40px] flex items-center justify-center mx-auto mb-8 text-gray-400 shadow-sm border border-gray-100">
                             <Store size={48} strokeWidth={1.5} />
                         </div>
-                        <h2 className="text-3xl font-black text-gray-900 mb-4 tracking-tight">Shop Closed</h2>
-                        <p className="text-gray-500 font-medium leading-relaxed mb-10">This store is temporarily unavailable. Please check back later or contact the owner.</p>
-                        <div className="h-1.5 w-12 bg-gray-100 rounded-full mx-auto" />
+                        <h2 className="text-[28px] font-black text-gray-900 mb-3 tracking-tight">Store is Closed</h2>
+                        <p className="text-[15px] text-gray-500 font-medium leading-relaxed mb-10">This store is currently not accepting orders. Please check back later.</p>
                     </div>
                 </div>
             )}
 
-            {/* Header */}
-            <div className="bg-[#F8F9FA] p-6 pb-2">
-                <div className="flex items-center justify-between mb-8">
-                    <button onClick={() => router.back()} className="text-gray-900 p-2 -ml-2 hover:bg-gray-100 rounded-full transition-colors shrink-0">
-                        <ChevronLeft size={24} />
+            {/* Premium Sticky Header */}
+            <div className="sticky top-0 z-50 bg-white/80 backdrop-blur-xl border-b border-gray-100 shadow-[0_4px_20px_-10px_rgba(0,0,0,0.05)] pt-1">
+                <div className="flex items-center justify-between p-4 pb-3">
+                    <button onClick={() => router.back()} className="w-10 h-10 flex items-center justify-center bg-gray-50 text-gray-900 rounded-full hover:bg-gray-100 transition-colors shrink-0">
+                        <ChevronLeft size={22} strokeWidth={2.5} />
                     </button>
 
                     {isSearching ? (
-                        <div className="flex-1 px-3">
-                            <input
-                                autoFocus
-                                type="text"
-                                placeholder="Search products..."
-                                value={searchTerm}
-                                onChange={(e) => setSearchTerm(e.target.value)}
-                                className="w-full bg-white border border-gray-200 rounded-full px-4 py-1.5 text-sm focus:outline-none focus:border-[#25D366] transition-colors"
-                            />
+                        <div className="flex-1 px-3 animate-in slide-in-from-right-4 fade-in">
+                            <div className="relative">
+                                <Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" />
+                                <input
+                                    autoFocus
+                                    type="text"
+                                    placeholder="Search delicious food..."
+                                    value={searchTerm}
+                                    onChange={(e) => setSearchTerm(e.target.value)}
+                                    className="w-full bg-gray-100 border-none rounded-full pl-10 pr-4 py-2.5 text-[14px] font-medium text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#25D366]/20 transition-all placeholder:text-gray-400"
+                                />
+                            </div>
                         </div>
                     ) : (
-                        <h1 className="text-[17px] font-bold text-gray-900 tracking-tight truncate px-2">{storeName}</h1>
+                        <div className="flex-1 px-4 text-center">
+                            <h1 className="text-[17px] font-bold text-gray-900 tracking-tight truncate">{storeName}</h1>
+                            <p className="text-[11px] font-semibold text-[#25D366] uppercase tracking-wider mt-0.5">Accepting Orders</p>
+                        </div>
                     )}
 
-                    <div className="flex items-center gap-1 shrink-0">
-                        <button
-                            onClick={() => setIsSearching(!isSearching)}
-                            className={`text-gray-900 p-2 hover:bg-gray-200 rounded-full transition-colors bg-white shadow-sm border border-gray-100 ${isSearching ? 'bg-gray-100' : ''}`}
-                        >
-                            <Search size={18} strokeWidth={2.5} />
-                        </button>
-                        <button
-                            onClick={handleShare}
-                            className="text-gray-900 p-2 -mr-2 hover:bg-gray-200 rounded-full transition-colors bg-white shadow-sm border border-gray-100"
-                        >
-                            <Share2 size={18} strokeWidth={2.5} />
-                        </button>
-                    </div>
-                </div>
-
-                {/* Store Profile Header */}
-                <div className="flex flex-col items-center text-center mb-8">
-                    <div className="relative mb-4">
-                        {store?.logoUrl ? (
-                            <div className="w-[100px] h-[100px] rounded-full overflow-hidden border-[3px] border-white shadow-lg bg-white relative">
-                                <Image src={store.logoUrl} alt={storeName} fill className="object-cover" priority />
-                            </div>
-                        ) : (
-                            <div className="w-[100px] h-[100px] bg-gradient-to-br from-[#25D366] to-[#128C7E] rounded-full overflow-hidden flex items-center justify-center border-[3px] border-white shadow-lg">
-                                <span className="text-4xl font-black text-white uppercase">{storeInitials}</span>
-                            </div>
-                        )}
-                        <div className="absolute bottom-1 right-1 bg-[#25D366] text-white p-0.5 rounded-full border-2 border-[#F8F9FA] shadow-md">
-                            <Check size={14} strokeWidth={4} />
-                        </div>
-                    </div>
-
-                    <h2 className="text-[22px] font-bold text-gray-900 mb-1 leading-tight">{storeName}</h2>
-                    <p className="text-[13px] text-gray-500/80 font-medium px-4 mb-6 leading-snug max-w-[300px]">
-                        {store?.category || store?.description || 'Welcome to my store! We provide the best products and services for you.'}
-                    </p>
-
-                    <div className="flex gap-4 w-full px-4">
+                    <div className="flex items-center gap-2 shrink-0">
                         <button
                             onClick={() => {
-                                if (store?.whatsappNumber) {
-                                    const message = encodeURIComponent(`Hi ${storeName}, I have a question about your store.`);
-                                    window.open(`https://wa.me/${store.whatsappNumber.replace(/[^0-9]/g, '')}?text=${message}`, '_blank');
-                                }
+                                setIsSearching(!isSearching);
+                                if (isSearching) setSearchTerm('');
                             }}
-                            className="flex-1 flex items-center justify-center gap-2.5 bg-[#25D366] text-white py-[15px] rounded-[24px] text-[15px] font-black shadow-xl shadow-green-100/50 active:scale-[0.96] transition-all"
+                            className={`w-10 h-10 flex items-center justify-center rounded-full transition-all ${isSearching ? 'bg-gray-900 text-white shadow-md' : 'bg-gray-50 text-gray-900 hover:bg-gray-100'}`}
                         >
-                            <MessageCircle size={19} strokeWidth={2.5} className="fill-white" />
-                            <span>Chat</span>
+                            {isSearching ? <X size={18} strokeWidth={2.5} /> : <Search size={18} strokeWidth={2.5} />}
                         </button>
-                        <button
-                            onClick={() => setIsGroupModalOpen(true)}
-                            className="flex-1 flex items-center justify-center gap-2.5 bg-gray-900 text-white py-[15px] rounded-[24px] text-[15px] font-black shadow-xl shadow-gray-200/50 active:scale-[0.96] transition-all"
-                        >
-                            <Users size={19} strokeWidth={2.5} />
-                            <span>Group Order</span>
-                        </button>
+                        {!isSearching && (
+                            <button
+                                onClick={handleShare}
+                                className="w-10 h-10 flex items-center justify-center bg-gray-50 text-gray-900 rounded-full hover:bg-gray-100 transition-colors"
+                            >
+                                <Share2 size={18} strokeWidth={2.5} />
+                            </button>
+                        )}
                     </div>
                 </div>
 
-                {/* Group Order Modal */}
-                {isGroupModalOpen && (
-                    <div className="fixed inset-0 z-[200] bg-black/60 backdrop-blur-sm flex items-end justify-center animate-in fade-in duration-300">
-                        <div className="w-full max-w-md bg-white rounded-t-[40px] p-8 pb-12 animate-in slide-in-from-bottom-10 duration-500">
-                            <div className="flex justify-between items-center mb-8">
-                                <h3 className="text-xl font-black text-gray-900 tracking-tight">Setup Group Order</h3>
-                                <button onClick={() => setIsGroupModalOpen(false)} className="bg-gray-100 p-2 rounded-full text-gray-400 hover:text-gray-900">
-                                    <X size={20} />
-                                </button>
-                            </div>
-
-                            <div className="space-y-6">
-                                <div>
-                                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1 mb-2 block">Group Session Title</label>
-                                    <input
-                                        type="text"
-                                        placeholder="e.g. Office Lunch Flow"
-                                        className="w-full h-14 bg-gray-50 border-2 border-transparent rounded-2xl px-5 font-bold text-gray-900 focus:border-[#25D366] focus:bg-white focus:outline-none transition-all"
-                                        value={groupTitle}
-                                        onChange={(e) => setGroupTitle(e.target.value)}
-                                    />
-                                </div>
-
-                                <div>
-                                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1 mb-2 block">Order Deadline</label>
-                                    <input
-                                        type="datetime-local"
-                                        className="w-full h-14 bg-gray-50 border-2 border-transparent rounded-2xl px-5 font-bold text-gray-900 focus:border-[#25D366] focus:bg-white focus:outline-none transition-all"
-                                        value={groupDeadline}
-                                        onChange={(e) => setGroupDeadline(e.target.value)}
-                                    />
-                                </div>
-
-                                <button
-                                    onClick={handleCreateGroupOrder}
-                                    disabled={isCreatingGroup || !groupTitle || !groupDeadline}
-                                    className="w-full h-16 bg-[#25D366] text-white rounded-[24px] font-black uppercase tracking-widest shadow-xl shadow-green-200 active:scale-95 transition-all disabled:opacity-50 flex items-center justify-center gap-3 mt-4"
-                                >
-                                    {isCreatingGroup ? 'Initializing...' : (
-                                        <>
-                                            Start Session <ChevronRight size={18} strokeWidth={3} />
-                                        </>
-                                    )}
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                )}
-
-                {/* Category Pills */}
-                <div className="flex gap-2 overflow-x-auto no-scrollbar py-2 -mx-6 px-6">
+                {/* Horizontal Category Navigation (Sticky Part 2) */}
+                <div className="flex gap-2.5 overflow-x-auto no-scrollbar px-5 pb-4 pt-1 snap-x">
                     {allCategories.map((cat) => (
                         <button
                             key={cat.id}
                             onClick={() => setSelectedCategory(cat.id)}
-                            className={`px-6 py-[10px] rounded-full text-[14px] font-bold whitespace-nowrap transition-all border ${selectedCategory === cat.id
-                                ? 'bg-[#25D366] border-[#25D366] text-white shadow-md shadow-green-100/50'
-                                : 'bg-white border-gray-100 text-gray-600 shadow-sm'
+                            className={`snap-start px-5 py-2 rounded-full text-[13px] font-bold whitespace-nowrap transition-all duration-300 ${selectedCategory === cat.id
+                                    ? 'bg-gray-900 text-white shadow-lg shadow-gray-900/20 scale-100 ring-2 ring-gray-900 ring-offset-1'
+                                    : 'bg-white text-gray-500 border border-gray-200 hover:bg-gray-50 hover:text-gray-900 scale-95'
                                 }`}
                         >
                             {cat.label}
@@ -312,9 +234,77 @@ export default function StoreCatalog({ slug, initialStoreData }: { slug?: string
                 </div>
             </div>
 
-            {/* Product Grid */}
-            <div className="p-6 pt-4">
-                <div className="grid grid-cols-2 gap-x-4 gap-y-6">
+            {/* Store Banner / Info Profile (Scrolls) */}
+            <div className="bg-white px-6 pb-8 pt-6 mb-2 rounded-b-[32px] border-b border-gray-100 shadow-sm relative overflow-hidden">
+                {/* Subtle background decoration */}
+                <div className="absolute top-0 left-0 w-full h-32 bg-gradient-to-b from-green-50/50 to-transparent"></div>
+
+                <div className="flex flex-col relative z-10">
+                    <div className="flex items-center gap-5">
+                        <div className="relative shrink-0">
+                            {store?.logoUrl ? (
+                                <div className="w-[88px] h-[88px] rounded-[24px] overflow-hidden shadow-[0_8px_16px_-6px_rgba(0,0,0,0.1)] bg-white border border-gray-100">
+                                    <Image src={store.logoUrl} alt={storeName} fill className="object-cover" priority />
+                                </div>
+                            ) : (
+                                <div className="w-[88px] h-[88px] bg-gradient-to-br from-gray-800 to-gray-900 rounded-[24px] overflow-hidden flex items-center justify-center shadow-[0_8px_16px_-6px_rgba(0,0,0,0.1)] border border-gray-100">
+                                    <span className="text-3xl font-black text-white uppercase">{storeInitials}</span>
+                                </div>
+                            )}
+                            <div className="absolute -bottom-1 -right-1 bg-[#25D366] text-white p-1 rounded-full shadow-md border-[3px] border-white">
+                                <Check size={12} strokeWidth={4} />
+                            </div>
+                        </div>
+
+                        <div className="flex flex-col">
+                            <h2 className="text-[22px] font-black text-gray-900 leading-tight mb-1">{storeName}</h2>
+                            <p className="text-[13px] text-gray-500 font-medium leading-snug line-clamp-2">
+                                {store?.category || store?.description || 'Authentic flavors, premium quality. Order now and enjoy.'}
+                            </p>
+                            <div className="flex items-center gap-3 mt-3">
+                                <div className="flex items-center gap-1 text-[11px] font-bold text-gray-500 bg-gray-50 px-2 py-1 rounded-md border border-gray-100">
+                                    <Clock size={12} className="text-gray-400" />
+                                    <span>20-30 min</span>
+                                </div>
+                                <div className="flex items-center gap-1 text-[11px] font-bold text-[#FF9800] bg-orange-50 px-2 py-1 rounded-md border border-orange-100/50">
+                                    <svg className="w-3 h-3 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
+                                    <span>4.9</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="flex gap-3 mt-6">
+                        <button
+                            onClick={() => {
+                                if (store?.whatsappNumber) {
+                                    const message = encodeURIComponent(`Hi ${storeName}, I have a question about your store.`);
+                                    window.open(`https://wa.me/${store.whatsappNumber.replace(/[^0-9]/g, '')}?text=${message}`, '_blank');
+                                }
+                            }}
+                            className="flex-1 flex items-center justify-center gap-2 bg-[#F6F8F6] text-[#25D366] py-[14px] rounded-2xl text-[14px] font-bold active:scale-[0.98] transition-all border border-green-100"
+                        >
+                            <MessageCircle size={18} strokeWidth={2.5} />
+                            <span>Chat Store</span>
+                        </button>
+                        <button
+                            onClick={() => setIsGroupModalOpen(true)}
+                            className="flex-1 flex items-center justify-center gap-2 bg-gray-900 text-white py-[14px] rounded-2xl text-[14px] font-bold active:scale-[0.98] transition-all shadow-md shadow-gray-900/20"
+                        >
+                            <Users size={18} strokeWidth={2.5} />
+                            <span>Group Order</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            {/* Product List */}
+            <div className="px-4 pt-4 pb-8">
+                <h3 className="text-[18px] font-black text-gray-900 mb-4 px-2">{
+                    selectedCategory === 'All' ? 'Popular Items' : selectedCategory
+                }</h3>
+
+                <div className="flex flex-col gap-4">
                     {(store?.products || [])
                         .filter((p: any) => {
                             const pCats = p.category ? p.category.split(',').filter(Boolean) : [];
@@ -322,77 +312,152 @@ export default function StoreCatalog({ slug, initialStoreData }: { slug?: string
                                 (searchTerm === '' || p.name.toLowerCase().includes(searchTerm.toLowerCase()));
                         })
                         .map((p: any) => (
-                            <div key={p.id} className="bg-white rounded-[32px] overflow-hidden shadow-sm border border-gray-100/80 flex flex-col p-2.5 pb-4">
-                                <div className="aspect-square bg-gray-100 rounded-[24px] overflow-hidden mb-3 relative">
+                            <div
+                                key={p.id}
+                                onClick={() => addToCart(p)}
+                                className="bg-white rounded-[24px] overflow-hidden shadow-sm border border-gray-100 flex p-3 cursor-pointer active:scale-[0.98] transition-all duration-200 group hover:shadow-md"
+                            >
+                                <div className="flex flex-col flex-1 pr-3 justify-between">
+                                    <div>
+                                        <h3 className="font-bold text-gray-900 text-[15px] leading-tight mb-1 tracking-tight group-hover:text-[#25D366] transition-colors">{p.name}</h3>
+                                        {p.description && (
+                                            <p className="text-[12px] text-gray-500 leading-snug line-clamp-2 mb-2">{p.description}</p>
+                                        )}
+                                        {p.category && (
+                                            <div className="flex flex-wrap gap-1 mb-2">
+                                                {p.category.split(',').filter(Boolean).slice(0, 2).map((cat: string) => !defaultCategoryIds.includes(cat) ? (
+                                                    <span key={cat} className="bg-gray-50 text-gray-500 text-[9.5px] uppercase font-bold px-1.5 py-0.5 rounded border border-gray-100">{cat}</span>
+                                                ) : null)}
+                                            </div>
+                                        )}
+                                    </div>
+
+                                    <div className="flex items-center justify-between mt-auto">
+                                        <p className="text-gray-900 font-black text-[15px]">RM {p.price.toFixed(2)}</p>
+                                        <div className="w-8 h-8 bg-gray-50 border border-gray-100 text-gray-900 rounded-full flex items-center justify-center group-hover:bg-[#25D366] group-hover:text-white group-hover:border-[#25D366] transition-all">
+                                            <Plus size={16} strokeWidth={3} />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className="w-[110px] h-[110px] shrink-0 bg-gray-50 rounded-[18px] overflow-hidden relative shadow-inner">
                                     {p.imageUrl ? (
                                         <Image src={p.imageUrl} alt={p.name} fill className="object-cover" />
                                     ) : (
-                                        <div className="w-full h-full flex items-center justify-center text-gray-300">
-                                            <ShoppingCart size={32} strokeWidth={1} />
+                                        <div className="w-full h-full flex flex-col items-center justify-center text-gray-300">
+                                            <ShoppingCart size={28} strokeWidth={1.5} />
+                                            <span className="text-[9px] mt-2 font-bold uppercase tracking-widest">No Image</span>
                                         </div>
                                     )}
-                                </div>
-                                <div className="px-1.5 flex flex-col flex-grow justify-between">
-                                    <h3 className="font-bold text-gray-900 text-[13.5px] leading-tight mb-1 tracking-tight">{p.name}</h3>
-                                    {p.description && (
-                                        <div className="mb-1.5">
-                                            <p className="text-[11px] text-gray-500 leading-snug line-clamp-2">{p.description}</p>
-                                        </div>
-                                    )}
-                                    {p.category && (
-                                        <div className="mb-1.5 flex flex-wrap gap-1">
-                                            {p.category.split(',').filter(Boolean).map((cat: string) => !defaultCategoryIds.includes(cat) ? (
-                                                <span key={cat} className="bg-[#25D366]/10 text-[#25D366] text-[9.5px] uppercase font-black px-1.5 py-0.5 rounded border border-[#25D366]/20">{cat}</span>
-                                            ) : null)}
-                                        </div>
-                                    )}
-                                    <div className="flex justify-between items-end mt-auto">
-                                        <p className="text-[#25D366] font-bold text-[14px]">RM {p.price.toFixed(2)}</p>
-                                        <button
-                                            onClick={() => addToCart(p)}
-                                            className="w-8 h-8 bg-[#25D366] text-white rounded-full flex items-center justify-center shadow-md shadow-green-100 active:scale-90 transition-all shrink-0"
-                                        >
-                                            <Plus size={18} strokeWidth={3} />
-                                        </button>
+                                    {/* Action overlay hint */}
+                                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                                        <p className="text-white text-[12px] font-bold">Add</p>
                                     </div>
                                 </div>
                             </div>
                         ))}
                     {(!store?.products || store.products.length === 0) && (
-                        <div className="col-span-2 text-center py-10 text-gray-400">
-                            No products available.
+                        <div className="text-center py-16 px-6">
+                            <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center mx-auto mb-4 text-gray-300 shadow-sm border border-gray-100">
+                                <Search size={32} />
+                            </div>
+                            <h3 className="text-[17px] font-bold text-gray-900 mb-1">No items found</h3>
+                            <p className="text-[13px] text-gray-500">Try changing your search or category filter.</p>
                         </div>
                     )}
                 </div>
             </div>
 
+            {/* Premium Floating Cart */}
             {cartCount > 0 && (
-                <div className="fixed bottom-10 left-6 right-6 animate-in slide-in-from-bottom-10 z-[70]">
+                <div className="fixed bottom-8 left-0 right-0 px-4 md:px-0 max-w-md mx-auto animate-in slide-in-from-bottom-8 duration-300 z-[70]">
                     <button
                         onClick={handleCheckout}
-                        className="w-full h-[64px] bg-[#25D366] text-white font-bold rounded-[32px] flex items-center justify-between px-6 shadow-xl shadow-green-200/50 active:scale-[0.98] transition-all"
+                        className="w-full h-[64px] bg-gray-900/95 backdrop-blur-xl text-white font-bold rounded-[32px] flex items-center justify-between px-2 pr-6 shadow-[0_8px_30px_rgb(0,0,0,0.2)] active:scale-[0.98] transition-all border border-gray-800"
                     >
-                        <div className="flex gap-2">
-                            <span className="bg-white/20 px-3 py-1.5 rounded-full text-[13px] font-bold">
-                                {cartCount} Items
-                            </span>
+                        <div className="flex items-center gap-3">
+                            <div className="w-12 h-12 bg-[#25D366] rounded-full flex items-center justify-center shadow-inner relative">
+                                <ShoppingCart size={20} className="fill-white" strokeWidth={2.5} />
+                                <div className="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] font-black w-5 h-5 flex items-center justify-center rounded-full border-2 border-gray-900 shadow-sm">
+                                    {cartCount}
+                                </div>
+                            </div>
+                            <div className="flex flex-col items-start translate-y-0.5">
+                                <span className="text-[11px] text-gray-400 font-bold uppercase tracking-widest mb-[-2px]">Cart Total</span>
+                                <span className="text-[16px] font-black">RM {cartTotal.toFixed(2)}</span>
+                            </div>
                         </div>
-                        <span className="text-[17px] font-bold">RM {cartTotal.toFixed(2)}</span>
-                        <div className="flex items-center gap-2 text-[15px] font-bold">
-                            View Cart <ShoppingCart size={20} strokeWidth={2.5} className="fill-white/20" />
+                        <div className="flex items-center gap-2 text-[14px] font-bold bg-white/10 px-4 py-2 rounded-full hover:bg-white/20 transition-colors">
+                            Checkout <ChevronRight size={16} strokeWidth={3} />
                         </div>
                     </button>
                 </div>
             )}
+
+            {/* Group Order Modal (Polished) */}
+            {isGroupModalOpen && (
+                <div className="fixed inset-0 z-[200] bg-black/60 backdrop-blur-sm flex items-end justify-center animate-in fade-in duration-300">
+                    <div className="w-full max-w-md bg-white rounded-t-[40px] p-6 pb-12 animate-in slide-in-from-bottom-10 duration-400 shadow-2xl">
+                        <div className="w-12 h-1.5 bg-gray-200 rounded-full mx-auto mb-6"></div>
+                        <div className="flex justify-between items-center mb-8 px-2">
+                            <div>
+                                <h3 className="text-[22px] font-black text-gray-900 tracking-tight leading-tight">Start Group Order</h3>
+                                <p className="text-[13px] text-gray-500 mt-1 font-medium">Create a session and invite friends to order together.</p>
+                            </div>
+                            <button onClick={() => setIsGroupModalOpen(false)} className="bg-gray-50 w-10 h-10 flex items-center justify-center rounded-full text-gray-400 hover:text-gray-900 hover:bg-gray-100 transition-colors shrink-0">
+                                <X size={20} strokeWidth={2.5} />
+                            </button>
+                        </div>
+
+                        <div className="space-y-6 px-2">
+                            <div>
+                                <label className="text-[11px] font-black text-gray-500 uppercase tracking-widest ml-1 mb-2 block">Group Session Title</label>
+                                <input
+                                    type="text"
+                                    placeholder="e.g. Office Lunch Flow"
+                                    className="w-full h-[56px] bg-gray-50 border-2 border-transparent rounded-2xl px-5 font-bold text-gray-900 focus:border-[#25D366] focus:bg-white focus:outline-none transition-all placeholder:font-medium placeholder:text-gray-400"
+                                    value={groupTitle}
+                                    onChange={(e) => setGroupTitle(e.target.value)}
+                                />
+                            </div>
+
+                            <div>
+                                <label className="text-[11px] font-black text-gray-500 uppercase tracking-widest ml-1 mb-2 block">Order Deadline</label>
+                                <input
+                                    type="datetime-local"
+                                    className="w-full h-[56px] bg-gray-50 border-2 border-transparent rounded-2xl px-5 font-bold text-gray-900 focus:border-[#25D366] focus:bg-white focus:outline-none transition-all"
+                                    value={groupDeadline}
+                                    onChange={(e) => setGroupDeadline(e.target.value)}
+                                />
+                            </div>
+
+                            <button
+                                onClick={handleCreateGroupOrder}
+                                disabled={isCreatingGroup || !groupTitle || !groupDeadline}
+                                className="w-full h-[60px] bg-gray-900 text-white rounded-[20px] font-bold text-[16px] shadow-[0_8px_20px_rgba(0,0,0,0.15)] active:scale-95 transition-all disabled:opacity-50 flex items-center justify-center gap-3 mt-4 hover:bg-gray-800"
+                            >
+                                {isCreatingGroup ? (
+                                    <div className="flex items-center gap-2"><div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div><span>Initializing...</span></div>
+                                ) : (
+                                    <>
+                                        Start Session <ChevronRight size={18} strokeWidth={3} />
+                                    </>
+                                )}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
             {/* Footer Branding */}
-            <div className="py-12 flex flex-col items-center gap-2 opacity-30 grayscale hover:opacity-100 hover:grayscale-0 transition-all">
+            <div className="pt-4 pb-16 flex flex-col items-center gap-2 opacity-50 grayscale hover:opacity-100 hover:grayscale-0 transition-all">
                 <div className="flex items-center gap-2">
-                    <div className="w-5 h-5 rounded-md overflow-hidden relative">
+                    <div className="w-5 h-5 rounded-[6px] overflow-hidden relative shadow-sm border border-gray-200">
                         <Image src="/logo.png" alt="KedaiChat" fill className="object-cover" />
                     </div>
-                    <span className="text-[10px] font-black tracking-tighter text-gray-400">KedaiChat</span>
+                    <span className="text-[11px] font-black tracking-tighter text-gray-400">KedaiChat</span>
                 </div>
-                <p className="text-[8px] font-bold text-gray-300 uppercase tracking-widest">Powered by KedaiChat</p>
+                <p className="text-[9px] font-bold text-gray-300 uppercase tracking-widest">Powered by KedaiChat</p>
             </div>
         </div>
     );
