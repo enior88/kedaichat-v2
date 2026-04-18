@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { MessageCircle, Plus, Search, ShoppingCart, Store, ChevronLeft, ChevronRight, Share2, Check, Users, Clock, X } from 'lucide-react';
+import { MessageCircle, Plus, Minus, Search, ShoppingCart, Store, ChevronLeft, ChevronRight, Share2, Check, Users, Clock, X } from 'lucide-react';
 import { useLanguage } from '@/lib/LanguageContext';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
@@ -15,6 +15,7 @@ export default function StoreCatalog({ slug, initialStoreData }: { slug?: string
     const [isSearching, setIsSearching] = useState(false);
     const [searchTerm, setSearchTerm] = useState('');
     const [isGroupModalOpen, setIsGroupModalOpen] = useState(false);
+    const [isCartModalOpen, setIsCartModalOpen] = useState(false);
     const [groupTitle, setGroupTitle] = useState('');
     const [groupDeadline, setGroupDeadline] = useState('');
     const [isCreatingGroup, setIsCreatingGroup] = useState(false);
@@ -69,8 +70,25 @@ export default function StoreCatalog({ slug, initialStoreData }: { slug?: string
         });
     };
 
+    const decreaseQuantity = (productId: string) => {
+        setCartItems(prev => {
+            const existing = prev.find(item => item.id === productId);
+            if (existing && existing.quantity > 1) {
+                return prev.map(item => item.id === productId ? { ...item, quantity: item.quantity - 1 } : item);
+            }
+            return prev.filter(item => item.id !== productId);
+        });
+    };
+
     const cartCount = cartItems.reduce((sum, item) => sum + item.quantity, 0);
     const cartTotal = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
+
+    // Auto-close modal if cart becomes empty
+    useEffect(() => {
+        if (cartCount === 0) {
+            setIsCartModalOpen(false);
+        }
+    }, [cartCount]);
 
     const handleCheckout = () => {
         const refCode = localStorage.getItem('kd_ref');
@@ -311,51 +329,77 @@ export default function StoreCatalog({ slug, initialStoreData }: { slug?: string
                             return (selectedCategory === 'All' || pCats.includes(selectedCategory) || p.description === selectedCategory) &&
                                 (searchTerm === '' || p.name.toLowerCase().includes(searchTerm.toLowerCase()));
                         })
-                        .map((p: any) => (
-                            <div
-                                key={p.id}
-                                onClick={() => addToCart(p)}
-                                className="bg-white rounded-[24px] overflow-hidden shadow-sm border border-gray-100 flex p-3 cursor-pointer active:scale-[0.98] transition-all duration-200 group hover:shadow-md"
-                            >
-                                <div className="flex flex-col flex-1 pr-3 justify-between">
-                                    <div>
-                                        <h3 className="font-bold text-gray-900 text-[15px] leading-tight mb-1 tracking-tight group-hover:text-[#25D366] transition-colors">{p.name}</h3>
-                                        {p.description && (
-                                            <p className="text-[12px] text-gray-500 leading-snug line-clamp-2 mb-2">{p.description}</p>
+                        .map((p: any) => {
+                            // Find quantity of this item in the cart to show a counter and modify buttons directly on the list (FoodPanda style)
+                            const cartItem = cartItems.find(item => item.id === p.id);
+
+                            return (
+                                <div
+                                    key={p.id}
+                                    onClick={() => !cartItem && addToCart(p)}
+                                    className={`bg-white rounded-[24px] overflow-hidden shadow-sm border flex p-3 transition-all duration-200 group hover:shadow-md ${cartItem ? 'border-[#25D366]/30' : 'border-gray-100 active:scale-[0.98] cursor-pointer'}`}
+                                >
+                                    <div className="flex flex-col flex-1 pr-3 justify-between">
+                                        <div>
+                                            <h3 className="font-bold text-gray-900 text-[15px] leading-tight mb-1 tracking-tight group-hover:text-[#25D366] transition-colors">{p.name}</h3>
+                                            {p.description && (
+                                                <p className="text-[12px] text-gray-500 leading-snug line-clamp-2 mb-2">{p.description}</p>
+                                            )}
+                                            {p.category && (
+                                                <div className="flex flex-wrap gap-1 mb-2">
+                                                    {p.category.split(',').filter(Boolean).slice(0, 2).map((cat: string) => !defaultCategoryIds.includes(cat) ? (
+                                                        <span key={cat} className="bg-gray-50 text-gray-500 text-[9.5px] uppercase font-bold px-1.5 py-0.5 rounded border border-gray-100">{cat}</span>
+                                                    ) : null)}
+                                                </div>
+                                            )}
+                                        </div>
+
+                                        <div className="flex items-center justify-between mt-auto">
+                                            <p className="text-gray-900 font-black text-[15px]">RM {p.price.toFixed(2)}</p>
+
+                                            {cartItem ? (
+                                                <div className="flex items-center gap-2.5 bg-gray-50 rounded-full p-1 border border-gray-100" onClick={(e) => e.stopPropagation()}>
+                                                    <button
+                                                        onClick={() => decreaseQuantity(p.id)}
+                                                        className="w-7 h-7 rounded-full bg-white shadow-sm flex items-center justify-center text-gray-600 hover:text-gray-900 active:scale-95 transition-all"
+                                                    >
+                                                        <Minus size={14} strokeWidth={2.5} />
+                                                    </button>
+                                                    <span className="font-black text-[13px] w-3 text-center text-[#25D366]">{cartItem.quantity}</span>
+                                                    <button
+                                                        onClick={() => addToCart(p)}
+                                                        className="w-7 h-7 rounded-full bg-[#25D366] text-white shadow-sm flex items-center justify-center active:scale-95 transition-all"
+                                                    >
+                                                        <Plus size={14} strokeWidth={2.5} />
+                                                    </button>
+                                                </div>
+                                            ) : (
+                                                <div className="w-8 h-8 bg-gray-50 border border-gray-100 text-gray-900 rounded-full flex items-center justify-center group-hover:bg-[#25D366] group-hover:text-white group-hover:border-[#25D366] transition-all">
+                                                    <Plus size={16} strokeWidth={3} />
+                                                </div>
+                                            )}
+                                        </div>
+                                    </div>
+
+                                    <div className="w-[110px] h-[110px] shrink-0 bg-gray-50 rounded-[18px] overflow-hidden relative shadow-inner">
+                                        {p.imageUrl ? (
+                                            <Image src={p.imageUrl} alt={p.name} fill className="object-cover" />
+                                        ) : (
+                                            <div className="w-full h-full flex flex-col items-center justify-center text-gray-300">
+                                                <ShoppingCart size={28} strokeWidth={1.5} />
+                                                <span className="text-[9px] mt-2 font-bold uppercase tracking-widest">No Image</span>
+                                            </div>
                                         )}
-                                        {p.category && (
-                                            <div className="flex flex-wrap gap-1 mb-2">
-                                                {p.category.split(',').filter(Boolean).slice(0, 2).map((cat: string) => !defaultCategoryIds.includes(cat) ? (
-                                                    <span key={cat} className="bg-gray-50 text-gray-500 text-[9.5px] uppercase font-bold px-1.5 py-0.5 rounded border border-gray-100">{cat}</span>
-                                                ) : null)}
+                                        {/* Action overlay hint */}
+                                        {!cartItem && (
+                                            <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                                                <p className="text-white text-[12px] font-bold">Add</p>
                                             </div>
                                         )}
                                     </div>
-
-                                    <div className="flex items-center justify-between mt-auto">
-                                        <p className="text-gray-900 font-black text-[15px]">RM {p.price.toFixed(2)}</p>
-                                        <div className="w-8 h-8 bg-gray-50 border border-gray-100 text-gray-900 rounded-full flex items-center justify-center group-hover:bg-[#25D366] group-hover:text-white group-hover:border-[#25D366] transition-all">
-                                            <Plus size={16} strokeWidth={3} />
-                                        </div>
-                                    </div>
                                 </div>
-
-                                <div className="w-[110px] h-[110px] shrink-0 bg-gray-50 rounded-[18px] overflow-hidden relative shadow-inner">
-                                    {p.imageUrl ? (
-                                        <Image src={p.imageUrl} alt={p.name} fill className="object-cover" />
-                                    ) : (
-                                        <div className="w-full h-full flex flex-col items-center justify-center text-gray-300">
-                                            <ShoppingCart size={28} strokeWidth={1.5} />
-                                            <span className="text-[9px] mt-2 font-bold uppercase tracking-widest">No Image</span>
-                                        </div>
-                                    )}
-                                    {/* Action overlay hint */}
-                                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                                        <p className="text-white text-[12px] font-bold">Add</p>
-                                    </div>
-                                </div>
-                            </div>
-                        ))}
+                            );
+                        })}
                     {(!store?.products || store.products.length === 0) && (
                         <div className="text-center py-16 px-6">
                             <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center mx-auto mb-4 text-gray-300 shadow-sm border border-gray-100">
@@ -372,7 +416,7 @@ export default function StoreCatalog({ slug, initialStoreData }: { slug?: string
             {cartCount > 0 && (
                 <div className="fixed bottom-8 left-0 right-0 px-4 md:px-0 max-w-md mx-auto animate-in slide-in-from-bottom-8 duration-300 z-[70]">
                     <button
-                        onClick={handleCheckout}
+                        onClick={() => setIsCartModalOpen(true)}
                         className="w-full h-[64px] bg-gray-900/95 backdrop-blur-xl text-white font-bold rounded-[32px] flex items-center justify-between px-2 pr-6 shadow-[0_8px_30px_rgb(0,0,0,0.2)] active:scale-[0.98] transition-all border border-gray-800"
                     >
                         <div className="flex items-center gap-3">
@@ -383,7 +427,7 @@ export default function StoreCatalog({ slug, initialStoreData }: { slug?: string
                                 </div>
                             </div>
                             <div className="flex flex-col items-start translate-y-0.5">
-                                <span className="text-[11px] text-gray-400 font-bold uppercase tracking-widest mb-[-2px]">Cart Total</span>
+                                <span className="text-[11px] text-gray-400 font-bold uppercase tracking-widest mb-[-2px]">View Order</span>
                                 <span className="text-[16px] font-black">RM {cartTotal.toFixed(2)}</span>
                             </div>
                         </div>
@@ -391,6 +435,64 @@ export default function StoreCatalog({ slug, initialStoreData }: { slug?: string
                             Checkout <ChevronRight size={16} strokeWidth={3} />
                         </div>
                     </button>
+                </div>
+            )}
+
+            {/* Cart Review Bottom Sheet */}
+            {isCartModalOpen && cartCount > 0 && (
+                <div className="fixed inset-0 z-[150] bg-black/60 backdrop-blur-sm flex items-end justify-center animate-in fade-in duration-300">
+                    <div className="w-full max-w-md bg-white rounded-t-[32px] p-6 pb-8 animate-in slide-in-from-bottom-10 duration-400 shadow-2xl relative max-h-[85vh] flex flex-col">
+                        <div className="w-12 h-1.5 bg-gray-200 rounded-full mx-auto mb-6 shrink-0"></div>
+
+                        <div className="flex justify-between items-center mb-6 px-2 shrink-0">
+                            <div>
+                                <h3 className="text-[22px] font-black text-gray-900 tracking-tight leading-tight">Your Order</h3>
+                                <p className="text-[13px] text-gray-500 mt-1 font-medium">{cartCount} items from {storeName}</p>
+                            </div>
+                            <button onClick={() => setIsCartModalOpen(false)} className="bg-gray-50 w-10 h-10 flex items-center justify-center rounded-full text-gray-400 hover:text-gray-900 hover:bg-gray-100 transition-colors shrink-0">
+                                <X size={20} strokeWidth={2.5} />
+                            </button>
+                        </div>
+
+                        <div className="overflow-y-auto no-scrollbar flex-1 px-2 space-y-4 mb-4">
+                            {cartItems.map((item) => (
+                                <div key={item.id} className="flex items-center justify-between bg-white border-b border-gray-100 pb-4 last:border-0 last:pb-0">
+                                    <div className="flex flex-col flex-1 pr-4">
+                                        <span className="font-bold text-gray-900 text-[15px]">{item.name}</span>
+                                        <span className="font-black text-[#25D366] text-[14px] mt-0.5">RM {(item.price * item.quantity).toFixed(2)}</span>
+                                    </div>
+                                    <div className="flex items-center gap-3 bg-gray-50 rounded-full p-1.5 border border-gray-100">
+                                        <button
+                                            onClick={() => decreaseQuantity(item.id)}
+                                            className="w-8 h-8 rounded-full bg-white shadow-sm flex items-center justify-center text-gray-600 hover:text-gray-900 active:scale-95 transition-all"
+                                        >
+                                            <Minus size={16} strokeWidth={2.5} />
+                                        </button>
+                                        <span className="font-black text-[14px] w-5 text-center">{item.quantity}</span>
+                                        <button
+                                            onClick={() => addToCart(item)}
+                                            className="w-8 h-8 rounded-full bg-[#25D366] text-white shadow-sm shadow-green-100 flex items-center justify-center active:scale-95 transition-all"
+                                        >
+                                            <Plus size={16} strokeWidth={2.5} />
+                                        </button>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+
+                        <div className="pt-4 border-t border-gray-100 px-2 shrink-0">
+                            <div className="flex items-center justify-between mb-6">
+                                <span className="text-[15px] font-bold text-gray-500">Subtotal</span>
+                                <span className="text-[22px] font-black text-gray-900">RM {cartTotal.toFixed(2)}</span>
+                            </div>
+                            <button
+                                onClick={handleCheckout}
+                                className="w-full h-[60px] bg-gray-900 text-white rounded-[20px] font-bold text-[16px] shadow-[0_8px_20px_rgba(0,0,0,0.15)] active:scale-95 transition-all flex items-center justify-center gap-2 hover:bg-gray-800"
+                            >
+                                Proceed to Checkout <ChevronRight size={18} strokeWidth={3} />
+                            </button>
+                        </div>
+                    </div>
                 </div>
             )}
 
