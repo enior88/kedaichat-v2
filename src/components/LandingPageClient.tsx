@@ -39,8 +39,14 @@ export default function LandingPageClient() {
     const [onboardingChecked, setOnboardingChecked] = React.useState(false);
     const searchParams = useSearchParams();
     const fromPwa = searchParams.get('v') === '2';
+    const [featuredStores, setFeaturedStores] = React.useState<any[]>([]);
 
     React.useEffect(() => {
+        fetch('/api/public/stores/featured')
+            .then(res => res.json())
+            .then(data => setFeaturedStores(data))
+            .catch(() => { });
+
         // PWA Detection
         const isStandalone = window.matchMedia('(display-mode: standalone)').matches;
         const fromPwa = searchParams.get('v') === '2';
@@ -238,6 +244,50 @@ export default function LandingPageClient() {
             </nav>
 
             <main className="relative">
+                {/* Discover Shops Section (Marketplace Hub) */}
+                <section id="discover" className="pt-24 md:pt-32 pb-12 bg-white">
+                    <div className="max-w-7xl mx-auto px-4 md:px-6">
+                        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
+                            <div>
+                                <h2 className="text-3xl md:text-4xl font-black text-gray-900 mb-2">{t('discover_shops')}</h2>
+                                <p className="text-gray-500 font-medium">{t('discover_shops_subtitle')}</p>
+                            </div>
+                            <Link href="/onboarding" className="text-[#25D366] font-black flex items-center gap-2 group">
+                                {t('start_free')}
+                                <ChevronRight size={20} className="group-hover:translate-x-1 transition-transform" />
+                            </Link>
+                        </div>
+
+                        {featuredStores.length > 0 ? (
+                            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+                                {featuredStores.map((store) => (
+                                    <Link
+                                        key={store.slug}
+                                        href={`/shop/${store.slug}`}
+                                        className="group bg-gray-50 rounded-2xl p-4 border border-gray-100 hover:border-[#25D366] hover:shadow-xl hover:shadow-green-100 transition-all text-center"
+                                    >
+                                        <div className="w-16 h-16 mx-auto rounded-xl bg-white shadow-sm overflow-hidden mb-3 p-1">
+                                            {store.logoUrl ? (
+                                                <Image src={store.logoUrl} alt={store.name} width={64} height={64} className="w-full h-full object-contain" />
+                                            ) : (
+                                                <div className="w-full h-full bg-green-50 flex items-center justify-center text-[#25D366]">
+                                                    <Store size={24} />
+                                                </div>
+                                            )}
+                                        </div>
+                                        <h4 className="font-black text-sm text-gray-900 group-hover:text-[#25D366] line-clamp-1 transition-colors">{store.name}</h4>
+                                        <p className="text-[10px] font-bold text-gray-400 capitalize">{store.category || 'Shop'}</p>
+                                    </Link>
+                                ))}
+                            </div>
+                        ) : (
+                            <div className="bg-gray-50 rounded-3xl p-12 text-center border-2 border-dashed border-gray-200">
+                                <p className="text-gray-400 font-bold">{t('loading')}</p>
+                            </div>
+                        )}
+                    </div>
+                </section>
+
                 <div className="relative md:h-[200vh] h-auto z-[50] md:snap-start">
                     <section className="md:sticky md:top-0 md:h-screen relative h-auto bg-white flex flex-col items-center justify-start px-4 md:px-6 pt-24 md:pt-32 pb-4 overflow-hidden">
                         <div className="max-w-7xl mx-auto text-center w-full">

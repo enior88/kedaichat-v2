@@ -101,6 +101,10 @@ const translations: Record<Language, Record<string, string>> = {
         pricing_value_badge: 'Save ~10 hrs/week',
         pricing_roi_badge: 'Most sellers break even in the first week',
         pricing_guarantee: '30-day free trial • No credit card required • Cancel anytime',
+        discover_shops: 'Discover Shops',
+        discover_shops_subtitle: 'Bona fide local businesses on KedaiChat',
+        visit_shop: 'Visit Shop',
+        new_shop: 'New',
 
         // Testimonials
         testimonials_title: 'Testimonials',
@@ -308,6 +312,10 @@ const translations: Record<Language, Record<string, string>> = {
         pricing_biz_title: 'Perniagaan',
         pricing_per_month: '/ Bulan',
         popular: 'Paling Popular',
+        discover_shops: 'Teroka Kedai',
+        discover_shops_subtitle: 'Perniagaan tempatan di KedaiChat',
+        visit_shop: 'Lihat Kedai',
+        new_shop: 'Baharu',
 
         // Dashboard
         revenue: 'Hasil Hari Ini',

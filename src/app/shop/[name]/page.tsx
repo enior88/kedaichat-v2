@@ -8,16 +8,31 @@ type Props = {
 };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-    const name = params.name;
-    const displayName = name.charAt(0).toUpperCase() + name.slice(1);
+    const store = await prisma.store.findUnique({
+        where: { slug: params.name },
+        select: { name: true, category: true, logoUrl: true }
+    });
+
+    if (!store) return { title: 'Shop Not Found' };
+
+    const title = `${store.name} | KedaiChat WhatsApp Shop`;
+    const description = `Order from ${store.name}${store.category ? ` (${store.category})` : ''} on WhatsApp. Browse products and place your order instantly on KedaiChat.`;
 
     return {
-        title: `${displayName} | KedaiChat Shop`,
-        description: `Browse products and order directly from ${displayName} on WhatsApp. Fast and easy ordering via KedaiChat.`,
+        title,
+        description,
         openGraph: {
-            title: `${displayName} - WhatsApp Shop`,
-            description: `Order from ${displayName} via WhatsApp using KedaiChat.`,
+            title,
+            description,
+            images: store.logoUrl ? [store.logoUrl] : ['/logo.png'],
+            type: 'website',
         },
+        twitter: {
+            card: 'summary_large_image',
+            title,
+            description,
+            images: store.logoUrl ? [store.logoUrl] : ['/logo.png'],
+        }
     };
 }
 
