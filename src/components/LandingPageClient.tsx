@@ -118,7 +118,8 @@ export default function LandingPageClient() {
 
         if (containerElem) {
             let targetScroll = 0;
-            if (id === 'how-it-works') targetScroll = window.innerHeight * 2;
+            if (id === 'discover') targetScroll = window.innerHeight * 1;
+            else if (id === 'how-it-works') targetScroll = window.innerHeight * 2;
             else if (id === 'problem') targetScroll = window.innerHeight * 3;
             else if (id === 'features') targetScroll = window.innerHeight * 4;
             else if (id === 'testimonials') targetScroll = window.innerHeight * 5;
@@ -245,15 +246,53 @@ export default function LandingPageClient() {
 
             <main className="relative">
 
-                <div className="relative md:h-[200vh] h-auto z-[50] md:snap-start">
-...
+                {/* 1. Hero Section */}
+                <div className="relative md:h-screen h-auto z-[50] md:snap-start">
+                    <section className="md:sticky md:top-0 md:h-screen relative h-auto bg-white flex flex-col items-center justify-center px-4 md:px-6 pt-24 md:pt-0 overflow-hidden">
+                        <div className="max-w-7xl mx-auto text-center w-full">
+                            <div className="inline-flex items-center gap-2 bg-green-50 text-[#25D366] px-3 py-1.5 rounded-full mb-3 md:mb-6">
+                                <Zap size={14} fill="currentColor" />
+                                <span className="text-[10px] md:text-xs font-black uppercase tracking-widest">{t('built_for_smes')}</span>
+                            </div>
+                            <h1 className="text-2xl md:text-6xl font-black text-gray-900 mb-2 md:mb-4 leading-[1.1] tracking-tight">
+                                {t('hero_title')} <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#25D366] to-[#128C7E]">{t('hero_shop_highlight')}</span>
+                            </h1>
+                            <p className="text-xs md:text-lg text-gray-500 mb-4 md:mb-8 max-w-2xl mx-auto font-medium">
+                                {t('hero_desc')}
+                            </p>
+                            <div className="flex flex-col sm:flex-row items-center justify-center gap-2 md:gap-4">
+                                <Link href="/onboarding" className="w-full sm:w-auto bg-gradient-to-r from-[#25D366] to-[#128C7E] text-white px-6 md:px-10 h-12 md:h-16 flex items-center justify-center rounded-2xl text-sm md:text-lg font-black hover:opacity-90 transition-all shadow-2xl shadow-green-200 active:scale-95 gap-2">
+                                    {t('start_free')}
+                                    <ArrowRight size={18} />
+                                </Link>
+                                <a href="#discover" onClick={(e) => scrollToSection(e, 'discover')} className="w-full sm:w-auto bg-white border-2 border-gray-100 text-gray-900 px-6 md:px-10 h-12 md:h-16 flex items-center justify-center rounded-2xl text-sm md:text-lg font-black hover:bg-gray-50 transition-all active:scale-95 gap-2">
+                                    <ShoppingBag size={18} />
+                                    {t('discover_shops')}
+                                </a>
+                            </div>
+                            <div className="mt-4 md:mt-8 relative max-w-2xl mx-auto px-4">
+                                <div className="relative rounded-[20px] md:rounded-[40px] overflow-visible group">
+                                    <div className="absolute inset-0 bg-green-100/50 blur-3xl -z-10 rounded-[100px] scale-90" />
+                                    <div className="relative w-full aspect-[4/3] max-h-[35vh] md:max-h-[40vh]">
+                                        <Image
+                                            src="/hero_illustration.png"
+                                            alt="KedaiChat Interface"
+                                            fill
+                                            className="mx-auto drop-shadow-2xl rounded-[16px] md:rounded-[32px] object-contain"
+                                            priority
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
                 </div>
 
-                {/* Discover Shops Section (Marketplace Hub) - Relocated for better visibility */}
-                <div id="wrapper-discover" className="relative md:h-[100vh] h-auto z-[45] md:snap-start">
-                    <section id="discover" className="md:sticky md:top-0 md:h-screen relative h-auto bg-white flex flex-col justify-center px-6 py-24 md:py-24 overflow-hidden md:shadow-[0_-20px_40px_rgba(0,0,0,0.05)] border-t border-gray-100 md:border-none">
+                {/* 2. Discover Shops Section (Marketplace Hub) */}
+                <div id="wrapper-discover" className="relative md:h-screen h-auto z-[45] md:snap-start">
+                    <section id="discover" className="md:sticky md:top-0 md:h-screen relative h-auto bg-white flex flex-col justify-center px-6 py-24 md:py-0 overflow-hidden border-t border-gray-100 md:border-none">
                         <div className="max-w-7xl mx-auto w-full">
-                            <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8 md:mb-12">
+                            <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
                                 <div>
                                     <h2 className="text-3xl md:text-5xl font-black text-gray-900 mb-2">{t('discover_shops')}</h2>
                                     <p className="text-gray-500 font-medium text-lg">{t('discover_shops_subtitle')}</p>
@@ -272,7 +311,7 @@ export default function LandingPageClient() {
                                             href={`/shop/${store.slug}`}
                                             className="group bg-gray-50 rounded-[32px] p-6 border border-gray-100 hover:border-[#25D366] hover:shadow-2xl hover:shadow-green-100 transition-all text-center"
                                         >
-                                            <div className="w-20 h-20 mx-auto rounded-2xl bg-white shadow-sm overflow-hidden mb-4 p-1">
+                                            <div className="w-16 h-16 md:w-20 md:h-20 mx-auto rounded-2xl bg-white shadow-sm overflow-hidden mb-4 p-1">
                                                 {store.logoUrl ? (
                                                     <Image src={store.logoUrl} alt={store.name} width={80} height={80} className="w-full h-full object-contain" />
                                                 ) : (
@@ -281,8 +320,8 @@ export default function LandingPageClient() {
                                                     </div>
                                                 )}
                                             </div>
-                                            <h4 className="font-black text-base text-gray-900 group-hover:text-[#25D366] line-clamp-1 transition-colors">{store.name}</h4>
-                                            <p className="text-xs font-bold text-gray-400 capitalize">{store.category || 'Shop'}</p>
+                                            <h4 className="font-black text-sm md:text-base text-gray-900 group-hover:text-[#25D366] line-clamp-1 transition-colors">{store.name}</h4>
+                                            <p className="text-[10px] md:text-xs font-bold text-gray-400 capitalize">{store.category || 'Shop'}</p>
                                         </Link>
                                     ))}
                                 </div>
@@ -294,45 +333,6 @@ export default function LandingPageClient() {
                                     <p className="text-gray-400 font-bold">{t('loading')}</p>
                                 </div>
                             )}
-                        </div>
-                    </section>
-                </div>
-                    <section className="md:sticky md:top-0 md:h-screen relative h-auto bg-white flex flex-col items-center justify-start px-4 md:px-6 pt-24 md:pt-32 pb-4 overflow-hidden">
-                        <div className="max-w-7xl mx-auto text-center w-full">
-                            <div className="inline-flex items-center gap-2 bg-green-50 text-[#25D366] px-3 py-1.5 rounded-full mb-3 md:mb-6 animate-in fade-in slide-in-from-bottom-4 duration-700">
-                                <Zap size={14} fill="currentColor" />
-                                <span className="text-[10px] md:text-xs font-black uppercase tracking-widest">{t('built_for_smes')}</span>
-                            </div>
-                            <h1 className="text-2xl md:text-6xl font-black text-gray-900 mb-2 md:mb-4 leading-[1.1] tracking-tight animate-in fade-in slide-in-from-bottom-6 duration-700 delay-100 px-2">
-                                {t('hero_title')} <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#25D366] to-[#128C7E]">{t('hero_shop_highlight')}</span>
-                            </h1>
-                            <p className="text-xs md:text-lg text-gray-500 mb-4 md:mb-8 max-w-2xl mx-auto font-medium animate-in fade-in slide-in-from-bottom-8 duration-700 delay-200 px-4">
-                                {t('hero_desc')}
-                            </p>
-                            <div className="flex flex-col sm:flex-row items-center justify-center gap-2 md:gap-4 animate-in fade-in slide-in-from-bottom-10 duration-700 delay-300 px-4">
-                                <Link href="/onboarding" className="w-full sm:w-auto bg-gradient-to-r from-[#25D366] to-[#128C7E] text-white px-6 md:px-10 h-12 md:h-16 flex items-center justify-center rounded-2xl text-sm md:text-lg font-black hover:opacity-90 transition-all shadow-2xl shadow-green-200 active:scale-95 gap-2">
-                                    {t('start_free')}
-                                    <ArrowRight size={18} />
-                                </Link>
-                                <a href="#how-it-works" onClick={(e) => scrollToSection(e, 'how-it-works')} className="w-full sm:w-auto bg-white border-2 border-gray-100 text-gray-900 px-6 md:px-10 h-12 md:h-16 flex items-center justify-center rounded-2xl text-sm md:text-lg font-black hover:bg-gray-50 transition-all active:scale-95 gap-2">
-                                    <Play size={18} fill="currentColor" />
-                                    {t('how_it_works')}
-                                </a>
-                            </div>
-                            <div className="mt-4 md:mt-8 relative animate-in fade-in zoom-in duration-1000 delay-500 max-w-2xl mx-auto px-4">
-                                <div className="relative rounded-[20px] md:rounded-[40px] overflow-visible group">
-                                    <div className="absolute inset-0 bg-green-100/50 blur-3xl -z-10 rounded-[100px] scale-90" />
-                                    <div className="relative w-full aspect-[4/3] max-h-[40vh] md:max-h-[45vh]">
-                                        <Image
-                                            src="/hero_illustration.png"
-                                            alt="KedaiChat Interface"
-                                            fill
-                                            className="mx-auto drop-shadow-2xl rounded-[16px] md:rounded-[32px] object-contain transition-transform duration-700 group-hover:scale-[1.02]"
-                                            priority
-                                        />
-                                    </div>
-                                </div>
-                            </div>
                         </div>
                     </section>
                 </div>
@@ -421,7 +421,7 @@ export default function LandingPageClient() {
                     </section>
                 </div>
 
-                {/* ─── Testimonials ─── */ }
+                {/* ─── Testimonials ─── */}
                 <div id="wrapper-testimonials" className="relative md:h-[200vh] md:-mt-[100vh] h-auto z-[15] md:snap-start">
                     <section id="testimonials" className="md:sticky md:top-0 md:h-screen relative h-auto bg-white flex flex-col justify-center px-6 py-24 md:py-24 overflow-hidden md:shadow-[0_-20px_40px_rgba(0,0,0,0.08)] border-t border-gray-100 md:border-none">
                         <div className="max-w-7xl mx-auto w-full text-center">
