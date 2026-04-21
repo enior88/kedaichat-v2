@@ -394,6 +394,35 @@ export default function Dashboard() {
                     )}
                 </div>
 
+                {/* AI Marketing Toolkit */}
+                <section className="bg-white rounded-[32px] p-6 shadow-sm border border-gray-50 overflow-hidden relative group">
+                    <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:scale-110 transition-transform">
+                        <Rocket size={80} />
+                    </div>
+                    <div className="relative z-10">
+                        <div className="flex items-center gap-2 mb-2">
+                            <span className="bg-green-100 text-[#25D366] text-[10px] font-black px-2 py-1 rounded-full uppercase tracking-widest">Powered by AI</span>
+                        </div>
+                        <h3 className="text-xl font-black text-gray-900 mb-1">AI Marketing Toolkit</h3>
+                        <p className="text-[10px] text-gray-400 font-bold uppercase mb-6 leading-tight">Grow your business 24/7 with zero effort.</p>
+
+                        <div className="grid grid-cols-1 gap-3">
+                            <button
+                                onClick={() => router.push('/dashboard/marketing')}
+                                className="w-full bg-gray-900 text-white p-4 rounded-2xl flex items-center justify-between group/btn hover:bg-gray-800 transition-all active:scale-95"
+                            >
+                                <div className="flex items-center gap-3">
+                                    <div className="w-8 h-8 bg-white/10 rounded-xl flex items-center justify-center">
+                                        <TrendingUp size={16} />
+                                    </div>
+                                    <span className="text-sm font-black">Generate Viral Captions</span>
+                                </div>
+                                <ChevronRight size={16} className="text-gray-500 group-hover/btn:translate-x-1 transition-transform" />
+                            </button>
+                        </div>
+                    </div>
+                </section>
+
                 {/* Recent Orders List */}
                 <section>
                     <div className="flex justify-between items-center mb-4 px-1">

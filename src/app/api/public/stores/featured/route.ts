@@ -8,9 +8,10 @@ export async function GET() {
         const stores = await prisma.store.findMany({
             where: { archived: false },
             take: 6,
-            orderBy: {
-                createdAt: 'desc'
-            },
+            orderBy: [
+                { isFeatured: 'desc' },
+                { createdAt: 'desc' }
+            ],
             select: {
                 name: true,
                 slug: true,
