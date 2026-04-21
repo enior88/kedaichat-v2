@@ -47,8 +47,8 @@ export async function generateMarketingContent(storeName: string, products: stri
             console.error("Failed to parse Gemini JSON:", text);
             throw new Error("Invalid AI response format");
         }
-    } catch (error) {
+    } catch (error: any) {
         console.error("Gemini Generation Error:", error);
-        throw new Error("Failed to generate marketing content");
+        throw new Error(`Gemini SDK Error: ${error.message || 'Unknown error'}`);
     }
 }
