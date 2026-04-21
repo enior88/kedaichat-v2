@@ -31,15 +31,15 @@ export async function generateMarketingContent(storeName: string, products: stri
     `;
 
     try {
-        // Try Flash 1.5 first (Fast & Cheap)
-        const primaryModel = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+        // Try Flash 1.5 first (Fast & Cheap) - FORCING v1
+        const primaryModel = genAI.getGenerativeModel({ model: "gemini-1.5-flash" }, { apiVersion: "v1" });
         const result = await primaryModel.generateContent(prompt);
         return await processResponse(result);
     } catch (error) {
         console.warn("Primary model failed, falling back to gemini-pro:", error);
         try {
-            // Fallback to Pro 1.0
-            const fallbackModel = genAI.getGenerativeModel({ model: "gemini-pro" });
+            // Fallback to Pro 1.0 - FORCING v1
+            const fallbackModel = genAI.getGenerativeModel({ model: "gemini-pro" }, { apiVersion: "v1" });
             const result = await fallbackModel.generateContent(prompt);
             return await processResponse(result);
         } catch (fallbackError: any) {
