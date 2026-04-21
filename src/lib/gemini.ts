@@ -1,8 +1,12 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || "");
-// Standard stable model name
-const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+const apiKey = process.env.GEMINI_API_KEY || "";
+if (!apiKey) {
+    console.warn("⚠️ GEMINI_API_KEY is missing from environment variables!");
+}
+const genAI = new GoogleGenerativeAI(apiKey);
+// Using -latest suffix which can help with endpoint mapping
+const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash-latest" });
 
 export interface MarketingContent {
     headline: string;
@@ -37,10 +41,10 @@ export async function generateMarketingContent(storeName: string, products: stri
         const result = await primaryModel.generateContent(prompt);
         return await processResponse(result);
     } catch (error) {
-        console.warn("Primary model failed, falling back to gemini-pro:", error);
+        console.warn("Primary model failed, falling back to gemini-1.5-pro-latest:", error);
         try {
-            // Fallback to Pro 1.0 (Most Stable)
-            const fallbackModel = genAI.getGenerativeModel({ model: "gemini-pro" });
+            // Fallback to Pro 1.5 (More Powerful)
+            const fallbackModel = genAI.getGenerativeModel({ model: "gemini-1.5-pro-latest" });
             const result = await fallbackModel.generateContent(prompt);
             return await processResponse(result);
         } catch (fallbackError: any) {
