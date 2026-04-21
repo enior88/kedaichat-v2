@@ -34,11 +34,19 @@ export async function generateMarketingContent(storeName: string, products: stri
     try {
         const result = await model.generateContent(prompt);
         const response = await result.response;
-        const text = response.text();
+        let text = response.text();
 
-        // Clean the response in case it contains markdown code blocks
-        const jsonString = text.replace(/```json|```/g, "").trim();
-        return JSON.parse(jsonString);
+        // Clean up potential markdown code blocks if Gemini includes them
+        if (text.includes('```')) {
+            text = text.replace(/```json/g, '').replace(/```/g, '').trim();
+        }
+
+        try {
+            return JSON.parse(text);
+        } catch (e) {
+            console.error("Failed to parse Gemini JSON:", text);
+            throw new Error("Invalid AI response format");
+        }
     } catch (error) {
         console.error("Gemini Generation Error:", error);
         throw new Error("Failed to generate marketing content");
