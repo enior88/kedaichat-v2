@@ -5,8 +5,8 @@ if (!apiKey) {
     console.warn("⚠️ GEMINI_API_KEY is missing from environment variables!");
 }
 const genAI = new GoogleGenerativeAI(apiKey);
-// Using -latest suffix which can help with endpoint mapping
-const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash-latest" });
+// Force v1 API to avoid experimental v1beta 404 issues
+const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" }, { apiVersion: "v1" });
 
 export interface MarketingContent {
     headline: string;
@@ -41,10 +41,10 @@ export async function generateMarketingContent(storeName: string, products: stri
         const result = await primaryModel.generateContent(prompt);
         return await processResponse(result);
     } catch (error) {
-        console.warn("Primary model failed, falling back to gemini-1.5-pro-latest:", error);
+        console.warn("Primary model failed, falling back to gemini-pro:", error);
         try {
-            // Fallback to Pro 1.5 (More Powerful)
-            const fallbackModel = genAI.getGenerativeModel({ model: "gemini-1.5-pro-latest" });
+            // Fallback to Pro 1.0 Stable on v1 API
+            const fallbackModel = genAI.getGenerativeModel({ model: "gemini-pro" }, { apiVersion: "v1" });
             const result = await fallbackModel.generateContent(prompt);
             return await processResponse(result);
         } catch (fallbackError: any) {
