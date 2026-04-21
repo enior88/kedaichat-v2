@@ -2,10 +2,13 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 
 const apiKey = process.env.GEMINI_API_KEY || "";
 if (!apiKey) {
-    console.warn("⚠️ GEMINI_API_KEY is missing from environment variables!");
+    console.error("❌ CRITICAL: GEMINI_API_KEY is missing from Vercel Environment Variables.");
+} else {
+    console.log(`✅ GEMINI_API_KEY detected. Length: ${apiKey.length}. Starts with: ${apiKey.substring(0, 7)}...`);
 }
+
 const genAI = new GoogleGenerativeAI(apiKey);
-// Force v1 API to avoid experimental v1beta 404 issues
+// gemini-1.5-flash is the standard for Flash 1.5
 const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" }, { apiVersion: "v1" });
 
 export interface MarketingContent {
