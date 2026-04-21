@@ -46,8 +46,8 @@ export async function generateMarketingContent(storeName: string, products: stri
     } catch (error) {
         console.warn("Primary model failed, falling back to gemini-pro:", error);
         try {
-            // Fallback to Pro 1.0 Stable on v1 API
-            const fallbackModel = genAI.getGenerativeModel({ model: "gemini-pro" }, { apiVersion: "v1" });
+            // Fallback to Pro 1.0
+            const fallbackModel = client.getGenerativeModel({ model: "gemini-pro" });
             const result = await fallbackModel.generateContent(prompt);
             return await processResponse(result);
         } catch (fallbackError: any) {
