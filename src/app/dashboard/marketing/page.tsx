@@ -73,7 +73,7 @@ export default function MarketingPage() {
                     </button>
                     <div>
                         <h1 className="text-xl font-black tracking-tight">Marketing Toolkit</h1>
-                        <p className="text-[10px] font-bold text-gray-400 border-t-0 p-0 m-0 uppercase tracking-widest">AI Growth Agent</p/>
+                        <p className="text-[10px] font-bold text-gray-400 border-t-0 p-0 m-0 uppercase tracking-widest">AI Growth Agent</p>
                     </div>
                 </div>
             </div>
@@ -109,7 +109,7 @@ export default function MarketingPage() {
                             <div>
                                 <label className="text-[10px] font-black text-gray-400 uppercase block mb-2">Caption (WhatsApp/Social)</label>
                                 <div className="bg-gray-50 rounded-2xl p-4 relative group">
-                                    <p className="text-sm font-medium text-gray-700 whitespace-pre-wrap">{latestPost.caption}\n\n{latestPost.hashtags.join(' ')}</p>
+                                    <p className="text-sm font-medium text-gray-700 whitespace-pre-wrap">{latestPost.caption}{'\n\n'}{latestPost.hashtags.join(' ')}</p>
                                     <button
                                         onClick={() => copyToClipboard(latestPost.caption + '\n\n' + latestPost.hashtags.join(' '), 'latest')}
                                         className="absolute top-2 right-2 p-2 bg-white rounded-lg shadow-sm text-gray-400 hover:text-gray-900 transition-colors"
