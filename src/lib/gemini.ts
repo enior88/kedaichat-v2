@@ -14,42 +14,55 @@ export interface MarketingContent {
 
 export async function generateMarketingContent(storeName: string, products: string[], category: string): Promise<MarketingContent> {
     const prompt = `
-        You are an expert AI Marketing Agent for KedaiChat.online, a WhatsApp-first commerce platform in Malaysia.
-        Target Audience: Malaysian shoppers and small business owners.
-        Language: Dynamic "BM-English" mix (Manglish/Santai) - natural, friendly, and catchy.
+        You are a highly creative AI Marketing Agent for an e-commerce platform called KedaiChat.online.
+        Your goal is to write viral marketing content for a shop.
         
-        Store: ${storeName}
+        Shop Name: ${storeName}
         Category: ${category}
         Top Products: ${products.join(", ")}
-        
-        Generate the following marketing content in JSON format:
-        1. headline: A catchy 1-liner to feature the shop.
-        2. caption: A persuasive social media caption (FB/IG style) highlighting why people should buy. Include relevant emojis.
-        3. hashtags: 5 trending Malaysian hashtags (e.g., #KedaiChat, #SapotLokal).
-        4. seoTitle: A perfect SEO title (max 60 chars).
-        5. seoDescription: A perfect SEO meta-description (max 160 chars).
-        
-        Respond ONLY with valid JSON.
+
+        Provide the following in JSON format:
+        {
+          "headline": "A catchy, bold headline (max 50 chars)",
+          "caption": "A high-converting, emotional social media caption in 'Manglish' (Malaysian English) style, suitable for WhatsApp Status or Instagram. Use emojis.",
+          "hashtags": ["list", "of", "relevant", "hashtags"],
+          "seoTitle": "SEO-optimized title tag",
+          "seoDescription": "SEO-optimized meta description"
+        }
     `;
 
     try {
-        const result = await model.generateContent(prompt);
-        const response = await result.response;
-        let text = response.text();
-
-        // Clean up potential markdown code blocks if Gemini includes them
-        if (text.includes('```')) {
-            text = text.replace(/```json/g, '').replace(/```/g, '').trim();
-        }
-
+        // Try Flash 1.5 first (Fast & Cheap)
+        const primaryModel = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+        const result = await primaryModel.generateContent(prompt);
+        return await processResponse(result);
+    } catch (error) {
+        console.warn("Primary model failed, falling back to gemini-pro:", error);
         try {
-            return JSON.parse(text);
-        } catch (e) {
-            console.error("Failed to parse Gemini JSON:", text);
-            throw new Error("Invalid AI response format");
+            // Fallback to Pro 1.0 (Most Stable)
+            const fallbackModel = genAI.getGenerativeModel({ model: "gemini-pro" });
+            const result = await fallbackModel.generateContent(prompt);
+            return await processResponse(result);
+        } catch (fallbackError: any) {
+            console.error("Gemini Generation Error:", fallbackError);
+            throw new Error(`Gemini SDK Error: ${fallbackError.message || 'Unknown error'}`);
         }
-    } catch (error: any) {
-        console.error("Gemini Generation Error:", error);
-        throw new Error(`Gemini SDK Error: ${error.message || 'Unknown error'}`);
+    }
+}
+
+async function processResponse(result: any): Promise<MarketingContent> {
+    const response = await result.response;
+    let text = response.text();
+
+    // Clean up potential markdown code blocks
+    if (text.includes('```')) {
+        text = text.replace(/```json/g, '').replace(/```/g, '').trim();
+    }
+
+    try {
+        return JSON.parse(text);
+    } catch (e) {
+        console.error("Failed to parse Gemini JSON:", text);
+        throw new Error("Invalid AI response format");
     }
 }
