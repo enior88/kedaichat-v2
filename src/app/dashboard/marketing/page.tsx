@@ -28,13 +28,16 @@ export default function MarketingPage() {
         try {
             const res = await fetch('/api/marketing/generate', { method: 'POST' });
             const data = await res.json();
-            if (data.error) throw new Error(data.error);
+            if (!res.ok) {
+                const errorMessage = data.error || data.details || 'Unknown server error';
+                throw new Error(errorMessage);
+            }
             setLatestPost(data);
             // Refresh history
             fetchHistory();
-        } catch (error) {
+        } catch (error: any) {
             console.error('Generation failed:', error);
-            alert('Failed to generate content. Please try again.');
+            alert(`Marketing Agent Error: ${error.message}`);
         } finally {
             setLoading(false);
         }
