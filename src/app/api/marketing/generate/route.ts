@@ -42,9 +42,13 @@ export async function POST(req: NextRequest) {
             }
         });
 
+        const storeUrl = `${process.env.NEXT_PUBLIC_APP_URL || 'https://kedaichat.online'}/shop/${store.name.toLowerCase().replace(/\s+/g, '-')}`;
+        const utmParams = `?utm_source=kedaichat&utm_medium=ai_agent&utm_campaign=growth_marketing`;
+
         return NextResponse.json({
             ...aiContent,
-            postId: post.id
+            postId: post.id,
+            shareUrl: `${storeUrl}${utmParams}`
         });
 
     } catch (error: any) {
