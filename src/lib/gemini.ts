@@ -30,30 +30,34 @@ export async function generateMarketingContent(storeName: string, products: stri
         }
     `;
 
-    // Try these models in order until one works
-    const modelsToTry = [
-        { name: "gemini-1.5-flash", version: "v1" },
-        { name: "gemini-1.5-flash", version: "v1beta" },
-        { name: "gemini-2.0-flash-exp", version: "v1beta" },
-        { name: "gemini-pro", version: "v1" }
-    ];
+    // RAW DEBUG PROBE
+    try {
+        const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
+        const resp = await fetch(url, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ contents: [{ parts: [{ text: "Hi" }] }] })
+        });
 
-    let lastError: any = null;
-
-    for (const modelInfo of modelsToTry) {
-        try {
-            console.log(`Trying model: ${modelInfo.name} (${modelInfo.version})...`);
-            const model = client.getGenerativeModel({ model: modelInfo.name }, { apiVersion: modelInfo.version });
-            const result = await model.generateContent(prompt);
-            return await processResponse(result);
-        } catch (error: any) {
-            console.warn(`Model ${modelInfo.name} failed:`, error.message);
-            lastError = error;
-            continue; // Try next model
+        const data = await resp.json();
+        if (!resp.ok) {
+            console.error("RAW DEBUG ERROR:", data);
+            throw new Error(`Google Raw Error: ${JSON.stringify(data)}`);
         }
-    }
 
-    throw new Error(`All Gemini models failed. Last error: ${lastError?.message || 'Unknown error'}`);
+        // If it actually works, we can try to parse the prompt
+        // but for now let's just use it to debug the 404
+        const client = new GoogleGenerativeAI(apiKey);
+        const model = client.getGenerativeModel({ model: "gemini-1.5-flash" });
+        const result = await model.generateContent(prompt);
+        return await processResponse(result);
+
+    } catch (e: any) {
+        throw new Error(`AI Agent Diagnostic: ${e.message}`);
+    }
+}
+
+throw new Error(`All Gemini models failed. Last error: ${lastError?.message || 'Unknown error'}`);
 }
 
 async function processResponse(result: any): Promise<MarketingContent> {
