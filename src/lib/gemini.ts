@@ -56,7 +56,6 @@ export async function generateMarketingContent(storeName: string, products: stri
         throw new Error(`AI Agent Diagnostic: ${e.message}`);
     }
 }
-}
 
 async function processResponse(result: any): Promise<MarketingContent> {
     const response = await result.response;
