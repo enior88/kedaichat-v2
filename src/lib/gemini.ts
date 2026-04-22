@@ -3,6 +3,14 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 const apiKey = process.env.GEMINI_API_KEY || "";
 const genAI = new GoogleGenerativeAI(apiKey);
 
+export interface MarketingContent {
+    headline: string;
+    caption: string;
+    hashtags: string[];
+    seoTitle: string;
+    seoDescription: string;
+}
+
 export async function generateMarketingContent(storeName: string, products: string[], category: string): Promise<MarketingContent> {
     const apiKey = process.env.GEMINI_API_KEY || "";
     const client = new GoogleGenerativeAI(apiKey);
