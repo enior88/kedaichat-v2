@@ -56,8 +56,6 @@ export async function generateMarketingContent(storeName: string, products: stri
         throw new Error(`AI Agent Diagnostic: ${e.message}`);
     }
 }
-
-throw new Error(`All Gemini models failed. Last error: ${lastError?.message || 'Unknown error'}`);
 }
 
 async function processResponse(result: any): Promise<MarketingContent> {
