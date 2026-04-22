@@ -30,28 +30,18 @@ export async function generateMarketingContent(storeName: string, products: stri
         }
     `;
 
-    // RAW DEBUG PROBE
+    // LIST MODELS PROBE
     try {
-        const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
-        const resp = await fetch(url, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ contents: [{ parts: [{ text: "Hi" }] }] })
-        });
-
+        const url = `https://generativelanguage.googleapis.com/v1beta/models?key=${apiKey}`;
+        const resp = await fetch(url);
         const data = await resp.json();
-        if (!resp.ok) {
-            console.error("RAW DEBUG ERROR:", data);
-            throw new Error(`Google Raw Error: ${JSON.stringify(data)}`);
+
+        if (data.models && Array.isArray(data.models)) {
+            const names = data.models.map((m: any) => m.name.replace('models/', ''));
+            throw new Error(`Available Models: ${names.join(", ")}`);
+        } else {
+            throw new Error(`Google API Response: ${JSON.stringify(data)}`);
         }
-
-        // If it actually works, we can try to parse the prompt
-        // but for now let's just use it to debug the 404
-        const client = new GoogleGenerativeAI(apiKey);
-        const model = client.getGenerativeModel({ model: "gemini-1.5-flash" });
-        const result = await model.generateContent(prompt);
-        return await processResponse(result);
-
     } catch (e: any) {
         throw new Error(`AI Agent Diagnostic: ${e.message}`);
     }
