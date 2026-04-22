@@ -30,23 +30,30 @@ export async function generateMarketingContent(storeName: string, products: stri
         }
     `;
 
-    try {
-        // Use Gemini 3 Flash Preview (Identified via Diagnostic)
-        const model = client.getGenerativeModel({ model: "gemini-3-flash-preview" }, { apiVersion: "v1beta" });
-        const result = await model.generateContent(prompt);
-        return await processResponse(result);
-    } catch (error) {
-        console.warn("Gemini 3 Flash failed, falling back to Pro:", error);
+    // Future-proof prioritized model list
+    const modelsToTry = [
+        { name: "gemini-flash-latest", version: "v1" },      // Evergreen Flash
+        { name: "gemini-3-flash-preview", version: "v1beta" }, // Custom 3 Preview
+        { name: "gemini-2.5-flash", version: "v1" },        // Modern Standard
+        { name: "gemini-2.0-flash", version: "v1" },        // Modern Standard
+        { name: "gemini-pro-latest", version: "v1" }         // Evergreen Pro fallback
+    ];
+
+    let lastError: any = null;
+
+    for (const modelInfo of modelsToTry) {
         try {
-            // Fallback to Gemini 3 Pro Preview
-            const fallbackModel = client.getGenerativeModel({ model: "gemini-3-pro-preview" }, { apiVersion: "v1beta" });
-            const result = await fallbackModel.generateContent(prompt);
+            const model = client.getGenerativeModel({ model: modelInfo.name }, { apiVersion: modelInfo.version });
+            const result = await model.generateContent(prompt);
             return await processResponse(result);
-        } catch (fallbackError: any) {
-            console.error("Gemini 3 Generation Error:", fallbackError);
-            throw new Error(`Gemini 3 Error: ${fallbackError.message || 'Unknown error'}`);
+        } catch (error: any) {
+            console.warn(`Model ${modelInfo.name} unavailable, trying next...`);
+            lastError = error;
+            continue;
         }
     }
+
+    throw new Error(`AI Engine exhaustion: ${lastError?.message || 'Unknown error'}`);
 }
 
 async function processResponse(result: any): Promise<MarketingContent> {
