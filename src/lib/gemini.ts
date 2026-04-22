@@ -30,20 +30,22 @@ export async function generateMarketingContent(storeName: string, products: stri
         }
     `;
 
-    // LIST MODELS PROBE
     try {
-        const url = `https://generativelanguage.googleapis.com/v1beta/models?key=${apiKey}`;
-        const resp = await fetch(url);
-        const data = await resp.json();
-
-        if (data.models && Array.isArray(data.models)) {
-            const names = data.models.map((m: any) => m.name.replace('models/', ''));
-            throw new Error(`Available Models: ${names.join(", ")}`);
-        } else {
-            throw new Error(`Google API Response: ${JSON.stringify(data)}`);
+        // Use Gemini 3 Flash Preview (Identified via Diagnostic)
+        const model = client.getGenerativeModel({ model: "gemini-3-flash-preview" }, { apiVersion: "v1beta" });
+        const result = await model.generateContent(prompt);
+        return await processResponse(result);
+    } catch (error) {
+        console.warn("Gemini 3 Flash failed, falling back to Pro:", error);
+        try {
+            // Fallback to Gemini 3 Pro Preview
+            const fallbackModel = client.getGenerativeModel({ model: "gemini-3-pro-preview" }, { apiVersion: "v1beta" });
+            const result = await fallbackModel.generateContent(prompt);
+            return await processResponse(result);
+        } catch (fallbackError: any) {
+            console.error("Gemini 3 Generation Error:", fallbackError);
+            throw new Error(`Gemini 3 Error: ${fallbackError.message || 'Unknown error'}`);
         }
-    } catch (e: any) {
-        throw new Error(`AI Agent Diagnostic: ${e.message}`);
     }
 }
 
