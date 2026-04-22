@@ -16,17 +16,24 @@ export async function generateMarketingContent(storeName: string, products: stri
     const client = new GoogleGenerativeAI(apiKey);
 
     const prompt = `
-        You are a highly creative AI Marketing Agent for KedaiChat.online.
+        You are an elite AI Growth Hacker for KedaiChat.online. Your goal is to DRIVE TRAFFIC to this shop.
         Shop: ${storeName} (${category})
         Products: ${products.join(", ")}
 
+        Instructions for Captions:
+        - Use "Manglish" (Melayu + English) style that sounds like a friendly local seller.
+        - Create URGENCY (e.g., "Limited stock!", "While stocks last!", "Only for today!").
+        - Use SOCIAL PROOF (e.g., "Ramai orang dah grab!", "Trending now!").
+        - MUST include a clear CALL TO ACTION (CTA) telling them to click the link in bio/post.
+        - Make it emotional and exciting.
+
         Provide JSON:
         {
-          "headline": "catchy headline",
-          "caption": "emotional Manglish caption with emojis",
-          "hashtags": ["#tag1", "#tag2"],
-          "seoTitle": "seo title",
-          "seoDescription": "seo description"
+          "headline": "Scroll-stopping headline",
+          "caption": "Persuasive 24/7 lead-gen caption with emojis",
+          "hashtags": ["#tag1", "#tag2", "#KedaiChat"],
+          "seoTitle": "High CTR SEO Title",
+          "seoDescription": "Click-driven Meta Description"
         }
     `;
 
