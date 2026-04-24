@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 
 // Replace with your App's verify token from the Meta Dashboard
-const VERIFY_TOKEN = 'kedaichat_agent_secret_2026';
+const VERIFY_TOKEN = process.env.CRON_SECRET || process.env.VERIFY_TOKEN;
 
 // Meta Page access token
 const PAGE_ACCESS_TOKEN = process.env.META_PAGE_ACCESS_TOKEN || '';
