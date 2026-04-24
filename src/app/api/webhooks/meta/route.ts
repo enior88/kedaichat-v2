@@ -82,7 +82,7 @@ async function handleIncomingMessage(senderPsid: string, messageText: string) {
     const replyText = await generateLeadCaptureReply(messageText);
 
     // Send the reply
-    const url = \`https://graph.facebook.com/v20.0/me/messages?access_token=\${PAGE_ACCESS_TOKEN}\`;
+    const url = `https://graph.facebook.com/v20.0/me/messages?access_token=${PAGE_ACCESS_TOKEN}`;
     const responseBody = {
         recipient: { id: senderPsid },
         message: { text: replyText }
@@ -94,7 +94,7 @@ async function handleIncomingMessage(senderPsid: string, messageText: string) {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(responseBody),
         });
-        console.log(\`Successfully replied to DM Psid: \${senderPsid}\`);
+        console.log(`Successfully replied to DM Psid: ${senderPsid}`);
     } catch (err) {
         console.error('Failed to send DM reply', err);
     }
@@ -104,23 +104,23 @@ async function handleIncomingMessage(senderPsid: string, messageText: string) {
  * Analyzes intent using Gemini and replies to Facebook Comments via Graph API
  */
 async function handleIncomingComment(commentId: string, messageText: string) {
-    console.log(\`Processing Comment \${commentId}: \${messageText}\`);
-    
+    console.log(`Processing Comment ${commentId}: ${messageText}`);
+
     // Check if the comment shows buying/onboarding intent
     const replyText = await generateLeadCaptureReply(messageText);
 
     // If generative AI says 'IGNORE', we skip reply to save noise.
     if (replyText === 'IGNORE') return;
 
-    const url = \`https://graph.facebook.com/v20.0/\${commentId}/comments?access_token=\${PAGE_ACCESS_TOKEN}\`;
-    
+    const url = `https://graph.facebook.com/v20.0/${commentId}/comments?access_token=${PAGE_ACCESS_TOKEN}`;
+
     try {
         await fetch(url, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ message: replyText }),
         });
-        console.log(\`Successfully replied to comment \${commentId}\`);
+        console.log(`Successfully replied to comment ${commentId}`);
     } catch (err) {
         console.error('Failed to post comment reply', err);
     }
@@ -130,9 +130,9 @@ async function handleIncomingComment(commentId: string, messageText: string) {
  * Gemini resolver for intelligent automated replies.
  */
 async function generateLeadCaptureReply(customerMessage: string): Promise<string> {
-    const prompt = \`
+    const prompt = `
         You are the automated assistant for KedaiChat.online on Meta.
-        User message: "\${customerMessage}"
+        User message: "${customerMessage}"
         
         Your job is to read their message and decide if they want to know more about registering a store, pricing, or need a "PM".
         If they seem interested in getting a store or asking "PM/How/Interested", reply with:
@@ -141,7 +141,7 @@ async function generateLeadCaptureReply(customerMessage: string): Promise<string
         If they are just leaving a generic comment (e.g. "Nice", "Good job", unrelated spam), return exactly the word: IGNORE
         
         Reply ONLY with "IGNORE" or the friendly onboarding message text.
-    \`;
+    `;
 
     try {
         const apiKey = process.env.GEMINI_API_KEY || "";
