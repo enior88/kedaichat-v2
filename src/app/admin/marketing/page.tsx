@@ -1,11 +1,19 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import TabNavigation from '@/components/TabNavigation';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
+
 import { Sparkles, Send, RefreshCw, BarChart3, Globe } from 'lucide-react';
+
+const Button = ({ children, className, variant, ...props }: any) => (
+    <button className={`px-4 py-2 rounded-md font-medium disabled:opacity-50 flex items-center justify-center transition-all ${className || ''}`} {...props}>
+        {children}
+    </button>
+);
+const Card = ({ children, className }: any) => <div className={`rounded-xl border ${className || ''}`}>{children}</div>;
+const CardHeader = ({ children, className }: any) => <div className={`p-6 ${className || ''}`}>{children}</div>;
+const CardTitle = ({ children, className }: any) => <h3 className={`font-semibold leading-none tracking-tight ${className || ''}`}>{children}</h3>;
+const CardContent = ({ children, className }: any) => <div className={`p-6 pt-0 ${className || ''}`}>{children}</div>;
+const Badge = ({ children, className, variant }: any) => <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 border text-xs font-semibold ${className || ''}`}>{children}</span>;
 
 export default function AdminMarketingPage() {
     const [articles, setArticles] = useState<any[]>([]);
