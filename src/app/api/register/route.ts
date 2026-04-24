@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { createSession } from '@/lib/auth';
 import bcrypt from 'bcryptjs';
+import { generateWelcomePost } from '@/lib/platform-agent';
 
 export async function POST(req: Request) {
     try {
@@ -70,6 +71,9 @@ export async function POST(req: Request) {
 
         // Set session
         await createSession(user.id);
+
+        // Async welcome post generation (does not block registration response)
+        generateWelcomePost(businessName, category, slug);
 
         return NextResponse.json({ success: true, user: { id: user.id, role: user.role } });
 

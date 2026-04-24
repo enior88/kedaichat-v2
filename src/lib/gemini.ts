@@ -16,21 +16,23 @@ export async function generateMarketingContent(storeName: string, products: stri
     const client = new GoogleGenerativeAI(apiKey);
 
     const prompt = `
-        You are an elite AI Growth Hacker for KedaiChat.online. Your goal is to DRIVE TRAFFIC to this shop.
+        You are an elite AI Marketing Agent for KedaiChat.online representing this shop:
         Shop: ${storeName} (${category})
         Products: ${products.join(", ")}
 
+        Your persona combines three essential roles:
+        1. 💼 EXPERT SALESPERSON: Highlight the main benefits of the products, create urgency ("Limited stock!"), and use social proof ("Ramai orang dah grab!"). Focus on driving conversions.
+        2. 🎨 CREATIVE CONTENT CREATOR: Use scroll-stopping hooks, emotional storytelling, and format the caption beautifully with spacing and emojis.
+        3. 🤝 FOLLOW-UP ASSISTANT: Build relationships by asking a question at the end to encourage comments and engagement from followers.
+
         Instructions for Captions:
         - Use "Manglish" (Melayu + English) style that sounds like a friendly local seller.
-        - Create URGENCY (e.g., "Limited stock!", "While stocks last!", "Only for today!").
-        - Use SOCIAL PROOF (e.g., "Ramai orang dah grab!", "Trending now!").
-        - MUST include a clear CALL TO ACTION (CTA) telling them to click the link in bio/post.
-        - Make it emotional and exciting.
+        - MUST include a clear CALL TO ACTION (CTA) telling them to click the online shop link in bio/post.
 
         Provide JSON:
         {
-          "headline": "Scroll-stopping headline",
-          "caption": "Persuasive 24/7 lead-gen caption with emojis",
+          "headline": "Scroll-stopping headline focusing on the hook",
+          "caption": "Persuasive caption blending sales, storytelling, emojis, and an engaging question at the end",
           "hashtags": ["#tag1", "#tag2", "#KedaiChat"],
           "seoTitle": "High CTR SEO Title",
           "seoDescription": "Click-driven Meta Description"

@@ -1,0 +1,51 @@
+{
+  "data": {
+    "name": "KedaiChat Order Mudah untuk Bisnes Malaysia",
+    "id": "1120893591101206"
+  },
+  "debugData": {
+    "data": {
+      "app_id": "4462191147385811",
+      "type": "USER",
+      "application": "Kedaichat Marketing Agent",
+      "data_access_expires_at": 1784744873,
+      "expires_at": 1776974400,
+      "is_valid": true,
+      "scopes": [
+        "pages_show_list",
+        "instagram_basic",
+        "instagram_content_publish",
+        "pages_read_engagement",
+        "pages_manage_posts",
+        "public_profile"
+      ],
+      "granular_scopes": [
+        {
+          "scope": "pages_show_list",
+          "target_ids": [
+            "1120893591101206"
+          ]
+        },
+        {
+          "scope": "instagram_basic"
+        },
+        {
+          "scope": "instagram_content_publish"
+        },
+        {
+          "scope": "pages_read_engagement",
+          "target_ids": [
+            "1120893591101206"
+          ]
+        },
+        {
+          "scope": "pages_manage_posts",
+          "target_ids": [
+            "1120893591101206"
+          ]
+        }
+      ],
+      "user_id": "122122780875172619"
+    }
+  }
+}

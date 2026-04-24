@@ -1,7 +1,7 @@
 import StoreCatalog from '@/components/StoreCatalog';
 import { Metadata } from 'next';
 import { prisma } from '@/lib/prisma';
-import { notFound } from 'next/navigation';
+import { redirect } from 'next/navigation';
 
 type Props = {
     params: { name: string };
@@ -48,7 +48,7 @@ export default async function ShopPage({ params }: Props) {
     });
 
     if (!store) {
-        notFound();
+        redirect('/');
     }
 
     return <StoreCatalog slug={params.name} initialStoreData={JSON.parse(JSON.stringify(store))} />;
