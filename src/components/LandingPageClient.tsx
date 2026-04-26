@@ -20,7 +20,9 @@ import {
     Package,
     Mail,
     Menu,
-    X
+    X,
+    Facebook,
+    Instagram
 } from 'lucide-react';
 import { useLanguage } from '@/lib/LanguageContext';
 import LanguageToggle from '@/components/LanguageToggle';
@@ -531,16 +533,29 @@ export default function LandingPageClient() {
 
                     <footer className="py-12 border-t border-gray-100 px-6">
                         <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-8">
-                            <div className="flex items-center gap-2">
-                                <div className="w-8 h-8 rounded-lg overflow-hidden">
-                                    <Image src="/logo.png" alt="KedaiChat Logo" width={32} height={32} className="w-full h-full object-cover" />
+                            <div className="flex flex-col items-center md:items-start gap-4">
+                                <div className="flex items-center gap-2">
+                                    <div className="w-8 h-8 rounded-lg overflow-hidden">
+                                        <Image src="/logo.png" alt="KedaiChat Logo" width={32} height={32} className="w-full h-full object-cover" />
+                                    </div>
+                                    <span className="text-lg font-black tracking-tighter">KedaiChat</span>
                                 </div>
-                                <span className="text-lg font-black tracking-tighter">KedaiChat</span>
+                                <div className="flex items-center gap-4">
+                                    <a href="https://facebook.com/kedaichat" target="_blank" rel="noopener noreferrer" className="w-10 h-10 bg-gray-50 text-gray-400 hover:text-[#1877F2] hover:bg-blue-50 rounded-xl flex items-center justify-center transition-all duration-300">
+                                        <Facebook size={20} />
+                                    </a>
+                                    <a href="https://instagram.com/kedaichat" target="_blank" rel="noopener noreferrer" className="w-10 h-10 bg-gray-50 text-gray-400 hover:text-[#E4405F] hover:bg-red-50 rounded-xl flex items-center justify-center transition-all duration-300">
+                                        <Instagram size={20} />
+                                    </a>
+                                    <a href="mailto:kedaichat@gmail.com" className="w-10 h-10 bg-gray-50 text-gray-400 hover:text-[#EA4335] hover:bg-red-50 rounded-xl flex items-center justify-center transition-all duration-300">
+                                        <Mail size={20} />
+                                    </a>
+                                </div>
                             </div>
                             <div className="flex flex-col md:flex-row items-center gap-6 md:gap-8 text-sm font-bold text-gray-400">
                                 <Link href="/privacy" className="hover:text-[#25D366] transition-colors">{t('privacy')}</Link>
                                 <Link href="/terms" className="hover:text-[#25D366] transition-colors">{t('terms')}</Link>
-                                <div className="flex items-center gap-2">
+                                <div className="hidden md:flex items-center gap-2">
                                     <span>{t('contact')}:</span>
                                     <a href="mailto:kedaichat@gmail.com" className="text-gray-900 hover:text-[#25D366] bg-green-50 px-3 py-1.5 rounded-full transition-colors flex items-center gap-2">
                                         <Mail size={14} className="text-[#25D366]" />
