@@ -24,7 +24,7 @@ export async function POST(req: Request) {
         const store = await prisma.store.findFirst({ where: { ownerId: session.userId } });
         if (!store) return NextResponse.json({ error: 'Store not found' }, { status: 404 });
 
-        const { name, price, description, category, image } = await req.json();
+        const { name, price, description, category, image, type } = await req.json();
 
         const product = await prisma.product.create({
             data: {
@@ -33,6 +33,7 @@ export async function POST(req: Request) {
                 description: description || null,
                 category: category || null,
                 imageUrl: image || null,
+                type: type || 'PRODUCT',
                 storeId: store.id
             }
         });
@@ -51,7 +52,7 @@ export async function PUT(req: Request) {
         const store = await prisma.store.findFirst({ where: { ownerId: session.userId } });
         if (!store) return NextResponse.json({ error: 'Store not found' }, { status: 404 });
 
-        const { id, name, price, description, category, active, image } = await req.json();
+        const { id, name, price, description, category, active, image, type } = await req.json();
 
         const updated = await prisma.product.update({
             where: { id },
@@ -62,6 +63,7 @@ export async function PUT(req: Request) {
                 ...(category !== undefined && { category }),
                 ...(active !== undefined && { active }),
                 ...(image !== undefined && { imageUrl: image }),
+                ...(type !== undefined && { type }),
             }
         });
 

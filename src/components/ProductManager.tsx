@@ -16,7 +16,7 @@ export default function ProductManager() {
     const [products, setProducts] = useState<any[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [isUploading, setIsUploading] = useState(false);
-    const [formData, setFormData] = useState({ id: '', name: '', price: '', description: '', category: 'Rice Items', imageUrl: '' });
+    const [formData, setFormData] = useState({ id: '', name: '', price: '', description: '', category: 'Rice Items', imageUrl: '', type: 'PRODUCT' });
     const [tagInput, setTagInput] = useState('');
 
     useEffect(() => {
@@ -62,7 +62,7 @@ export default function ProductManager() {
 
             if (res.ok) {
                 setShowAddForm(false);
-                setFormData({ id: '', name: '', price: '', description: '', category: 'Rice Items', imageUrl: '' });
+                setFormData({ id: '', name: '', price: '', description: '', category: 'Rice Items', imageUrl: '', type: 'PRODUCT' });
                 fetchProducts();
             }
         } catch (error) {
@@ -76,7 +76,7 @@ export default function ProductManager() {
             const res = await fetch(`/api/products?id=${id}`, { method: 'DELETE' });
             if (res.ok) {
                 setShowAddForm(false);
-                setFormData({ id: '', name: '', price: '', description: '', category: 'Rice Items', imageUrl: '' });
+                setFormData({ id: '', name: '', price: '', description: '', category: 'Rice Items', imageUrl: '', type: 'PRODUCT' });
                 fetchProducts();
             }
         } catch (error) {
@@ -107,7 +107,8 @@ export default function ProductManager() {
             price: product.price.toString(),
             description: product.description || '',
             category: cat,
-            imageUrl: product.imageUrl || ''
+            imageUrl: product.imageUrl || '',
+            type: product.type || 'PRODUCT'
         });
         setShowAddForm(true);
     };
@@ -120,7 +121,7 @@ export default function ProductManager() {
                         <button
                             onClick={() => {
                                 setShowAddForm(false);
-                                setFormData({ id: '', name: '', price: '', description: '', category: 'Rice Items', imageUrl: '' });
+                                setFormData({ id: '', name: '', price: '', description: '', category: 'Rice Items', imageUrl: '', type: 'PRODUCT' });
                             }}
                             className="w-10 h-10 bg-white rounded-2xl flex items-center justify-center text-gray-400 border border-gray-100 shadow-sm active:scale-90 transition-all"
                         >
@@ -132,6 +133,22 @@ export default function ProductManager() {
                     </div>
 
                     <div className="space-y-6">
+                        {/* Type Selection */}
+                        <div className="flex bg-gray-100 p-1 rounded-2xl gap-1">
+                            <button
+                                onClick={() => setFormData({ ...formData, type: 'PRODUCT' })}
+                                className={`flex-1 py-3 text-xs font-black uppercase tracking-widest rounded-xl transition-all ${formData.type === 'PRODUCT' ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-400'}`}
+                            >
+                                Product
+                            </button>
+                            <button
+                                onClick={() => setFormData({ ...formData, type: 'SERVICE' })}
+                                className={`flex-1 py-3 text-xs font-black uppercase tracking-widest rounded-xl transition-all ${formData.type === 'SERVICE' ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-400'}`}
+                            >
+                                Service
+                            </button>
+                        </div>
+
                         <label className="w-full aspect-square bg-gray-50 border-2 border-dashed border-gray-200 rounded-[32px] flex flex-col items-center justify-center text-gray-400 gap-2 cursor-pointer hover:bg-gray-100 transition-all overflow-hidden relative">
                             <input
                                 type="file"
@@ -182,10 +199,10 @@ export default function ProductManager() {
 
                         <div className="space-y-4">
                             <div className="space-y-1.5">
-                                <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Product Name</label>
+                                <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">{formData.type === 'PRODUCT' ? 'Product Name' : 'Service Name'}</label>
                                 <input
                                     type="text"
-                                    placeholder="e.g. Nasi Lemak Biasa"
+                                    placeholder={formData.type === 'PRODUCT' ? 'e.g. Nasi Lemak Biasa' : 'e.g. 1-Hour Design Consulting'}
                                     className="w-full h-14 bg-white border border-gray-100 rounded-2xl px-6 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#25D366] shadow-sm transition-all"
                                     value={formData.name}
                                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
