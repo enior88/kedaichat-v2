@@ -123,7 +123,7 @@ export default function Dashboard() {
         if (action === 'Add Product') {
             router.push('/products?action=add');
         } else if (action === 'Share Link') {
-            const url = `${window.location.origin}/${stats.slug}`;
+            const url = `${window.location.origin}/shop/${stats.slug}`;
 
             const copyToClipboard = async () => {
                 try {
@@ -151,26 +151,26 @@ export default function Dashboard() {
 
             if (!stats.slug) return;
 
-            // Detect mobile for a better UX (native share is mostly useful on mobile)
-            const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-
-            if (isMobile && navigator.share) {
+            // Prioritize native share if supported (mobile or modern desktop)
+            if (navigator.share) {
                 navigator.share({
                     title: stats.businessName,
                     text: `Check out my store on KedaiChat!`,
                     url: url,
-                }).catch(() => {
-                    // Fallback to clipboard if system share fails
-                    copyToClipboard();
+                }).catch((err) => {
+                    // Fallback to clipboard if system share fails (e.g. user cancelled)
+                    if (err.name !== 'AbortError') {
+                        copyToClipboard();
+                    }
                 });
             } else {
-                // Default to clipboard on desktop for maximum reliability
+                // Default to clipboard fallback
                 copyToClipboard();
             }
         } else if (action === 'Analytics') {
             router.push('/analytics');
         } else if (action === 'WhatsApp Status' || action === 'Status WhatsApp') {
-            const url = `${window.location.origin}/${stats.slug}`;
+            const url = `${window.location.origin}/shop/${stats.slug}`;
 
             const text = encodeURIComponent(`Check out my store on KedaiChat! 🛍️\n\n${url}`);
             window.open(`https://wa.me/?text=${text}`, '_blank');

@@ -20,6 +20,7 @@ export default function StoreCatalog({ slug, initialStoreData }: { slug?: string
     const [groupDeadline, setGroupDeadline] = useState('');
     const [isCreatingGroup, setIsCreatingGroup] = useState(false);
     const [isLoadingData, setIsLoadingData] = useState(!initialStoreData);
+    const [showToast, setShowToast] = useState(false);
 
     const categories = [
         { id: 'All', label: t('cat_all') },
@@ -138,20 +139,46 @@ export default function StoreCatalog({ slug, initialStoreData }: { slug?: string
     const storeInitials = storeName[0] || 'S';
 
     const handleShare = async () => {
+        const url = window.location.href;
         const shareData = {
             title: storeName,
             text: `Check out ${storeName} on KedaiChat!`,
-            url: window.location.href,
+            url: url,
         };
+
+        const copyToClipboard = async () => {
+            try {
+                if (navigator.clipboard && window.isSecureContext) {
+                    await navigator.clipboard.writeText(url);
+                } else {
+                    const textArea = document.createElement("textarea");
+                    textArea.value = url;
+                    textArea.style.position = "fixed";
+                    textArea.style.left = "-999999px";
+                    textArea.style.top = "-999999px";
+                    document.body.appendChild(textArea);
+                    textArea.focus();
+                    textArea.select();
+                    document.execCommand('copy');
+                    textArea.remove();
+                }
+                setShowToast(true);
+                setTimeout(() => setShowToast(false), 2000);
+            } catch (err) {
+                console.error('Copy failed', err);
+            }
+        };
+
         try {
             if (navigator.share) {
                 await navigator.share(shareData);
             } else {
-                await navigator.clipboard.writeText(window.location.href);
-                alert('Store link copied to clipboard!');
+                await copyToClipboard();
             }
-        } catch (err) {
-            console.error('Error sharing:', err);
+        } catch (err: any) {
+            if (err.name !== 'AbortError') {
+                await copyToClipboard();
+            }
         }
     };
 
@@ -242,8 +269,8 @@ export default function StoreCatalog({ slug, initialStoreData }: { slug?: string
                             key={cat.id}
                             onClick={() => setSelectedCategory(cat.id)}
                             className={`snap-start px-5 py-2 rounded-full text-[13px] font-bold whitespace-nowrap transition-all duration-300 ${selectedCategory === cat.id
-                                    ? 'bg-gray-900 text-white shadow-lg shadow-gray-900/20 scale-100 ring-2 ring-gray-900 ring-offset-1'
-                                    : 'bg-white text-gray-500 border border-gray-200 hover:bg-gray-50 hover:text-gray-900 scale-95'
+                                ? 'bg-gray-900 text-white shadow-lg shadow-gray-900/20 scale-100 ring-2 ring-gray-900 ring-offset-1'
+                                : 'bg-white text-gray-500 border border-gray-200 hover:bg-gray-50 hover:text-gray-900 scale-95'
                                 }`}
                         >
                             {cat.label}
@@ -561,6 +588,14 @@ export default function StoreCatalog({ slug, initialStoreData }: { slug?: string
                 </div>
                 <p className="text-[9px] font-bold text-gray-300 uppercase tracking-widest">Powered by KedaiChat</p>
             </div>
+
+            {/* Toast Notification */}
+            {showToast && (
+                <div className="fixed bottom-24 left-1/2 -translate-x-1/2 bg-gray-900/90 backdrop-blur-md text-white px-8 py-4 rounded-[20px] text-xs font-bold animate-in fade-in slide-in-from-bottom-4 z-[200] shadow-2xl flex items-center gap-2 border border-white/10">
+                    <Check size={16} className="text-[#25D366]" strokeWidth={3} />
+                    Store link copied!
+                </div>
+            )}
         </div>
     );
 }
