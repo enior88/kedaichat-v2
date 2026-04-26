@@ -151,21 +151,18 @@ export default function Dashboard() {
 
             if (!stats.slug) return;
 
-            // Prioritize native share if supported (mobile or modern desktop)
+            // Always copy to clipboard to trigger the premium toast and ensure the link is ready
+            copyToClipboard();
+
+            // Also trigger native share if supported (mobile or modern desktop)
             if (navigator.share) {
                 navigator.share({
                     title: stats.businessName,
                     text: `Check out my store on KedaiChat!`,
                     url: url,
-                }).catch((err) => {
-                    // Fallback to clipboard if system share fails (e.g. user cancelled)
-                    if (err.name !== 'AbortError') {
-                        copyToClipboard();
-                    }
+                }).catch(() => {
+                    // Ignore share errors (like AbortError) as we already copied/showed toast
                 });
-            } else {
-                // Default to clipboard fallback
-                copyToClipboard();
             }
         } else if (action === 'Analytics') {
             router.push('/analytics');

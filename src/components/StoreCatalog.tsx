@@ -169,15 +169,15 @@ export default function StoreCatalog({ slug, initialStoreData }: { slug?: string
             }
         };
 
-        try {
-            if (navigator.share) {
+        // Always copy/show toast first for immediate feedback
+        await copyToClipboard();
+
+        // Then attempt native share if supported
+        if (navigator.share) {
+            try {
                 await navigator.share(shareData);
-            } else {
-                await copyToClipboard();
-            }
-        } catch (err: any) {
-            if (err.name !== 'AbortError') {
-                await copyToClipboard();
+            } catch (err) {
+                // User cancelled or share failed, feedback is already provided via toast
             }
         }
     };
