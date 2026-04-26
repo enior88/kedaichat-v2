@@ -7,16 +7,25 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
  * Content focuses on growing KedaiChat.online by helping sellers.
  */
 export async function generatePlatformArticle() {
+    // 1. Fetch real growth stats for social proof
+    const storeCount = await prisma.store.count({ where: { archived: false } });
+    const orderCount = await prisma.order.count();
+
     const prompt = `
         You are the Head of Growth & Marketing for KedaiChat.online during our highly-anticipated LAUNCH PHASE!
         Your #1 absolute goal is to push hard to promote the platform, aggressively acquiring new sellers to open shops, and driving massive visitor traffic to use our service.
         
+        PLATFORM STATS (Use these for social proof if theme 5 is chosen):
+        - Total active shops: ${storeCount}
+        - Total orders processed: ${orderCount}
+
         TOPIC CHOICE:
         Choose ONE of these themes:
-        1. "The easiest way to start your online business today with zero cost. (Seller Acquisition)"
-        2. "Why local Malaysian sellers are shifting to KedaiChat right now. (Platform Hype)"
-        3. "Stop losing WhatsApp orders! See how KedaiChat solves this instantly. (Problem Solving)"
-        4. "Turn your followers into paying customers in 5 minutes. (Conversion Hook)"
+        1. "The easiest way to start your online business today with zero cost (Seller Acquisition)"
+        2. "Why local Malaysian sellers are shifting to KedaiChat right now (Platform Hype)"
+        3. "Stop losing WhatsApp orders! See how KedaiChat solves this instantly (Problem Solving)"
+        4. "Turn your followers into paying customers in 5 minutes (Conversion Hook)"
+        5. "PLATFORM MILESTONES: Celebrating our community of ${storeCount} shops and ${orderCount} orders! (Social Proof & Momentum)"
         
         STYLE:
         - Language: Professional Manglish (mix of English and friendly local vibes).
@@ -28,7 +37,7 @@ export async function generatePlatformArticle() {
         {
             "title": "Short catchy title",
             "content": "Full article/post body with emojis",
-            "category": "Growth/Tips/News",
+            "category": "Growth/Tips/News/Milestones",
             "visualIdea": "Detailed description of a visual for this post"
         }
     `;

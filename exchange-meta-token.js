@@ -1,7 +1,6 @@
-// Script to exchange short-lived user token for long-lived page token using native fetch
-const appId = '4462191147385811';
-const appSecret = '303ee8597ecba71be8ad6c794bfae86f';
-const shortLivedToken = 'EAAZCaVtZACg9MBRUwxtI4wXCHDZCZAlrTbwG8jjBTIZBjm62KAk2TeQk0U6aUIzqDZCM1ZB476jIZBsuVB2z2wVBAL4DZCGYByCH7iQK5VPFsXZBcqtyGz2pCiAKqU23HMNXtZBaZAlg9lYHPJdyzqNMOC3znlAFnPQC5PXEBG1psKhnk8rDH35kJ8cWhqIVFKysQHoz5SGEHEyKJB4QRzbshl55xUVYJefty2Tu9MiI0iKvQaGDVNVDq5AtmUO0uTDSWXG874EOPA8tW9okK929v5wBEqx3';
+const appId = process.env.META_APP_ID || '';
+const appSecret = process.env.META_APP_SECRET || '';
+const shortLivedToken = ''; // PASTE SHORT-LIVED USER TOKEN HERE
 
 async function exchangeToken() {
     try {
@@ -18,30 +17,42 @@ async function exchangeToken() {
         const longLivedUserToken = data.access_token;
         console.log("✅ Long-lived USER token received.");
 
-        console.log("Step 2: Fetching long-lived PAGE access token for 'kedaichat'...");
+        const meUrl = `https://graph.facebook.com/v20.0/me?access_token=${longLivedUserToken}`;
+        const meRes = await fetch(meUrl);
+        const meData = await meRes.json();
+        console.log("Token User:", JSON.stringify(meData, null, 2));
+
+        const permissionsUrl = `https://graph.facebook.com/v20.0/me/permissions?access_token=${longLivedUserToken}`;
+        const permissionsRes = await fetch(permissionsUrl);
+        const permissionsData = await permissionsRes.json();
+        console.log("Token Permissions:", JSON.stringify(permissionsData.data, null, 2));
+
         const accountsUrl = `https://graph.facebook.com/v20.0/me/accounts?access_token=${longLivedUserToken}`;
         const accountsResponse = await fetch(accountsUrl);
         const accountsData = await accountsResponse.json();
+        console.log("Full Accounts Response:", JSON.stringify(accountsData, null, 2));
 
         if (accountsData.error) {
             console.error("❌ Error in Step 2:", accountsData.error);
             return;
         }
 
-        const pages = accountsData.data;
-        console.log("Found pages:", JSON.stringify(pages, null, 2));
+        const pageIdFromEnv = '1120893591101206';
+        console.log(`Step 3: Trying direct lookup for Page ID: ${pageIdFromEnv}...`);
+        const directPageUrl = `https://graph.facebook.com/v20.0/${pageIdFromEnv}?fields=name,access_token&access_token=${longLivedUserToken}`;
+        const directPageRes = await fetch(directPageUrl);
+        const directPageData = await directPageRes.json();
 
-        const targetPage = pages.find(p => p.name.toLowerCase().includes('kedaichat'));
-
-        if (!targetPage) {
-            console.error("❌ Error: Could not find a page named 'kedaichat' for this user.");
-            console.log("Available pages:", pages.map(p => p.name).join(", "));
+        if (directPageData.name) {
+            console.log(`✅ Direct Lookup Success: ${directPageData.name}`);
+            console.log(`🚀 PERMANENT PAGE TOKEN: ${directPageData.access_token}`);
+            console.log(`📝 PAGE ID: ${pageIdFromEnv}`);
             return;
+        } else {
+            console.error("❌ Direct Lookup Failed:", directPageData.error);
         }
 
-        console.log(`✅ Found Page: ${targetPage.name} (ID: ${targetPage.id})`);
-        console.log(`🚀 PERMANENT PAGE TOKEN: ${targetPage.access_token}`);
-        console.log(`📝 PAGE ID: ${targetPage.id}`);
+        const pages = accountsData.data || [];
 
     } catch (error) {
         console.error("❌ Unexpected Error:", error.message);

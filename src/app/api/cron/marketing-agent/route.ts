@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
 import { generateMarketingContent } from '@/lib/gemini';
+import { postToFacebookPage, postToInstagramFeed } from '@/lib/meta';
 
 const prisma = new PrismaClient();
 
@@ -13,18 +14,15 @@ export async function GET(req: NextRequest) {
 
     try {
         // 2. Select a target shop for marketing
-        // Priority: Shops with recent orders but not featured in the last 7 days
-        // For simplicity: Take a random active shop that hasn't been featured recently
         const stores = await prisma.store.findMany({
             where: {
                 archived: false,
-                // We could add more filters here, like order count > 0
             },
             include: {
                 products: {
                     where: { active: true },
                     take: 5,
-                    select: { name: true }
+                    select: { name: true, imageUrl: true }
                 }
             }
         });
@@ -35,7 +33,9 @@ export async function GET(req: NextRequest) {
 
         // Pick a random store
         const store = stores[Math.floor(Math.random() * stores.length)];
-        const productNames = store.products.map(p => p.name);
+        const productNames = store.products.map((p: any) => p.name);
+        // Use store logo or first product image as visual
+        const visualUrl = store.logoUrl || store.products.find((p: any) => p.imageUrl)?.imageUrl || "https://kedaichat.online/images/growth-default.jpg";
 
         // 3. Generate content using AI
         const aiContent = await generateMarketingContent(
@@ -44,7 +44,18 @@ export async function GET(req: NextRequest) {
             store.category || 'General Store'
         );
 
-        // 4. Persist the marketing post
+        const storeUrl = `https://kedaichat.online/shop/${store.slug}`;
+        const fullMessage = `${aiContent.headline}\n\n${aiContent.caption}\n\n🛒 Shop here: ${storeUrl}\n\n${aiContent.hashtags.join(' ')}`;
+
+        // 4. Post to Meta (Facebook & Instagram)
+        console.log(`🤖 Marketing Agent: Posting for ${store.name}...`);
+
+        const fbPromise = postToFacebookPage(fullMessage, visualUrl);
+        const igPromise = postToInstagramFeed(fullMessage, visualUrl);
+
+        const [fbResult, igResult] = await Promise.all([fbPromise, igPromise]);
+
+        // 5. Persist the marketing post record
         const post = await prisma.marketingPost.create({
             data: {
                 headline: aiContent.headline,
@@ -56,13 +67,13 @@ export async function GET(req: NextRequest) {
             }
         });
 
-        // 5. Update Store with AI summary if empty
+        // 6. Update Store with AI summary if empty
         if (!store.aiDescription) {
             await prisma.store.update({
                 where: { id: store.id },
                 data: {
                     aiDescription: aiContent.headline,
-                    isFeatured: true // Auto-feature if the AI has promoted it
+                    isFeatured: true
                 }
             });
         }
@@ -70,6 +81,8 @@ export async function GET(req: NextRequest) {
         return NextResponse.json({
             status: 'success',
             store: store.name,
+            facebook: fbResult.success ? 'ok' : fbResult.error,
+            instagram: igResult.success ? 'ok' : igResult.error,
             post: post.id
         });
 

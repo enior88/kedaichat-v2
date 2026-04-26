@@ -32,21 +32,20 @@ export async function GET(request: Request) {
         // For now, we use the standard Kedaichat Growth Visual link
         const sampleImageUrl = "https://kedaichat.online/images/growth-default.jpg";
 
-        // 3. Auto-Post to Facebook
-        const fbPost = await postToFacebookPage(
-            `${article.title}\n\n${article.content}\n\nJoin us: https://kedaichat.online`,
-            sampleImageUrl
-        );
+        // 3. Auto-Post to Facebook & Instagram
+        const fullMessage = `${article.title}\n\n${article.content}\n\nJoin us: https://kedaichat.online`;
 
-        // 4. Finalize in Database
-        // Note: IG posting is skipped if no verified Professional IG account is detected yet,
-        // but we've verified it exists in previous step.
+        const fbPromise = postToFacebookPage(fullMessage, sampleImageUrl);
+        const igPromise = postToInstagramFeed(fullMessage, sampleImageUrl);
+
+        const [fbPost, igPost] = await Promise.all([fbPromise, igPromise]);
 
         return NextResponse.json({
             success: true,
             message: "Platform Marketing Post Created & Shared!",
             articleId: article.id,
-            fbPostId: fbPost.id
+            facebook: fbPost.success ? 'ok' : fbPost.error,
+            instagram: igPost.success ? 'ok' : igPost.error
         });
 
     } catch (error: any) {
