@@ -176,7 +176,8 @@ export default function StoreCatalog({ slug, initialStoreData }: { slug?: string
         // Perform copy/share actions
         copyToClipboard();
 
-        if (navigator.share) {
+        const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+        if (navigator.share && isMobile) {
             try {
                 await navigator.share(shareData);
             } catch (err) {

@@ -163,8 +163,9 @@ export default function Dashboard() {
             // Always copy to clipboard to ensure the link is ready
             copyToClipboard();
 
-            // Also trigger native share if supported (mobile or modern desktop)
-            if (navigator.share) {
+            // Also trigger native share if supported (mobile only to avoid Windows native share bugs)
+            const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+            if (navigator.share && isMobile) {
                 navigator.share({
                     title: stats.businessName,
                     text: `Check out my store on KedaiChat!`,
