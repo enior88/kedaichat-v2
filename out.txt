@@ -1,5 +1,0 @@
-Error: 
-Invalid `prisma.$executeRawUnsafe()` invocation:
-
-
-Error querying the database: FATAL: Tenant or user not found
