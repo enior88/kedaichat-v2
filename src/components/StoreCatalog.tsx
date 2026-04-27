@@ -163,21 +163,24 @@ export default function StoreCatalog({ slug, initialStoreData }: { slug?: string
                     textArea.remove();
                 }
                 setShowToast(true);
-                setTimeout(() => setShowToast(false), 2000);
+                setTimeout(() => setShowToast(false), 3000);
             } catch (err) {
                 console.error('Copy failed', err);
             }
         };
 
-        // Always copy/show toast first for immediate feedback
-        await copyToClipboard();
+        // Trigger toast immediately for instant feedback
+        setShowToast(true);
+        setTimeout(() => setShowToast(false), 3000);
 
-        // Then attempt native share if supported
+        // Perform copy/share actions
+        copyToClipboard();
+
         if (navigator.share) {
             try {
                 await navigator.share(shareData);
             } catch (err) {
-                // User cancelled or share failed, feedback is already provided via toast
+                // Ignore share errors
             }
         }
     };
@@ -591,9 +594,9 @@ export default function StoreCatalog({ slug, initialStoreData }: { slug?: string
 
             {/* Toast Notification */}
             {showToast && (
-                <div className="fixed bottom-24 left-1/2 -translate-x-1/2 bg-gray-900/90 backdrop-blur-md text-white px-8 py-4 rounded-[20px] text-xs font-bold animate-in fade-in slide-in-from-bottom-4 z-[200] shadow-2xl flex items-center gap-2 border border-white/10">
+                <div className="fixed bottom-24 left-1/2 -translate-x-1/2 bg-gray-900/90 backdrop-blur-md text-white px-8 py-4 rounded-[20px] text-xs font-bold animate-in fade-in slide-in-from-bottom-4 z-[9999] shadow-2xl flex items-center gap-2 border border-white/10">
                     <Check size={16} className="text-[#25D366]" strokeWidth={3} />
-                    Store link copied!
+                    Store link ready! 🚀
                 </div>
             )}
         </div>

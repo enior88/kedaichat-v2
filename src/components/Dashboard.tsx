@@ -5,7 +5,7 @@ import {
     BarChart3,
     Search, ShoppingBag, Users, Package,
     TrendingUp, Share2, ChevronRight, Rocket,
-    Store, Settings, Plus, Archive, ShieldCheck, LogOut, MessageCircle
+    Store, Settings, Plus, Archive, ShieldCheck, LogOut, MessageCircle, Check
 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useLanguage } from '@/lib/LanguageContext';
@@ -120,9 +120,16 @@ export default function Dashboard() {
     }, []);
 
     const handleAction = (action: string) => {
-        if (action === 'Add Product') {
+        // We use string match but we must be careful with translations.
+        // For robustness, check both original and translated or untranslated intent.
+        const isAddProduct = action === 'Add Product' || action === t('add_product');
+        const isShareLink = action === 'Share Link' || action === t('share_link');
+        const isAnalytics = action === 'Analytics' || action === t('analytics');
+        const isWhatsAppStatus = action === 'WhatsApp Status' || action === 'Status WhatsApp' || action === t('share_status');
+
+        if (isAddProduct) {
             router.push('/products?action=add');
-        } else if (action === 'Share Link') {
+        } else if (isShareLink) {
             const url = `${window.location.origin}/shop/${stats.slug}`;
 
             const copyToClipboard = async () => {
@@ -142,8 +149,6 @@ export default function Dashboard() {
                         document.execCommand('copy');
                         textArea.remove();
                     }
-                    setShowToast(true);
-                    setTimeout(() => setShowToast(false), 2000);
                 } catch (err) {
                     console.error('Copy failed', err);
                 }
@@ -151,7 +156,11 @@ export default function Dashboard() {
 
             if (!stats.slug) return;
 
-            // Always copy to clipboard to trigger the premium toast and ensure the link is ready
+            // Trigger premium toast immediately for instant feedback
+            setShowToast(true);
+            setTimeout(() => setShowToast(false), 3000);
+
+            // Always copy to clipboard to ensure the link is ready
             copyToClipboard();
 
             // Also trigger native share if supported (mobile or modern desktop)
@@ -161,13 +170,17 @@ export default function Dashboard() {
                     text: `Check out my store on KedaiChat!`,
                     url: url,
                 }).catch(() => {
-                    // Ignore share errors (like AbortError) as we already copied/showed toast
+                    // Ignore share errors
                 });
             }
-        } else if (action === 'Analytics') {
+        } else if (isAnalytics) {
             router.push('/analytics');
-        } else if (action === 'WhatsApp Status' || action === 'Status WhatsApp') {
+        } else if (isWhatsAppStatus) {
             const url = `${window.location.origin}/shop/${stats.slug}`;
+
+            // Show feedback even for external redirects
+            setShowToast(true);
+            setTimeout(() => setShowToast(false), 3000);
 
             const text = encodeURIComponent(`Check out my store on KedaiChat! 🛍️\n\n${url}`);
             window.open(`https://wa.me/?text=${text}`, '_blank');
@@ -205,7 +218,7 @@ export default function Dashboard() {
 
             {/* Archived Store Overlay */}
             {stats.archived && (
-                <div className="fixed inset-0 z-[100] bg-white/95 backdrop-blur-md flex flex-items-center justify-center p-8 text-center animate-in fade-in zoom-in duration-500">
+                <div className="fixed inset-0 z-[100] bg-white/95 backdrop-blur-md flex flex-col items-center justify-center p-8 text-center animate-in fade-in zoom-in duration-500">
                     <div className="max-w-xs">
                         <div className="w-20 h-20 bg-orange-100 rounded-[32px] flex items-center justify-center mx-auto mb-6 text-orange-500 shadow-xl shadow-orange-100">
                             <Archive size={40} strokeWidth={2.5} />
@@ -352,8 +365,9 @@ export default function Dashboard() {
 
                 {/* Toast Notification */}
                 {showToast && (
-                    <div className="fixed bottom-24 left-1/2 -translate-x-1/2 bg-gray-900 text-white px-6 py-3 rounded-2xl text-xs font-bold animate-in fade-in slide-in-from-bottom-4 z-[60]">
-                        Link copied to clipboard! 📋
+                    <div className="fixed bottom-24 left-1/2 -translate-x-1/2 bg-gray-900/90 backdrop-blur-md text-white px-8 py-4 rounded-[20px] text-xs font-bold animate-in fade-in slide-in-from-bottom-4 z-[9999] shadow-2xl flex items-center gap-2 border border-white/10">
+                        <Check size={16} className="text-[#25D366]" strokeWidth={3} />
+                        Link ready to share! 🚀
                     </div>
                 )}
 
@@ -458,8 +472,6 @@ export default function Dashboard() {
                     </div>
                 </section>
             </div>
-
-
         </div>
     );
 }
