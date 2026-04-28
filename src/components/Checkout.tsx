@@ -11,6 +11,7 @@ export default function Checkout({ params }: { params: { name: string } }) {
     const [isPaid, setIsPaid] = useState(false);
     const [cartState, setCartState] = useState<any>(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [orderCreated, setOrderCreated] = useState(false);
     const [waLink, setWaLink] = useState('');
     const [isDownloading, setIsDownloading] = useState(false);
     const [readyImage, setReadyImage] = useState<string | null>(null);
@@ -49,6 +50,8 @@ export default function Checkout({ params }: { params: { name: string } }) {
     const cartTotal = cartSubtotal + deliveryFee;
 
     const handlePaymentSubmit = async () => {
+        if (orderCreated || isSubmitting) return;
+        setOrderCreated(true);
         setIsSubmitting(true);
         try {
             await new Promise(resolve => setTimeout(resolve, 2000));
@@ -102,7 +105,7 @@ export default function Checkout({ params }: { params: { name: string } }) {
                 localStorage.removeItem('kd_cart');
                 localStorage.removeItem('kd_ref');
 
-                setStep(2);
+                setStep(3);
                 setIsPaid(true);
 
                 setTimeout(() => {
@@ -125,6 +128,8 @@ export default function Checkout({ params }: { params: { name: string } }) {
     };
 
     const handleWhatsAppOnly = async () => {
+        if (orderCreated || isSubmitting) return;
+        setOrderCreated(true);
         setIsSubmitting(true);
         try {
             let text = `*New Order - ${cartState?.storeName || 'KedaiChat'}*\n\n`;
@@ -175,7 +180,7 @@ export default function Checkout({ params }: { params: { name: string } }) {
                 localStorage.setItem('kd_my_orders', JSON.stringify(myOrders));
                 localStorage.removeItem('kd_cart');
 
-                setStep(2);
+                setStep(3);
                 setIsPaid(true);
                 window.open(link, '_blank');
             } else {
