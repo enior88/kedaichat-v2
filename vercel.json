@@ -2,11 +2,11 @@
     "crons": [
         {
             "path": "/api/cron/marketing-agent",
-            "schedule": "30 3 * * *"
+            "schedule": "30 12 * * *"
         },
         {
             "path": "/api/cron/platform-agent",
-            "schedule": "0 8 * * *"
+            "schedule": "30 1 * * *"
         }
     ]
 }

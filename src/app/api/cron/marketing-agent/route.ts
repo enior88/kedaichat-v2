@@ -1,9 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { PrismaClient } from '@prisma/client';
+import { prisma } from '@/lib/prisma';
 import { generateMarketingContent } from '@/lib/gemini';
 import { postToFacebookPage, postToInstagramFeed } from '@/lib/meta';
-
-const prisma = new PrismaClient();
 
 export async function GET(req: NextRequest) {
     // 1. Verify Cron Secret

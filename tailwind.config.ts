@@ -21,4 +21,4 @@ const config: Config = {
     plugins: [],
 };
 export default config;
-// Triggering rebuild
+// Triggering rebuild - v2 force CSS regeneration
