@@ -9,6 +9,7 @@ export interface MarketingContent {
     hashtags: string[];
     seoTitle: string;
     seoDescription: string;
+    imagePrompt: string;
 }
 
 export async function generateMarketingContent(storeName: string, products: string[], category: string): Promise<MarketingContent> {
@@ -35,7 +36,8 @@ export async function generateMarketingContent(storeName: string, products: stri
           "caption": "Persuasive caption blending sales, storytelling, emojis, and an engaging question at the end",
           "hashtags": ["#tag1", "#tag2", "#KedaiChat"],
           "seoTitle": "High CTR SEO Title",
-          "seoDescription": "Click-driven Meta Description"
+          "seoDescription": "Click-driven Meta Description",
+          "imagePrompt": "A professional, ultra-realistic 8k marketing photo description for an AI image generator. The visual should represent the shop's brand and products. Incorporate a premium ecommerce vibe with KedaiChat.online purple/magical branding elements if appropriate. Avoid text in the image itself except for subtle artistic branding. Make it versatile and scroll-stopping."
         }
     `;
 

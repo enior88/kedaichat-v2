@@ -32,8 +32,6 @@ export async function GET(req: NextRequest) {
         // Pick a random store
         const store = stores[Math.floor(Math.random() * stores.length)];
         const productNames = store.products.map((p: any) => p.name);
-        // Use store logo or first product image as visual
-        const visualUrl = store.logoUrl || store.products.find((p: any) => p.imageUrl)?.imageUrl || "https://kedaichat.online/images/growth-default.jpg";
 
         // 3. Generate content using AI
         const aiContent = await generateMarketingContent(
@@ -41,6 +39,20 @@ export async function GET(req: NextRequest) {
             productNames,
             store.category || 'General Store'
         );
+
+        // Determine the visual URL
+        // Priority: 1. Store Logo, 2. Product Image, 3. Dynamic AI Generated Image, 4. Static Fallback
+        let visualUrl = store.logoUrl || store.products.find((p: any) => p.imageUrl)?.imageUrl;
+
+        if (!visualUrl && aiContent.imagePrompt) {
+            // Generate a unique image using Pollinations.ai based on the AI prompt
+            const encodedPrompt = encodeURIComponent(aiContent.imagePrompt);
+            visualUrl = `https://image.pollinations.ai/prompt/${encodedPrompt}?nologo=true&width=1080&height=1080&seed=${Date.now()}`;
+        }
+
+        if (!visualUrl) {
+            visualUrl = "https://kedaichat.online/images/growth-default.jpg";
+        }
 
         const storeUrl = `https://kedaichat.online/shop/${store.slug}`;
         const fullMessage = `${aiContent.headline}\n\n${aiContent.caption}\n\n🛒 Shop here: ${storeUrl}\n\n${aiContent.hashtags.join(' ')}`;
