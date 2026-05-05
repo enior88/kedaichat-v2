@@ -7,11 +7,22 @@ type Props = {
     params: { name: string };
 };
 
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
-    const store = await prisma.store.findUnique({
-        where: { slug: params.name },
-        select: { name: true, category: true, logoUrl: true }
+import { cache } from 'react';
+
+const getStore = cache(async (slug: string) => {
+    return await prisma.store.findUnique({
+        where: { slug },
+        include: {
+            products: {
+                where: { active: true }
+            },
+            subscription: true
+        }
     });
+});
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+    const store = await getStore(params.name);
 
     if (!store) return { title: 'Shop Not Found' };
 
@@ -37,15 +48,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export default async function ShopPage({ params }: Props) {
-    const store = await prisma.store.findUnique({
-        where: { slug: params.name },
-        include: {
-            products: {
-                where: { active: true }
-            },
-            subscription: true
-        }
-    });
+    const store = await getStore(params.name);
 
     if (!store) {
         redirect('/');

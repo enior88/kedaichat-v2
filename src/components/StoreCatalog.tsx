@@ -19,7 +19,7 @@ export default function StoreCatalog({ slug, initialStoreData }: { slug?: string
     const [groupTitle, setGroupTitle] = useState('');
     const [groupDeadline, setGroupDeadline] = useState('');
     const [isCreatingGroup, setIsCreatingGroup] = useState(false);
-    const [isLoadingData, setIsLoadingData] = useState(!initialStoreData);
+    const [isLoadingData, setIsLoadingData] = useState(false);
     const [showToast, setShowToast] = useState(false);
 
     const categories = [
@@ -414,7 +414,13 @@ export default function StoreCatalog({ slug, initialStoreData }: { slug?: string
 
                                     <div className="w-[110px] h-[110px] shrink-0 bg-gray-50 rounded-[18px] overflow-hidden relative shadow-inner">
                                         {p.imageUrl ? (
-                                            <Image src={p.imageUrl} alt={p.name} fill className="object-cover" />
+                                            <Image
+                                                src={p.imageUrl}
+                                                alt={p.name}
+                                                fill
+                                                className="object-cover"
+                                                priority={(store?.products || []).indexOf(p) < 2}
+                                            />
                                         ) : (
                                             <div className="w-full h-full flex flex-col items-center justify-center text-gray-300">
                                                 <ShoppingCart size={28} strokeWidth={1.5} />
