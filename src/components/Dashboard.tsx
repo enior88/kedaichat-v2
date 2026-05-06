@@ -5,11 +5,12 @@ import {
     BarChart3,
     Search, ShoppingBag, Users, Package,
     TrendingUp, Share2, ChevronRight, Rocket,
-    Store, Settings, Plus, Archive, ShieldCheck, LogOut, MessageCircle, Check
+    Store, Settings, Plus, Archive, ShieldCheck, LogOut, MessageCircle, Check, Bell
 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useLanguage } from '@/lib/LanguageContext';
 import Image from 'next/image';
+import { subscribeToPush, getNotificationPermission } from '@/lib/push-client';
 
 export default function Dashboard() {
     const router = useRouter();
@@ -34,6 +35,8 @@ export default function Dashboard() {
     const [error, setError] = useState<string | null>(null);
     const [showToast, setShowToast] = useState(false);
     const [installable, setInstallable] = useState(false);
+    const [pushStatus, setPushStatus] = useState<'default' | 'granted' | 'denied' | 'unsupported'>('default');
+    const [showPushPrompt, setShowPushPrompt] = useState(false);
 
     useEffect(() => {
         // Check if already installable from global
@@ -43,8 +46,37 @@ export default function Dashboard() {
 
         const handleInstallable = () => setInstallable(true);
         window.addEventListener('pwa-installable', handleInstallable);
+
+        // Check Notification Permission
+        if ('Notification' in window) {
+            setPushStatus(Notification.permission);
+            if (Notification.permission === 'default') {
+                // Show prompt after a short delay if not yet granted
+                setTimeout(() => setShowPushPrompt(true), 3000);
+            }
+        } else {
+            setPushStatus('unsupported');
+        }
+
         return () => window.removeEventListener('pwa-installable', handleInstallable);
     }, []);
+
+    const handleEnablePush = async () => {
+        try {
+            const permission = await getNotificationPermission();
+            setPushStatus(permission);
+
+            if (permission === 'granted') {
+                const success = await subscribeToPush();
+                if (success) {
+                    setShowPushPrompt(false);
+                    // Show a toast or feedback
+                }
+            }
+        } catch (err) {
+            console.error('Push enablement failed', err);
+        }
+    };
 
     const handleInstallApp = async () => {
         const deferredPrompt = (window as any).deferredPrompt;
@@ -335,6 +367,34 @@ export default function Dashboard() {
                         {stats.totalOrders >= 30 && (
                             <p className="text-xs text-red-500 font-medium mt-3">You've reached your monthly limit. Upgrade to continue receiving orders.</p>
                         )}
+                    </div>
+                )}
+
+                {/* Push Notification Promo */}
+                {showPushPrompt && pushStatus === 'default' && (
+                    <div className="mt-6 bg-gradient-to-br from-[#25D366] to-[#128C7E] rounded-[32px] p-6 text-white shadow-xl shadow-green-100 relative overflow-hidden animate-in slide-in-from-right-4 duration-700">
+                        <div className="relative z-10">
+                            <div className="flex items-center gap-2 mb-2">
+                                <span className="bg-white/20 text-[10px] font-black px-2 py-1 rounded-full uppercase tracking-widest">New Feature</span>
+                            </div>
+                            <h3 className="text-lg font-black mb-1">Never miss an order!</h3>
+                            <p className="text-[10px] text-white/80 font-bold uppercase mb-6 leading-tight">Get instant alerts even when the app is closed.</p>
+                            <div className="flex gap-2">
+                                <button
+                                    onClick={handleEnablePush}
+                                    className="bg-white text-[#25D366] px-5 py-3 rounded-2xl text-[10px] font-black uppercase tracking-widest shadow-lg active:scale-95 transition-all"
+                                >
+                                    Enable Notifications
+                                </button>
+                                <button
+                                    onClick={() => setShowPushPrompt(false)}
+                                    className="bg-transparent text-white/50 px-4 py-3 rounded-2xl text-[10px] font-bold uppercase tracking-widest hover:text-white transition-colors"
+                                >
+                                    Later
+                                </button>
+                            </div>
+                        </div>
+                        <Bell className="absolute -right-4 -bottom-4 w-24 h-24 text-white/10 -rotate-12" />
                     </div>
                 )}
             </div>

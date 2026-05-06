@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { getSession } from '@/lib/auth';
+import { eventBus, AppEvents } from '@/lib/events';
+import '@/lib/handlers/push-handler'; // Register event listeners
 
 // GET all orders for a store (for seller dashboard)
 export async function GET(req: Request) {
@@ -97,6 +99,15 @@ export async function POST(req: Request) {
                 // Clear the ref after use so it doesn't double-count
             }
         }
+
+
+        // Emit event for background handlers (Decoupled architecture)
+        eventBus.emit(AppEvents.ORDER_CREATED, {
+            orderId: newOrder.id,
+            storeId: newOrder.storeId,
+            total: newOrder.total,
+            customerName: newOrder.customerName
+        });
 
         return NextResponse.json({ success: true, order: newOrder });
     } catch (error: any) {

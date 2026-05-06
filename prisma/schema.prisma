@@ -17,6 +17,17 @@ model User {
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
   stores         Store[]
+  pushSubscriptions PushSubscription[]
+}
+
+model PushSubscription {
+  id        String   @id @default(cuid())
+  endpoint  String   @unique
+  p256dh    String
+  auth      String
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
 }
 
 model Store {
@@ -163,6 +174,11 @@ model MarketingPost {
   hashtags    String
   seoTitle    String
   seoDescription String
+  visualUrl   String?
+  fbPostId    String?
+  igPostId    String?
+  status      String   @default("PENDING") // PENDING, SUCCESS, FAILED
+  errorMessage String?
   storeId     String
   createdAt   DateTime @default(now())
   store       Store    @relation(fields: [storeId], references: [id])
@@ -175,7 +191,10 @@ model PlatformArticle {
   imageUrl    String?
   category    String   @default("Marketing")
   status      String   @default("DRAFT") // DRAFT, PUBLISHED
-  metaPostId  String?  // Reference to FB/IG post ID
+  metaStatus  String   @default("PENDING") // PENDING, SUCCESS, FAILED
+  metaError   String?
+  fbPostId    String?
+  igPostId    String?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 }
