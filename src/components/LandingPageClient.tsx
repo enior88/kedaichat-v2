@@ -153,7 +153,7 @@ export default function LandingPageClient() {
     }
 
     return (
-        <div id="main-scroll-container" className="bg-white font-inter text-gray-900 md:h-screen md:overflow-y-auto md:snap-y md:snap-mandatory overflow-x-hidden min-h-screen" style={{ scrollBehavior: 'smooth' }}>
+        <div id="main-scroll-container" className="bg-white font-inter text-gray-900 overflow-x-hidden min-h-screen" style={{ scrollBehavior: 'smooth' }}>
             <script
                 type="application/ld+json"
                 dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
@@ -162,29 +162,30 @@ export default function LandingPageClient() {
             <div className="fixed top-6 left-0 right-0 z-[100] px-4 flex justify-center pointer-events-none">
                 <nav className="glass-pill max-w-5xl w-full mx-auto px-4 md:px-8 h-14 md:h-16 flex items-center justify-between pointer-events-auto">
                     <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 rounded-lg overflow-hidden shadow-sm">
-                            <Image src="/logo.png" alt="KedaiChat Logo" width={32} height={32} className="w-full h-full object-cover" priority />
+                        <div className="w-10 h-10 rounded-xl overflow-hidden shadow-sm flex items-center justify-center p-2 bg-green-500">
+                            <div className="text-white font-black text-xl leading-none">K</div>
                         </div>
-                        <span className="text-lg font-black tracking-tighter text-navy-dark">KedaiChat</span>
+                        <span className="text-xl font-black tracking-tighter text-navy-dark">KedaiChat</span>
                     </div>
 
-                    <div className="hidden lg:flex items-center gap-8">
-                        <a href="#how-it-works" onClick={(e) => scrollToSection(e, 'how-it-works')} className="text-sm font-bold text-slate-text hover:text-navy-dark transition-all duration-300">{t('how_it_works')}</a>
-                        <a href="#problem" onClick={(e) => scrollToSection(e, 'problem')} className="text-sm font-bold text-slate-text hover:text-navy-dark transition-all duration-300">{t('problem_title')}</a>
-                        <a href="#features" onClick={(e) => scrollToSection(e, 'features')} className="text-sm font-bold text-slate-text hover:text-navy-dark transition-all duration-300">{t('features')}</a>
-                        <a href="#pricing" onClick={(e) => scrollToSection(e, 'pricing')} className="text-sm font-bold text-slate-text hover:text-navy-dark transition-all duration-300">{t('pricing_title')}</a>
+                    <div className="hidden lg:flex items-center gap-10">
+                        <a href="#how-it-works" onClick={(e) => scrollToSection(e, 'how-it-works')} className="text-sm font-bold text-slate-text hover:text-navy-dark transition-all duration-300">Cara ia berfungsi</a>
+                        <a href="#problem" onClick={(e) => scrollToSection(e, 'problem')} className="text-sm font-bold text-slate-text hover:text-navy-dark transition-all duration-300">Masalah</a>
+                        <a href="#features" onClick={(e) => scrollToSection(e, 'features')} className="text-sm font-bold text-slate-text hover:text-navy-dark transition-all duration-300">Ciri-ciri</a>
+                        <a href="#pricing" onClick={(e) => scrollToSection(e, 'pricing')} className="text-sm font-bold text-slate-text hover:text-navy-dark transition-all duration-300">Harga</a>
                     </div>
 
-                    <div className="flex items-center gap-2 md:gap-4">
+                    <div className="flex items-center gap-2 md:gap-6">
                         <div className="hidden md:block">
                             <LanguageToggle />
                         </div>
-                        <div className="hidden lg:flex items-center gap-4 border-l border-white/20 pl-4">
-                            <Link href="/login" className="text-sm font-bold text-navy-dark hover:text-premium-gradient transition-all px-2">
-                                {t('login')}
+                        <div className="hidden lg:flex items-center gap-6 border-l-2 border-gray-100 pl-6">
+                            <Link href="/login" className="text-sm font-black text-navy-dark hover:text-[#22C55E] transition-all">
+                                Login
                             </Link>
-                            <Link href="/onboarding" className="bg-navy-dark text-white px-5 py-2.5 rounded-full text-xs font-bold hover:bg-gray-800 transition-all shadow-lg active:scale-95">
-                                {t('start_free')}
+                            <Link href="/onboarding" className="bg-navy-dark text-white px-8 py-3.5 rounded-full text-sm font-black hover:bg-gray-800 transition-all shadow-lg active:scale-95 flex items-center gap-2">
+                                Mula Percuma
+                                <ArrowRight size={16} />
                             </Link>
                         </div>
                         <button
@@ -250,125 +251,215 @@ export default function LandingPageClient() {
                     <section className="max-w-7xl mx-auto px-4 md:px-8 w-full relative z-10">
                         <div className="grid lg:grid-cols-2 gap-16 lg:gap-8 items-center lg:text-left text-center">
                             {/* Left Content */}
-                            <div className="flex flex-col gap-6 md:gap-8 max-w-2xl mx-auto lg:mx-0">
-                                <div className="inline-flex items-center gap-2 bg-green-100/50 text-[#22C55E] px-4 py-2 rounded-full w-fit mx-auto lg:mx-0 border border-green-200/50 shadow-sm animate-fade-in-up">
+                            <div className="flex flex-col gap-6 md:gap-10 max-w-2xl mx-auto lg:mx-0">
+                                <div className="inline-flex items-center gap-2 bg-green-50 text-[#22C55E] px-4 py-2 rounded-full w-fit mx-auto lg:mx-0 border border-green-100/50 shadow-sm animate-fade-in-up">
                                     <Zap size={14} className="fill-current" />
-                                    <span className="text-xs font-bold tracking-wide uppercase">{t('built_for_smes')}</span>
+                                    <span className="text-[10px] font-black tracking-widest uppercase">{t('built_for_smes')}</span>
                                 </div>
 
-                                <h1 className="text-4xl md:text-7xl font-black text-navy-dark leading-[1] tracking-tight">
-                                    {t('hero_title')} <br />
-                                    <span className="text-premium-gradient animate-shimmer">{t('hero_shop_highlight')}</span>
-                                </h1>
+                                <div className="space-y-6">
+                                    <h1 className="text-4xl md:text-6xl lg:text-[5.5rem] font-black text-navy-dark leading-[1.05] tracking-tight">
+                                        Ambil Pesanan Lebih Teratur <br />
+                                        & <span className="text-[#22C55E]">Jana Lebih Jualan</span> dari WhatsApp
+                                    </h1>
 
-                                <p className="text-lg md:text-xl text-slate-text font-medium leading-relaxed max-w-xl mx-auto lg:mx-0">
-                                    {t('hero_desc')}
-                                </p>
+                                    <p className="text-lg md:text-xl text-slate-text font-medium leading-relaxed max-w-xl mx-auto lg:mx-0 opacity-80">
+                                        KedaiChat membantu anda mengelak terlepas pesanan, mengumpul lebih banyak pesanan, dan menggalakkan pelanggan untuk membuat pesanan ulangan.
+                                    </p>
+                                </div>
 
-                                <div className="flex flex-col sm:flex-row items-center gap-4 pt-4">
-                                    <Link href="/onboarding" className="btn-premium w-full sm:w-auto text-lg group">
-                                        {t('start_free')}
-                                        <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
+                                <div className="flex flex-col sm:flex-row items-center gap-4 pt-2">
+                                    <Link href="/onboarding" className="w-full sm:w-auto bg-[#22C55E] text-white px-10 py-5 rounded-2xl text-xl font-black hover:bg-[#1fb855] transition-all shadow-xl shadow-green-100 active:scale-95 flex items-center justify-center gap-3">
+                                        Mula Percuma
+                                        <ArrowRight size={24} />
                                     </Link>
-                                    <a href="#how-it-works" onClick={(e) => scrollToSection(e, 'how-it-works')} className="btn-glass w-full sm:w-auto text-lg border-2 border-navy-dark/5 hover:border-navy-dark/10 group">
-                                        <Play size={20} className="fill-navy-dark group-hover:scale-110 transition-transform" />
-                                        {t('how_it_works')}
+                                    <a href="#how-it-works" onClick={(e) => scrollToSection(e, 'how-it-works')} className="w-full sm:w-auto bg-white text-navy-dark border-2 border-gray-100 px-10 py-5 rounded-2xl text-xl font-black hover:bg-gray-50 transition-all active:scale-95 flex items-center justify-center gap-3">
+                                        <Play size={20} className="fill-navy-dark" />
+                                        Cara ia berfungsi
                                     </a>
                                 </div>
 
-                                {/* Minimal Review Badge (optional but high trust) */}
-                                <div className="flex items-center gap-4 pt-4 opacity-70 justify-center lg:justify-start">
+                                {/* Integration Icons Row */}
+                                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8 pt-4">
+                                    {[
+                                        { icon: <MessageSquare size={32} />, label: "WhatsApp Integration" },
+                                        { icon: <ClipboardList size={32} />, label: "Smart Order Management" },
+                                        { icon: <Users size={32} />, label: "Customer Engagement" },
+                                        { icon: <BarChart3 size={32} />, label: "Sales Analytics" }
+                                    ].map((item, idx) => (
+                                        <div key={idx} className="flex flex-col items-center lg:items-start gap-2">
+                                            <div className="w-16 h-16 bg-gray-50 rounded-2xl flex items-center justify-center text-gray-400 group hover:bg-green-50 hover:text-green-500 transition-colors">
+                                                {React.cloneElement(item.icon, { className: "transition-transform group-hover:scale-110" })}
+                                            </div>
+                                            <span className="text-[10px] font-bold text-gray-400 text-center lg:text-left leading-tight uppercase tracking-wider">{item.label}</span>
+                                        </div>
+                                    ))}
+                                </div>
+
+                                {/* Social Proof Badge */}
+                                <div className="flex items-center gap-4 pt-8 justify-center lg:justify-start">
                                     <div className="flex -space-x-3">
                                         {[1, 2, 3, 4].map(i => (
-                                            <div key={i} className="w-8 h-8 rounded-full border-2 border-white bg-slate-200 overflow-hidden">
-                                                <Image src={`https://i.pravatar.cc/100?u=${i}`} alt="User" width={32} height={32} />
+                                            <div key={i} className="w-12 h-12 rounded-full border-4 border-white bg-slate-200 overflow-hidden shadow-sm">
+                                                <Image src={`https://i.pravatar.cc/100?u=user${i}`} alt="User" width={48} height={48} />
                                             </div>
                                         ))}
                                     </div>
-                                    <div className="text-sm font-bold text-slate-text">
-                                        <div className="flex items-center gap-1 text-yellow-500">
-                                            {[1, 2, 3, 4, 5].map(s => <Check key={s} size={12} className="fill-current" />)}
+                                    <div>
+                                        <div className="flex items-center gap-1 text-yellow-400 mb-0.5">
+                                            {[1, 2, 3, 4, 5].map(s => (
+                                                <svg key={s} className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                                                </svg>
+                                            ))}
                                         </div>
-                                        10,000+ usahawan Malaysia
+                                        <p className="text-xs font-bold text-gray-400">
+                                            Dipercayai oleh 10,000+ usahawan Malaysia
+                                        </p>
                                     </div>
                                 </div>
                             </div>
 
                             {/* Right Content - Visual Mockup */}
-                            <div className="relative group perspective-1000 lg:scale-110">
-                                {/* Floating Glow Blobs */}
-                                <div className="absolute -inset-4 bg-green-300/20 blur-[60px] rounded-[100px] -z-10 group-hover:bg-green-300/30 transition-all duration-700" />
+                            <div className="relative lg:scale-105 xl:scale-110">
+                                {/* Large Background Circular Element */}
+                                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[140%] h-[140%] bg-green-50/30 rounded-full blur-3xl -z-10" />
 
-                                {/* iPhone Frame */}
-                                <div className="relative w-[280px] md:w-[320px] mx-auto z-10 md:transform lg:rotate-[-4deg] transition-all duration-700 group-hover:rotate-0">
-                                    <div className="bg-navy-dark p-3 rounded-[3rem] shadow-2xl overflow-hidden aspect-[9/19.5]">
-                                        <div className="relative w-full h-full bg-white rounded-[2.2rem] overflow-hidden">
-                                            {/* WhatsApp Content Mockup */}
-                                            <div className="bg-[#075E54] p-4 text-white flex items-center gap-2">
-                                                <div className="w-8 h-8 rounded-full bg-white/20" />
+                                <div className="relative w-fit mx-auto">
+                                    {/* SVG Connectors (Curved Dashed Lines) */}
+                                    <svg className="absolute inset-0 w-full h-full pointer-events-none z-0 overflow-visible opacity-40" viewBox="0 0 400 600">
+                                        <path d="M50,150 Q-50,250 50,450" fill="none" stroke="#22C55E" strokeWidth="2" strokeDasharray="6 6" className="animate-pulse" />
+                                        <path d="M350,100 Q450,200 350,400" fill="none" stroke="#22C55E" strokeWidth="2" strokeDasharray="6 6" className="animate-pulse" />
+                                    </svg>
+
+                                    {/* iPhone Frame */}
+                                    <div className="relative w-[300px] md:w-[340px] z-10 shadow-2xl rounded-[3.5rem] border-[10px] border-navy-dark/95 bg-navy-dark overflow-hidden ring-1 ring-white/20">
+                                        <div className="relative bg-[#ece5dd] w-full aspect-[9/19.5] overflow-hidden flex flex-col">
+                                            {/* WhatsApp UI Internal */}
+                                            <div className="bg-[#075E54] p-4 text-white flex items-center gap-3 shadow-md">
+                                                <div className="w-10 h-10 rounded-full bg-slate-300 flex items-center justify-center text-navy-dark font-black text-sm">K</div>
                                                 <div className="flex-1">
-                                                    <div className="w-20 h-2 bg-white/30 rounded-full" />
-                                                </div>
-                                                <div className="w-4 h-4 rounded-full bg-white/20" />
-                                            </div>
-                                            <div className="p-4 space-y-4">
-                                                <div className="bg-gray-100 p-3 rounded-2xl rounded-tl-none w-[80%]">
-                                                    <div className="w-full h-2 bg-gray-200 rounded-full mb-2" />
-                                                    <div className="w-2/3 h-2 bg-gray-200 rounded-full" />
-                                                </div>
-                                                <div className="bg-green-100 p-3 rounded-2xl rounded-tr-none w-[80%] ml-auto">
-                                                    <div className="w-full h-2 bg-green-200 rounded-full mb-2" />
-                                                    <div className="w-2/3 h-2 bg-green-200 rounded-full" />
-                                                </div>
-                                                <div className="premium-card p-3 shadow-md border-none rounded-2xl scale-95">
-                                                    <div className="flex gap-2">
-                                                        <div className="w-10 h-10 bg-gray-50 rounded-lg flex-shrink-0" />
-                                                        <div className="space-y-1 py-1 flex-1">
-                                                            <div className="w-full h-2 bg-gray-100 rounded-full" />
-                                                            <div className="w-16 h-2 bg-gray-100 rounded-full" />
-                                                        </div>
-                                                        <div className="w-6 h-6 bg-green-500 rounded-full self-center" />
+                                                    <div className="text-sm font-bold flex items-center gap-1">
+                                                        Kedai Runcit
+                                                        <Check size={12} className="bg-[#25D366] text-white rounded-full p-0.5" />
                                                     </div>
+                                                    <div className="text-[10px] opacity-70">Online</div>
                                                 </div>
-                                                <div className="bg-green-500 text-white py-3 rounded-xl text-center font-bold text-xs">
-                                                    Proceed Order (WhatsApp)
+                                                <div className="flex gap-4 opacity-80">
+                                                    <Play size={14} className="fill-current rotate-90" />
+                                                    <Users size={14} />
+                                                </div>
+                                            </div>
+
+                                            <div className="flex-1 p-3 flex flex-col gap-3 overflow-y-auto">
+                                                <div className="bg-white p-3 rounded-2xl rounded-tl-none shadow-sm max-w-[85%] self-start relative">
+                                                    <p className="text-[11px] leading-relaxed">Hi! Saya nak buat tempahan barang.</p>
+                                                    <span className="text-[8px] opacity-40 float-right mt-1">10:30 AM</span>
+                                                </div>
+
+                                                <div className="bg-[#dcf8c6] p-3 rounded-2xl rounded-tr-none shadow-sm max-w-[85%] self-end relative">
+                                                    <p className="text-[11px] leading-relaxed">Terima kasih! Senarai produk kami:</p>
+
+                                                    <div className="mt-2 space-y-2">
+                                                        {[
+                                                            { name: "Beras Super 5kg", price: "26.50", img: "🍚" },
+                                                            { name: "Minyak Masak 2kg", price: "10.80", img: "🧴" },
+                                                            { name: "Gula Pasir 1kg", price: "2.60", img: "🧊" }
+                                                        ].map((p, i) => (
+                                                            <div key={i} className="bg-white/80 p-2 rounded-xl flex items-center gap-3 border border-white/50">
+                                                                <div className="w-10 h-10 bg-gray-50 rounded-lg flex items-center justify-center text-lg">{p.img}</div>
+                                                                <div className="flex-1 min-w-0">
+                                                                    <div className="text-[9px] font-bold truncate">{p.name}</div>
+                                                                    <div className="text-[9px] text-[#075E54] font-black">RM {p.price}</div>
+                                                                </div>
+                                                                <button className="w-5 h-5 bg-[#25D366] text-white rounded-full flex items-center justify-center">+</button>
+                                                            </div>
+                                                        ))}
+                                                    </div>
+                                                    <button className="w-full bg-[#25D366] text-white py-2 rounded-xl text-[10px] font-black mt-3 shadow-md">Lihat Bakul (3)</button>
+                                                    <span className="text-[8px] opacity-40 float-right mt-1">10:32 AM</span>
+                                                </div>
+                                            </div>
+
+                                            <div className="bg-white p-3 flex items-center gap-3">
+                                                <div className="flex-1 bg-gray-50 rounded-full px-4 py-2 text-[10px] text-gray-400">Type a message</div>
+                                                <div className="flex gap-3 text-gray-400">
+                                                    <Users size={16} />
+                                                    <Bell size={16} />
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
 
-                                    {/* Floating Cards around the Phone */}
-                                    <div className="absolute top-10 -right-16 md:-right-24 premium-card !p-4 !rounded-2xl shadow-xl w-36 md:w-44 animate-float -z-10 group-hover:translate-y--4 transition-transform duration-700">
-                                        <div className="flex items-center gap-2 mb-2">
-                                            <div className="w-6 h-6 bg-green-100 rounded-lg flex items-center justify-center text-green-600">
-                                                <BarChart3 size={14} />
-                                            </div>
-                                            <span className="text-[10px] font-bold text-slate-text">Sales Growth</span>
+                                    {/* Detailed Floating Cards */}
+
+                                    {/* Total Orders Card */}
+                                    <div className="absolute top-20 -left-20 md:-left-28 bg-white p-4 rounded-2xl shadow-2xl border border-gray-50 w-40 md:w-48 animate-float z-20">
+                                        <div className="flex justify-between items-start mb-1">
+                                            <span className="text-[10px] font-black text-gray-400 uppercase tracking-tighter">Total Orders</span>
+                                            <span className="text-[9px] font-black text-green-500 bg-green-50 px-1.5 py-0.5 rounded-full">+ 35.6%</span>
                                         </div>
-                                        <div className="text-xl font-black text-navy-dark">+500%</div>
-                                        <div className="w-full h-1 bg-gray-100 rounded-full mt-2 overflow-hidden">
-                                            <div className="w-[80%] h-full bg-green-500" />
+                                        <div className="text-2xl font-black text-navy-dark tracking-tighter">4,782</div>
+                                        <div className="mt-3 h-8 flex items-end gap-1">
+                                            {[30, 45, 35, 55, 40, 65, 50, 70].map((h, i) => (
+                                                <div key={i} className="flex-1 bg-green-100 rounded-sm hover:bg-green-500 transition-all cursor-pointer group" style={{ height: `${h}%` }}>
+                                                    <div className="absolute -top-6 left-1/2 -translate-x-1/2 bg-navy-dark text-white text-[8px] px-1 py-0.5 rounded opacity-0 group-hover:opacity-100 transition-opacity">{(h * 10).toLocaleString()}</div>
+                                                </div>
+                                            ))}
                                         </div>
                                     </div>
 
-                                    <div className="absolute bottom-20 -left-16 md:-left-24 premium-card !p-4 !rounded-2xl shadow-xl w-40 md:w-48 animate-float-delayed -z-10 group-hover:translate-y-4 transition-transform duration-700">
-                                        <div className="flex items-center gap-3 mb-2">
-                                            <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center overflow-hidden">
-                                                <Users size={16} className="text-blue-600" />
+                                    {/* Sales Card */}
+                                    <div className="absolute md:top-10 -right-20 md:-right-32 bg-white p-5 rounded-2xl shadow-2xl border border-gray-50 w-44 md:w-52 animate-float-delayed z-20">
+                                        <div className="flex justify-between items-start mb-3">
+                                            <div className="flex flex-col">
+                                                <span className="text-[10px] font-black text-gray-400 uppercase">Sales</span>
+                                                <span className="text-xl font-black text-[#22C55E]">+500%</span>
                                             </div>
-                                            <div>
-                                                <div className="text-[10px] font-bold text-slate-text">Repeat Customers</div>
-                                                <div className="text-sm font-black">68% Returning</div>
+                                            <div className="w-8 h-8 bg-green-50 rounded-xl flex items-center justify-center text-green-500">
+                                                <BarChart3 size={18} />
                                             </div>
                                         </div>
-                                        <div className="flex gap-1">
-                                            {[1, 2, 3, 4, 5].map(i => <div key={i} className={`h-1 flex-1 rounded-full ${i < 5 ? 'bg-blue-500' : 'bg-gray-100'}`} />)}
+                                        <svg className="w-full h-12 overflow-visible" viewBox="0 0 100 40">
+                                            <path d="M0,35 Q10,30 20,25 T40,20 T60,10 T80,5 T100,0" fill="none" stroke="#22C55E" strokeWidth="3" strokeLinecap="round" />
+                                            <circle cx="100" cy="0" r="3" fill="#22C55E" />
+                                        </svg>
+                                    </div>
+
+                                    {/* Features Checkbox List */}
+                                    <div className="absolute bottom-24 -right-20 md:-right-24 bg-white p-4 rounded-2xl shadow-2xl border border-gray-50 w-40 md:w-48 animate-float z-20">
+                                        <div className="space-y-3">
+                                            {[
+                                                "Tak terlepas pesanan lagi",
+                                                "Proses lebih cepat & teratur",
+                                                "Pelanggan kembali lagi"
+                                            ].map((txt, i) => (
+                                                <div key={i} className="flex items-center gap-2">
+                                                    <div className="w-5 h-5 bg-green-100 rounded-full flex items-center justify-center text-green-500 shadow-sm flex-shrink-0">
+                                                        <Check size={10} strokeWidth={4} />
+                                                    </div>
+                                                    <span className="text-[9px] font-bold text-gray-600 tracking-tight leading-tight">{txt}</span>
+                                                </div>
+                                            ))}
                                         </div>
                                     </div>
 
-                                    <div className="absolute -bottom-8 right-0 md:right-4 premium-card !p-4 !rounded-2xl shadow-lg border-green-100/50 animate-float w-32 md:w-40 -z-10">
-                                        <div className="text-[10px] font-bold text-slate-text uppercase mb-1 tracking-wider">Total Orders</div>
-                                        <div className="text-xl font-black text-[#22C55E]">4,782</div>
+                                    {/* Repeat Customers Card */}
+                                    <div className="absolute -bottom-10 -left-10 md:left-4 bg-white p-4 rounded-3xl shadow-2xl border border-gray-50 w-44 md:w-52 animate-float-delayed z-20">
+                                        <div className="flex items-center gap-4">
+                                            <div className="relative w-14 h-14">
+                                                <svg className="w-full h-full -rotate-90" viewBox="0 0 36 36">
+                                                    <circle cx="18" cy="18" r="16" fill="none" stroke="#f1f5f9" strokeWidth="4" />
+                                                    <circle cx="18" cy="18" r="16" fill="none" stroke="#22C55E" strokeWidth="4" strokeDasharray="68 100" strokeLinecap="round" />
+                                                </svg>
+                                                <div className="absolute inset-0 flex items-center justify-center text-[10px] font-black">68%</div>
+                                            </div>
+                                            <div className="flex-1">
+                                                <div className="text-[10px] font-black opacity-40 uppercase tracking-tighter">Repeat Customers</div>
+                                                <div className="text-xl font-black">68%</div>
+                                                <div className="text-[9px] font-black text-green-500">+18.2%</div>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>

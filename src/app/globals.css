@@ -10,12 +10,14 @@
     --soft-grey: #F8FAFC;
     --navy-dark: #0F172A;
     --slate-text: #475569;
+    --premium-green: #22C55E;
   }
 
   body {
     background-color: #FFFFFF;
     color: var(--navy-dark);
     font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+    overflow-x: hidden;
   }
 }
 
@@ -56,26 +58,30 @@
   }
 
   @keyframes float {
-
-    0%,
-    100% {
-      transform: translateY(0);
+    0% {
+      transform: translateY(0px) rotate(0deg);
     }
 
     50% {
-      transform: translateY(-10px);
+      transform: translateY(-15px) rotate(1deg);
+    }
+
+    100% {
+      transform: translateY(0px) rotate(0deg);
     }
   }
 
   @keyframes float-delayed {
-
-    0%,
-    100% {
-      transform: translateY(0);
+    0% {
+      transform: translateY(0px) rotate(0deg);
     }
 
     50% {
-      transform: translateY(10px);
+      transform: translateY(15px) rotate(-1deg);
+    }
+
+    100% {
+      transform: translateY(0px) rotate(0deg);
     }
   }
 
