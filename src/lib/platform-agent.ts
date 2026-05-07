@@ -45,10 +45,34 @@ export async function generatePlatformArticle() {
     try {
         const apiKey = process.env.GEMINI_API_KEY || "";
         const client = new GoogleGenerativeAI(apiKey);
-        const model = client.getGenerativeModel({ model: "gemini-3-flash-preview" }, { apiVersion: "v1beta" });
-        const result = await model.generateContent(prompt);
-        const response = await result.response;
-        const responseText = response.text();
+
+        const modelsToTry = [
+            { name: "gemini-flash-latest", version: "v1" },
+            { name: "gemini-3-flash-preview", version: "v1beta" },
+            { name: "gemini-2.5-flash", version: "v1" },
+            { name: "gemini-2.0-flash", version: "v1" },
+            { name: "gemini-pro-latest", version: "v1" }
+        ];
+
+        let responseText = "";
+        let lastError = null;
+
+        for (const modelInfo of modelsToTry) {
+            try {
+                const model = client.getGenerativeModel({ model: modelInfo.name }, { apiVersion: modelInfo.version });
+                const result = await model.generateContent(prompt);
+                const response = await result.response;
+                responseText = response.text();
+                break; // Success!
+            } catch (error: any) {
+                console.warn(`Model ${modelInfo.name} unavailable in platform-agent, trying next...`);
+                lastError = error;
+            }
+        }
+
+        if (!responseText) {
+            throw new Error(`Platform Engine exhaustion: ${lastError?.message || 'Unknown error'}`);
+        }
 
         // Clean markdown backticks if any
         const cleanedText = responseText.replace(/```json|```/g, '').trim();

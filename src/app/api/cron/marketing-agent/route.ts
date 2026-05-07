@@ -66,6 +66,10 @@ export async function GET(req: NextRequest) {
         const [fbResult, igResult] = await Promise.all([fbPromise, igPromise]);
 
         // 5. Persist the marketing post record
+        const fbError = !fbResult.success ? fbResult.error : null;
+        const igError = !igResult.success ? igResult.error : null;
+        const totalError = [fbError, igError].filter(Boolean).join(' | ');
+
         const post = await prisma.marketingPost.create({
             data: {
                 headline: aiContent.headline,
@@ -73,6 +77,11 @@ export async function GET(req: NextRequest) {
                 hashtags: aiContent.hashtags.join(' '),
                 seoTitle: aiContent.seoTitle,
                 seoDescription: aiContent.seoDescription,
+                visualUrl: visualUrl,
+                fbPostId: fbResult.success ? fbResult.id : null,
+                igPostId: igResult.success ? igResult.id : null,
+                status: (fbResult.success || igResult.success) ? 'SUCCESS' : 'FAILED',
+                errorMessage: totalError || null,
                 storeId: store.id
             }
         });
@@ -89,7 +98,7 @@ export async function GET(req: NextRequest) {
         }
 
         return NextResponse.json({
-            status: 'success',
+            status: post.status,
             store: store.name,
             facebook: fbResult.success ? 'ok' : fbResult.error,
             instagram: igResult.success ? 'ok' : igResult.error,

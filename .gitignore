@@ -29,3 +29,8 @@ yarn-error.log*
 
 .vercel
 .env*.local
+
+# Sensitive files
+v.json
+*.txt
+gemini_test.json
