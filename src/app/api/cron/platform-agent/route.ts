@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { generatePlatformArticle } from '@/lib/platform-agent';
 import { postToFacebookPage, postToInstagramFeed } from '@/lib/meta';
+import { prisma } from '@/lib/prisma';
 
 export const dynamic = 'force-dynamic';
 
@@ -31,23 +32,42 @@ export async function GET(request: Request) {
             throw new Error("Content generation failed: " + generation.error);
         }
 
-        const { article } = generation;
+        const { article, visualIdea } = generation;
 
-        // 2. Visual Generation (Simulated for now, would integrate with an AI Image logic)
-        // For now, we use a high-quality commerce-related visual
-        const sampleImageUrl = "https://images.unsplash.com/photo-1556742044-3c52d6e88c62?auto=format&fit=crop&q=80&w=1000";
+        // 2. Visual Generation
+        // Using Pollinations.ai to generate a 1:1 visual based on the article's visualIdea
+        // This ensures Instagram compatibility (must be within aspect ratio limits, 1:1 is safe)
+        const promptParams = encodeURIComponent(visualIdea || "High-quality conceptual art representing KedaiChat online ecommerce platform growth");
+        const dynamicImageUrl = `https://image.pollinations.ai/prompt/${promptParams}?nologo=true&width=1080&height=1080&seed=${Date.now()}`;
 
         // 3. Auto-Post to Facebook & Instagram
         const fullMessage = `${article.title}\n\n${article.content}\n\nJoin us: https://kedaichat.online`;
 
-        const fbPromise = postToFacebookPage(fullMessage, sampleImageUrl);
-        const igPromise = postToInstagramFeed(fullMessage, sampleImageUrl);
+        const fbPromise = postToFacebookPage(fullMessage, dynamicImageUrl);
+        const igPromise = postToInstagramFeed(fullMessage, dynamicImageUrl);
 
         const [fbPost, igPost] = await Promise.all([fbPromise, igPromise]);
 
+        const fbError = !fbPost.success ? fbPost.error : null;
+        const igError = !igPost.success ? igPost.error : null;
+        const totalError = [fbError, igError].filter(Boolean).join(' | ');
+
+        // Update Article with post results and the dynamic image
+        await prisma.platformArticle.update({
+            where: { id: article.id },
+            data: {
+                imageUrl: dynamicImageUrl,
+                metaStatus: (fbPost.success || igPost.success) ? 'SUCCESS' : 'FAILED',
+                metaError: totalError || null,
+                fbPostId: fbPost.success ? fbPost.id : null,
+                igPostId: igPost.success ? igPost.id : null,
+                status: 'PUBLISHED'
+            }
+        });
+
         return NextResponse.json({
             success: true,
-            message: "Platform Marketing Post Created & Shared!",
+            message: "Platform Marketing Cycle Complete",
             articleId: article.id,
             facebook: fbPost.success ? 'ok' : fbPost.error,
             instagram: igPost.success ? 'ok' : igPost.error
