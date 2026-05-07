@@ -26,8 +26,9 @@ const translations: Record<Language, Record<string, string>> = {
         back: 'Back',
 
         // Landing Page
-        hero_title: 'Start Taking Orders More Organizedly &',
-        hero_subtitle: 'simple online shop',
+        hero_title_1: 'Start Taking Orders More Organizedly',
+        hero_title_highlight: 'Generate More Sales',
+        hero_title_2: 'from WhatsApp',
         hero_desc: 'KedaiChat helps you avoid missing orders, collect more orders, and encourage customers to repeat orders.',
         start_free: 'Start Free',
         how_it_works: 'How it works',
@@ -224,7 +225,9 @@ const translations: Record<Language, Record<string, string>> = {
         back: 'Kembali',
 
         // Landing Page
-        hero_title: 'Mula Ambil Pesanan Lebih Teratur &',
+        hero_title_1: 'Ambil Pesanan Lebih Teratur',
+        hero_title_highlight: 'Jana Lebih Jualan',
+        hero_title_2: 'dari WhatsApp',
         hero_subtitle: 'kedai dalam talian yang mudah',
         hero_desc: 'KedaiChat membantu anda mengelak terlepas pesanan, mengumpul lebih banyak pesanan, dan menggalakkan pelanggan untuk membuat pesanan ulangan.',
         start_free: 'Mula Percuma',

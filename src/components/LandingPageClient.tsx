@@ -153,7 +153,7 @@ export default function LandingPageClient() {
     }
 
     return (
-        <div id="main-scroll-container" className="bg-white font-inter text-gray-900 overflow-x-hidden min-h-screen" style={{ scrollBehavior: 'smooth' }}>
+        <div id="main-scroll-container" className="bg-white font-inter text-gray-900 overflow-x-hidden md:h-screen md:overflow-y-auto md:snap-y md:snap-mandatory scroll-smooth" style={{ scrollBehavior: 'smooth' }}>
             <script
                 type="application/ld+json"
                 dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
@@ -258,13 +258,14 @@ export default function LandingPageClient() {
                                 </div>
 
                                 <div className="space-y-6">
-                                    <h1 className="text-4xl md:text-6xl lg:text-[5.5rem] font-black text-navy-dark leading-[1.05] tracking-tight">
-                                        Ambil Pesanan Lebih Teratur <br />
-                                        & <span className="text-[#22C55E]">Jana Lebih Jualan</span> dari WhatsApp
+                                    <h1 className="text-4xl md:text-5xl lg:text-7xl font-black text-navy-dark leading-[1.1] tracking-tight">
+                                        {t('hero_title_1')} <br className="hidden md:block" />
+                                        & <span className="text-[#22C55E]">{t('hero_title_highlight')}</span> <br />
+                                        {t('hero_title_2')}
                                     </h1>
 
-                                    <p className="text-lg md:text-xl text-slate-text font-medium leading-relaxed max-w-xl mx-auto lg:mx-0 opacity-80">
-                                        KedaiChat membantu anda mengelak terlepas pesanan, mengumpul lebih banyak pesanan, dan menggalakkan pelanggan untuk membuat pesanan ulangan.
+                                    <p className="text-base md:text-lg text-slate-text font-medium leading-relaxed max-w-lg mx-auto lg:mx-0 opacity-80">
+                                        {t('hero_desc')}
                                     </p>
                                 </div>
 
@@ -333,7 +334,7 @@ export default function LandingPageClient() {
                                     </svg>
 
                                     {/* iPhone Frame */}
-                                    <div className="relative w-[280px] md:w-[310px] z-10 shadow-2xl rounded-[3rem] border-[8px] border-navy-dark bg-navy-dark overflow-hidden ring-1 ring-white/10 mx-auto lg:mx-0">
+                                    <div className="relative w-[240px] md:w-[260px] z-10 shadow-2xl rounded-[3rem] border-[8px] border-navy-dark bg-navy-dark overflow-hidden ring-1 ring-white/10 mx-auto lg:mx-0 transition-transform active:scale-95">
                                         <div className="relative bg-[#ece5dd] w-full aspect-[9/19.5] overflow-hidden flex flex-col">
                                             {/* WhatsApp UI Internal */}
                                             <div className="bg-[#075E54] px-4 py-3 text-white flex items-center gap-3 shadow-md">
@@ -465,147 +466,157 @@ export default function LandingPageClient() {
                 </div>
 
 
-                <section id="how-it-works" className="relative bg-gray-50 flex flex-col justify-center px-6 py-24 md:py-32 overflow-hidden border-t border-gray-100">
-                    <div className="max-w-7xl mx-auto w-full text-center">
-                        <div className="mb-12 md:mb-20">
-                            <h2 className="text-[10px] md:text-xs font-black text-[#25D366] uppercase tracking-[0.4em] mb-4">{t('how_it_works')}</h2>
-                            <h3 className="text-3xl md:text-5xl font-black leading-tight">{t('three_steps_title')}</h3>
-                        </div>
-                        <div className="grid md:grid-cols-3 gap-6 md:gap-12 relative text-left">
-                            {[
-                                { title: t('how_step_1_title'), desc: t('how_step_1_desc'), icon: <Store size={24} className="md:w-8 md:h-8" /> },
-                                { title: t('how_step_2_title'), desc: t('how_step_2_desc'), icon: <Package size={24} className="md:w-8 md:h-8" /> },
-                                { title: t('how_step_3_title'), desc: t('how_step_3_desc'), icon: <ArrowRight size={24} className="md:w-8 md:h-8" /> }
-                            ].map((item, idx) => (
-                                <div key={idx} className="bg-white p-8 md:p-10 rounded-[32px] border border-gray-100 shadow-xl relative z-10 transition-all duration-500 hover:shadow-2xl">
-                                    <div className="w-12 h-12 md:w-16 md:h-16 bg-[#25D366] text-white rounded-2xl flex items-center justify-center mb-6 shadow-lg shadow-green-200/50">
-                                        {item.icon}
+                {/* 2. How It Works Section */}
+                <div className="relative md:h-[200vh] bg-gray-50 md:snap-start">
+                    <section id="how-it-works" className="sticky top-0 h-screen flex flex-col justify-center px-6 overflow-hidden border-t border-gray-100">
+                        <div className="max-w-7xl mx-auto w-full text-center">
+                            <div className="mb-12 md:mb-20">
+                                <h2 className="text-[10px] md:text-xs font-black text-[#25D366] uppercase tracking-[0.4em] mb-4">{t('how_it_works')}</h2>
+                                <h3 className="text-3xl md:text-5xl font-black leading-tight">{t('three_steps_title')}</h3>
+                            </div>
+                            <div className="grid md:grid-cols-3 gap-6 md:gap-12 relative text-left">
+                                {[
+                                    { title: t('how_step_1_title'), desc: t('how_step_1_desc'), icon: <Store size={24} className="md:w-8 md:h-8" /> },
+                                    { title: t('how_step_2_title'), desc: t('how_step_2_desc'), icon: <Package size={24} className="md:w-8 md:h-8" /> },
+                                    { title: t('how_step_3_title'), desc: t('how_step_3_desc'), icon: <ArrowRight size={24} className="md:w-8 md:h-8" /> }
+                                ].map((item, idx) => (
+                                    <div key={idx} className="bg-white p-8 md:p-10 rounded-[32px] border border-gray-100 shadow-xl relative z-10 transition-all duration-500 hover:shadow-2xl">
+                                        <div className="w-12 h-12 md:w-16 md:h-16 bg-[#25D366] text-white rounded-2xl flex items-center justify-center mb-6 shadow-lg shadow-green-200/50">
+                                            {item.icon}
+                                        </div>
+                                        <h4 className="text-xl md:text-2xl font-black mb-4">{item.title}</h4>
+                                        <p className="text-gray-500 font-medium leading-relaxed text-sm md:text-base">{item.desc}</p>
                                     </div>
-                                    <h4 className="text-xl md:text-2xl font-black mb-4">{item.title}</h4>
-                                    <p className="text-gray-500 font-medium leading-relaxed text-sm md:text-base">{item.desc}</p>
-                                </div>
-                            ))}
-                        </div>
-                    </div>
-                </section>
-
-                <section id="problem" className="relative bg-white flex flex-col justify-center px-6 py-24 md:py-32 overflow-hidden border-t border-gray-100">
-                    <div className="max-w-7xl mx-auto w-full text-center">
-                        <div className="mb-12 md:mb-20">
-                            <h2 className="text-[10px] md:text-xs font-black text-[#25D366] uppercase tracking-[0.4em] mb-4">{t('problem_title')}</h2>
-                            <h3 className="text-3xl md:text-5xl font-black leading-tight">{t('problem_subtitle')}</h3>
-                            <p className="text-gray-500 mt-4 text-base md:text-lg font-medium">{t('problem_desc')}</p>
-                        </div>
-                        <div className="grid md:grid-cols-3 gap-6 md:gap-8 text-left">
-                            {[
-                                { icon: <AlertCircle size={24} className="text-red-500" />, title: t('problem_1_title'), desc: t('problem_1_desc'), bgColor: "bg-red-50" },
-                                { icon: <Clock size={24} className="text-orange-500" />, title: t('problem_2_title'), desc: t('problem_2_desc'), bgColor: "bg-orange-50" },
-                                { icon: <ClipboardList size={24} className="text-blue-500" />, title: t('problem_3_title'), desc: t('problem_3_desc'), bgColor: "bg-blue-50" }
-                            ].map((item, idx) => (
-                                <div key={idx} className="bg-white p-8 md:p-10 rounded-[32px] shadow-xl border border-gray-50 transition-all duration-500 hover:shadow-2xl">
-                                    <div className={`${item.bgColor} w-14 h-14 md:w-20 md:h-20 rounded-[20px] md:rounded-[28px] flex items-center justify-center mb-6 md:mb-8`}>
-                                        {item.icon}
-                                    </div>
-                                    <h4 className="text-xl md:text-2xl font-black mb-4">{item.title}</h4>
-                                    <p className="text-gray-500 leading-relaxed font-medium text-sm md:text-base">{item.desc}</p>
-                                </div>
-                            ))}
-                        </div>
-                    </div>
-                </section>
-
-                {/* 2. Features Section */}
-                <section id="features" className="relative bg-gray-50/50 py-24 md:py-32 overflow-hidden border-t border-gray-100">
-                    <div className="max-w-7xl mx-auto px-6 md:px-8 w-full relative z-10">
-                        <div className="text-center mb-16 md:mb-24">
-                            <h2 className="text-xs font-bold text-[#22C55E] uppercase tracking-[0.3em] mb-4">{t('features')}</h2>
-                            <h3 className="text-3xl md:text-5xl font-black text-navy-dark leading-tight">{t('human_speed_title')}</h3>
-                        </div>
-
-                        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
-                            {[
-                                { icon: <ShoppingBag />, title: t('feature_1_title'), desc: t('feature_1_desc') },
-                                { icon: <ClipboardList />, title: t('feature_2_title'), desc: t('feature_2_desc') },
-                                { icon: <BarChart3 />, title: t('analytics'), desc: t('feature_3_desc') },
-                                { icon: <Bell />, title: t('feature_4_title'), desc: t('feature_4_desc') },
-                                { icon: <Users />, title: t('feature_5_title'), desc: t('feature_5_desc') },
-                                { icon: <Zap />, title: t('feature_6_title'), desc: t('feature_6_desc') }
-                            ].map((feat, idx) => (
-                                <div key={idx} className="group bg-white p-8 rounded-[32px] border border-gray-100 shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-2">
-                                    <div className="w-14 h-14 rounded-2xl bg-slate-50 flex items-center justify-center mb-6 text-navy-dark group-hover:bg-[#22C55E] group-hover:text-white transition-all duration-300">
-                                        {React.cloneElement(feat.icon as React.ReactElement, { size: 24, className: "group-hover:scale-110 transition-transform" })}
-                                    </div>
-                                    <h4 className="text-xl font-bold text-navy-dark mb-4 tracking-tight">{feat.title}</h4>
-                                    <p className="text-slate-text font-medium leading-relaxed text-sm md:text-base">{feat.desc}</p>
-                                </div>
-                            ))}
-                        </div>
-                    </div>
-                </section>
-
-                {/* ─── Testimonials ─── */}
-                <section id="testimonials" className="relative bg-white py-24 md:py-32 overflow-hidden border-t border-gray-100">
-                    <div className="max-w-7xl mx-auto px-6 md:px-8 w-full text-center">
-                        <div className="mb-12 md:mb-20">
-                            <h2 className="text-[10px] md:text-xs font-black text-[#25D366] uppercase tracking-[0.4em] mb-4">{t('testimonials_title')}</h2>
-                            <h3 className="text-3xl md:text-5xl font-black leading-tight">{t('testimonials_subtitle')}</h3>
-                            <div className="flex items-center justify-center gap-1 mt-6">
-                                {[1, 2, 3, 4, 5].map(s => (
-                                    <svg key={s} className="w-5 h-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
-                                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                                    </svg>
                                 ))}
-                                <span className="ml-2 text-sm font-black text-gray-500">4.8 / 5 &bull; 2,000+ peniaga</span>
                             </div>
                         </div>
-                        <div className="grid md:grid-cols-3 gap-6 md:gap-8 text-left">
-                            {[
-                                {
-                                    quote: t('testimonial_1_quote'),
-                                    name: t('testimonial_1_name'),
-                                    biz: t('testimonial_1_biz'),
-                                    initials: 'KR',
-                                    color: 'bg-orange-500',
-                                    stars: 5
-                                },
-                                {
-                                    quote: t('testimonial_2_quote'),
-                                    name: t('testimonial_2_name'),
-                                    biz: t('testimonial_2_biz'),
-                                    initials: 'HZ',
-                                    color: 'bg-blue-500',
-                                    stars: 5
-                                },
-                                {
-                                    quote: t('testimonial_3_quote'),
-                                    name: t('testimonial_3_name'),
-                                    biz: t('testimonial_3_biz'),
-                                    initials: 'SA',
-                                    color: 'bg-[#25D366]',
-                                    stars: 5
-                                }
-                            ].map((item, idx) => (
-                                <div key={idx} className="bg-gray-50 border border-gray-100 rounded-[32px] p-8 md:p-10 flex flex-col gap-6 hover:shadow-xl transition-all duration-500">
-                                    <div className="flex gap-1">
-                                        {[...Array(item.stars)].map((_, i) => (
-                                            <svg key={i} className="w-4 h-4 text-yellow-500" fill="currentColor" viewBox="0 0 20 20">
-                                                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                                            </svg>
-                                        ))}
+                    </section>
+                </div>
+
+                {/* 3. Problem Section */}
+                <div className="relative md:h-[200vh] bg-white md:snap-start">
+                    <section id="problem" className="sticky top-0 h-screen flex flex-col justify-center px-6 overflow-hidden border-t border-gray-100">
+                        <div className="max-w-7xl mx-auto w-full text-center">
+                            <div className="mb-12 md:mb-20">
+                                <h2 className="text-[10px] md:text-xs font-black text-[#25D366] uppercase tracking-[0.4em] mb-4">{t('problem_title')}</h2>
+                                <h3 className="text-3xl md:text-5xl font-black leading-tight">{t('problem_subtitle')}</h3>
+                                <p className="text-gray-500 mt-4 text-base md:text-lg font-medium">{t('problem_desc')}</p>
+                            </div>
+                            <div className="grid md:grid-cols-3 gap-6 md:gap-8 text-left">
+                                {[
+                                    { icon: <AlertCircle size={24} className="text-red-500" />, title: t('problem_1_title'), desc: t('problem_1_desc'), bgColor: "bg-red-50" },
+                                    { icon: <Clock size={24} className="text-orange-500" />, title: t('problem_2_title'), desc: t('problem_2_desc'), bgColor: "bg-orange-50" },
+                                    { icon: <ClipboardList size={24} className="text-blue-500" />, title: t('problem_3_title'), desc: t('problem_3_desc'), bgColor: "bg-blue-50" }
+                                ].map((item, idx) => (
+                                    <div key={idx} className="bg-white p-8 md:p-10 rounded-[32px] shadow-xl border border-gray-50 transition-all duration-500 hover:shadow-2xl">
+                                        <div className={`${item.bgColor} w-14 h-14 md:w-20 md:h-20 rounded-[20px] md:rounded-[28px] flex items-center justify-center mb-6 md:mb-8`}>
+                                            {item.icon}
+                                        </div>
+                                        <h4 className="text-xl md:text-2xl font-black mb-4">{item.title}</h4>
+                                        <p className="text-gray-500 leading-relaxed font-medium text-sm md:text-base">{item.desc}</p>
                                     </div>
-                                    <p className="text-gray-700 italic leading-relaxed text-sm md:text-base font-medium">&ldquo;{item.quote}&rdquo;</p>
-                                    <div className="flex items-center gap-4 pt-4 border-t border-gray-200">
-                                        <div className={`w-12 h-12 rounded-full ${item.color} flex items-center justify-center text-white font-black text-sm`}>{item.initials}</div>
-                                        <div>
-                                            <p className="font-black text-navy-dark text-sm md:text-base">{item.name}</p>
-                                            <p className="text-xs font-bold text-gray-500">{item.biz}</p>
+                                ))}
+                            </div>
+                        </div>
+                    </section>
+                </div>
+
+                {/* 4. Features Section */}
+                <div className="relative md:h-[200vh] bg-gray-50/50 md:snap-start">
+                    <section id="features" className="sticky top-0 h-screen flex flex-col justify-center py-24 overflow-hidden border-t border-gray-100">
+                        <div className="max-w-7xl mx-auto px-6 md:px-8 w-full relative z-10">
+                            <div className="text-center mb-16 md:mb-24">
+                                <h2 className="text-xs font-bold text-[#22C55E] uppercase tracking-[0.3em] mb-4">{t('features')}</h2>
+                                <h3 className="text-3xl md:text-5xl font-black text-navy-dark leading-tight">{t('human_speed_title')}</h3>
+                            </div>
+
+                            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+                                {[
+                                    { icon: <ShoppingBag />, title: t('feature_1_title'), desc: t('feature_1_desc') },
+                                    { icon: <ClipboardList />, title: t('feature_2_title'), desc: t('feature_2_desc') },
+                                    { icon: <BarChart3 />, title: t('analytics'), desc: t('feature_3_desc') },
+                                    { icon: <Bell />, title: t('feature_4_title'), desc: t('feature_4_desc') },
+                                    { icon: <Users />, title: t('feature_5_title'), desc: t('feature_5_desc') },
+                                    { icon: <Zap />, title: t('feature_6_title'), desc: t('feature_6_desc') }
+                                ].map((feat, idx) => (
+                                    <div key={idx} className="group bg-white p-8 rounded-[32px] border border-gray-100 shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-2">
+                                        <div className="w-14 h-14 rounded-2xl bg-slate-50 flex items-center justify-center mb-6 text-navy-dark group-hover:bg-[#22C55E] group-hover:text-white transition-all duration-300">
+                                            {React.cloneElement(feat.icon as React.ReactElement, { size: 24, className: "group-hover:scale-110 transition-transform" })}
+                                        </div>
+                                        <h4 className="text-xl font-bold text-navy-dark mb-4 tracking-tight">{feat.title}</h4>
+                                        <p className="text-slate-text font-medium leading-relaxed text-sm md:text-base">{feat.desc}</p>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    </section>
+                </div>
+
+                {/* 5. Testimonials Section */}
+                <div className="relative md:h-[200vh] bg-white md:snap-start">
+                    <section id="testimonials" className="sticky top-0 h-screen flex flex-col justify-center py-24 overflow-hidden border-t border-gray-100">
+                        <div className="max-w-7xl mx-auto px-6 md:px-8 w-full text-center">
+                            <div className="mb-12 md:mb-20">
+                                <h2 className="text-[10px] md:text-xs font-black text-[#25D366] uppercase tracking-[0.4em] mb-4">{t('testimonials_title')}</h2>
+                                <h3 className="text-3xl md:text-5xl font-black leading-tight">{t('testimonials_subtitle')}</h3>
+                                <div className="flex items-center justify-center gap-1 mt-6">
+                                    {[1, 2, 3, 4, 5].map(s => (
+                                        <svg key={s} className="w-5 h-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
+                                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                                        </svg>
+                                    ))}
+                                    <span className="ml-2 text-sm font-black text-gray-500">4.8 / 5 &bull; 2,000+ peniaga</span>
+                                </div>
+                            </div>
+                            <div className="grid md:grid-cols-3 gap-6 md:gap-8 text-left">
+                                {[
+                                    {
+                                        quote: t('testimonial_1_quote'),
+                                        name: t('testimonial_1_name'),
+                                        biz: t('testimonial_1_biz'),
+                                        initials: 'KR',
+                                        color: 'bg-orange-500',
+                                        stars: 5
+                                    },
+                                    {
+                                        quote: t('testimonial_2_quote'),
+                                        name: t('testimonial_2_name'),
+                                        biz: t('testimonial_2_biz'),
+                                        initials: 'HZ',
+                                        color: 'bg-blue-500',
+                                        stars: 5
+                                    },
+                                    {
+                                        quote: t('testimonial_3_quote'),
+                                        name: t('testimonial_3_name'),
+                                        biz: t('testimonial_3_biz'),
+                                        initials: 'SA',
+                                        color: 'bg-[#25D366]',
+                                        stars: 5
+                                    }
+                                ].map((item, idx) => (
+                                    <div key={idx} className="bg-gray-50 border border-gray-100 rounded-[32px] p-8 md:p-10 flex flex-col gap-6 hover:shadow-xl transition-all duration-500">
+                                        <div className="flex gap-1">
+                                            {[...Array(item.stars)].map((_, i) => (
+                                                <svg key={i} className="w-4 h-4 text-yellow-500" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                                                </svg>
+                                            ))}
+                                        </div>
+                                        <p className="text-gray-700 italic leading-relaxed text-sm md:text-base font-medium">&ldquo;{item.quote}&rdquo;</p>
+                                        <div className="flex items-center gap-4 pt-4 border-t border-gray-200">
+                                            <div className={`w-12 h-12 rounded-full ${item.color} flex items-center justify-center text-white font-black text-sm`}>{item.initials}</div>
+                                            <div>
+                                                <p className="font-black text-navy-dark text-sm md:text-base">{item.name}</p>
+                                                <p className="text-xs font-bold text-gray-500">{item.biz}</p>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                            ))}
+                                ))}
+                            </div>
                         </div>
-                    </div>
-                </section>
+                    </section>
+                </div>
 
                 {/* ─── Pricing ─── */}
                 <section id="pricing" className="relative bg-gray-900 py-24 md:py-32 overflow-hidden border-t border-gray-800">
