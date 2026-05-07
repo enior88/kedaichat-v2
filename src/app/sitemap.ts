@@ -6,18 +6,25 @@ const prisma = new PrismaClient();
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     const baseUrl = 'https://kedaichat.online';
 
-    // Fetch all non-archived stores
-    const stores = await prisma.store.findMany({
-        where: { archived: false },
-        select: { slug: true, updatedAt: true }
-    });
+    // Fetch all non-archived stores with error handling for build environment
+    let storeUrls: any[] = [];
+    try {
+        const stores = await prisma.store.findMany({
+            where: { archived: false },
+            select: { slug: true, updatedAt: true },
+            take: 100 // Limit for sitemap safety
+        });
 
-    const storeUrls = stores.map((store) => ({
-        url: `${baseUrl}/shop/${store.slug}`,
-        lastModified: store.updatedAt,
-        changeFrequency: 'weekly' as const,
-        priority: 0.8,
-    }));
+        storeUrls = stores.map((store) => ({
+            url: `${baseUrl}/shop/${store.slug}`,
+            lastModified: store.updatedAt,
+            changeFrequency: 'weekly' as const,
+            priority: 0.8,
+        }));
+    } catch (error) {
+        console.error('Failed to fetch stores for sitemap:', error);
+        // During build, the DB might not be reachable. We continue with static URLs.
+    }
 
     const staticUrls = [
         {
