@@ -41,14 +41,7 @@ export default function LandingPageClient() {
     const [onboardingChecked, setOnboardingChecked] = React.useState(false);
     const searchParams = useSearchParams();
     const fromPwa = searchParams.get('v') === '2';
-    const [featuredStores, setFeaturedStores] = React.useState<any[]>([]);
-
     React.useEffect(() => {
-        fetch('/api/public/stores/featured')
-            .then(res => res.json())
-            .then(data => setFeaturedStores(data))
-            .catch(() => { });
-
         // PWA Detection
         const isStandalone = window.matchMedia('(display-mode: standalone)').matches;
         const fromPwa = searchParams.get('v') === '2';
@@ -166,49 +159,46 @@ export default function LandingPageClient() {
                 dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
             />
             {/* Navigation */}
-            <nav className="fixed top-0 left-0 right-0 z-[100] bg-white/90 backdrop-blur-xl border-b border-gray-100">
-                <div className="max-w-7xl mx-auto px-4 md:px-6 h-16 lg:h-20 flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                        <div className="w-10 h-10 rounded-xl overflow-hidden shadow-lg shadow-green-200">
-                            <Image src="/logo.png" alt="KedaiChat Logo" width={40} height={40} className="w-full h-full object-cover" priority />
+            <div className="fixed top-6 left-0 right-0 z-[100] px-4 flex justify-center pointer-events-none">
+                <nav className="glass-pill max-w-5xl w-full mx-auto px-4 md:px-8 h-14 md:h-16 flex items-center justify-between pointer-events-auto">
+                    <div className="flex items-center gap-3">
+                        <div className="w-8 h-8 rounded-lg overflow-hidden shadow-sm">
+                            <Image src="/logo.png" alt="KedaiChat Logo" width={32} height={32} className="w-full h-full object-cover" priority />
                         </div>
-                        <span className="text-xl font-black tracking-tighter">KedaiChat</span>
+                        <span className="text-lg font-black tracking-tighter text-navy-dark">KedaiChat</span>
                     </div>
 
                     <div className="hidden lg:flex items-center gap-8">
-                        <a href="#how-it-works" onClick={(e) => scrollToSection(e, 'how-it-works')} className="text-sm font-bold text-gray-500 hover:text-gray-900 transition-colors">{t('how_it_works')}</a>
-                        <a href="#problem" onClick={(e) => scrollToSection(e, 'problem')} className="text-sm font-bold text-gray-500 hover:text-gray-900 transition-colors">{t('problem_title')}</a>
-                        <a href="#features" onClick={(e) => scrollToSection(e, 'features')} className="text-sm font-bold text-gray-500 hover:text-gray-900 transition-colors">{t('features')}</a>
-                        <a href="#pricing" onClick={(e) => scrollToSection(e, 'pricing')} className="text-sm font-bold text-gray-500 hover:text-gray-900 transition-colors">{t('pricing_title')}</a>
+                        <a href="#how-it-works" onClick={(e) => scrollToSection(e, 'how-it-works')} className="text-sm font-bold text-slate-text hover:text-navy-dark transition-all duration-300">{t('how_it_works')}</a>
+                        <a href="#problem" onClick={(e) => scrollToSection(e, 'problem')} className="text-sm font-bold text-slate-text hover:text-navy-dark transition-all duration-300">{t('problem_title')}</a>
+                        <a href="#features" onClick={(e) => scrollToSection(e, 'features')} className="text-sm font-bold text-slate-text hover:text-navy-dark transition-all duration-300">{t('features')}</a>
+                        <a href="#pricing" onClick={(e) => scrollToSection(e, 'pricing')} className="text-sm font-bold text-slate-text hover:text-navy-dark transition-all duration-300">{t('pricing_title')}</a>
                     </div>
 
                     <div className="flex items-center gap-2 md:gap-4">
-                        <div className="hidden lg:block scale-90 md:scale-100">
+                        <div className="hidden md:block">
                             <LanguageToggle />
                         </div>
-                        <div className="hidden lg:flex items-center gap-4">
-                            <Link href="/login" className="text-sm font-bold text-gray-900 hover:text-[#25D366] transition-colors px-2 md:px-4 py-2">
+                        <div className="hidden lg:flex items-center gap-4 border-l border-white/20 pl-4">
+                            <Link href="/login" className="text-sm font-bold text-navy-dark hover:text-premium-gradient transition-all px-2">
                                 {t('login')}
                             </Link>
-                            <Link href="/onboarding" className="bg-gray-900 text-white px-4 py-2.5 md:px-6 md:py-3 rounded-full text-xs md:text-sm font-black hover:bg-gray-800 transition-all shadow-xl shadow-gray-200 active:scale-95 whitespace-nowrap">
+                            <Link href="/onboarding" className="bg-navy-dark text-white px-5 py-2.5 rounded-full text-xs font-bold hover:bg-gray-800 transition-all shadow-lg active:scale-95">
                                 {t('start_free')}
                             </Link>
                         </div>
                         <button
                             onClick={() => setIsMenuOpen(!isMenuOpen)}
-                            className="lg:hidden w-10 h-10 flex items-center justify-center rounded-xl bg-gray-50 text-gray-900 hover:bg-gray-100 transition-all active:scale-90"
+                            className="lg:hidden w-10 h-10 flex items-center justify-center rounded-full hover:bg-white/10 transition-all active:scale-90"
                         >
-                            {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
+                            {isMenuOpen ? <X size={20} /> : <Menu size={20} />}
                         </button>
                     </div>
-                </div>
+                </nav>
 
-                <div className={`lg:hidden fixed inset-x-0 top-16 bg-white border-b border-gray-100 shadow-2xl transition-all duration-500 origin-top overflow-hidden z-[90] ${isMenuOpen ? 'max-h-screen opacity-100' : 'max-h-0 opacity-0'}`}>
-                    <div className="p-6 flex flex-col gap-6">
-                        <div className="flex items-center justify-between p-4 bg-gray-50 rounded-2xl">
-                            <span className="text-sm font-bold text-gray-500 uppercase tracking-widest">{t('language')}</span>
-                            <LanguageToggle />
-                        </div>
+                {/* Mobile Menu */}
+                <div className={`lg:hidden fixed inset-x-4 top-24 bg-white/90 backdrop-blur-2xl rounded-[2rem] border border-white/40 shadow-2xl transition-all duration-500 origin-top overflow-hidden z-[90] pointer-events-auto ${isMenuOpen ? 'max-h-screen opacity-100' : 'max-h-0 opacity-0'}`}>
+                    <div className="p-8 flex flex-col gap-6">
                         <div className="flex flex-col gap-4">
                             {[
                                 { id: 'how-it-works', label: t('how_it_works') },
@@ -220,73 +210,165 @@ export default function LandingPageClient() {
                                     key={item.id}
                                     href={`#${item.id}`}
                                     onClick={(e) => { scrollToSection(e, item.id); setIsMenuOpen(false); }}
-                                    className="text-lg font-black text-gray-900 p-2 hover:text-[#25D366] transition-colors"
+                                    className="text-lg font-bold text-navy-dark p-2 hover:text-[#22C55E] transition-colors"
                                 >
                                     {item.label}
                                 </a>
                             ))}
                         </div>
-                        <div className="flex flex-col gap-3 pt-6 border-t border-gray-50">
+                        <div className="flex flex-col gap-3 pt-6 border-t border-navy-dark/5">
                             <Link
                                 href="/login"
                                 onClick={() => setIsMenuOpen(false)}
-                                className="w-full py-4 text-center text-lg font-black text-gray-900 bg-gray-50 rounded-2xl active:scale-95 transition-all"
+                                className="w-full py-4 text-center text-lg font-bold text-navy-dark bg-navy-dark/5 rounded-2xl active:scale-95"
                             >
                                 {t('login')}
                             </Link>
                             <Link
                                 href="/onboarding"
                                 onClick={() => setIsMenuOpen(false)}
-                                className="w-full py-5 text-center text-lg font-black text-white bg-gradient-to-r from-[#25D366] to-[#128C7E] rounded-2xl shadow-xl shadow-green-100 active:scale-95 transition-all"
+                                className="w-full py-4 text-center text-lg font-bold text-white bg-gradient-to-r from-[#22C55E] to-[#16A34A] rounded-2xl shadow-xl shadow-green-100 active:scale-95"
                             >
                                 {t('start_free')}
                             </Link>
                         </div>
                     </div>
                 </div>
-            </nav>
+            </div>
 
             <main className="relative">
 
                 {/* 1. Hero Section */}
-                <div className="relative md:h-screen h-auto z-[50] md:snap-start">
-                    <section className="md:sticky md:top-0 md:h-screen relative h-auto bg-white flex flex-col items-center justify-center px-4 md:px-6 pt-24 md:pt-0 overflow-hidden">
-                        <div className="max-w-7xl mx-auto text-center w-full">
-                            <div className="inline-flex items-center gap-2 bg-green-50 text-[#25D366] px-3 py-1.5 rounded-full mb-3 md:mb-6">
-                                <Zap size={14} fill="currentColor" />
-                                <span className="text-[10px] md:text-xs font-black uppercase tracking-widest">{t('built_for_smes')}</span>
+                <div className="relative min-h-screen z-[50] flex items-center justify-center pt-24 pb-20 md:py-0 overflow-hidden bg-white">
+                    {/* Background Visuals */}
+                    <div className="absolute inset-0 z-0 h-full w-full pointer-events-none overflow-hidden">
+                        <div className="absolute top-[20%] right-[10%] w-[40rem] h-[40rem] bg-green-200/30 blur-[120px] rounded-full animate-pulse" />
+                        <div className="absolute bottom-[20%] left-[5%] w-[30rem] h-[30rem] bg-emerald-100/40 blur-[100px] rounded-full" />
+                        <div className="absolute inset-0 bg-noise opacity-[0.03]" />
+                    </div>
+
+                    <section className="max-w-7xl mx-auto px-4 md:px-8 w-full relative z-10">
+                        <div className="grid lg:grid-cols-2 gap-16 lg:gap-8 items-center lg:text-left text-center">
+                            {/* Left Content */}
+                            <div className="flex flex-col gap-6 md:gap-8 max-w-2xl mx-auto lg:mx-0">
+                                <div className="inline-flex items-center gap-2 bg-green-100/50 text-[#22C55E] px-4 py-2 rounded-full w-fit mx-auto lg:mx-0 border border-green-200/50 shadow-sm animate-fade-in-up">
+                                    <Zap size={14} className="fill-current" />
+                                    <span className="text-xs font-bold tracking-wide uppercase">{t('built_for_smes')}</span>
+                                </div>
+
+                                <h1 className="text-4xl md:text-7xl font-black text-navy-dark leading-[1] tracking-tight">
+                                    {t('hero_title')} <br />
+                                    <span className="text-premium-gradient animate-shimmer">{t('hero_shop_highlight')}</span>
+                                </h1>
+
+                                <p className="text-lg md:text-xl text-slate-text font-medium leading-relaxed max-w-xl mx-auto lg:mx-0">
+                                    {t('hero_desc')}
+                                </p>
+
+                                <div className="flex flex-col sm:flex-row items-center gap-4 pt-4">
+                                    <Link href="/onboarding" className="btn-premium w-full sm:w-auto text-lg group">
+                                        {t('start_free')}
+                                        <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
+                                    </Link>
+                                    <a href="#how-it-works" onClick={(e) => scrollToSection(e, 'how-it-works')} className="btn-glass w-full sm:w-auto text-lg border-2 border-navy-dark/5 hover:border-navy-dark/10 group">
+                                        <Play size={20} className="fill-navy-dark group-hover:scale-110 transition-transform" />
+                                        {t('how_it_works')}
+                                    </a>
+                                </div>
+
+                                {/* Minimal Review Badge (optional but high trust) */}
+                                <div className="flex items-center gap-4 pt-4 opacity-70 justify-center lg:justify-start">
+                                    <div className="flex -space-x-3">
+                                        {[1, 2, 3, 4].map(i => (
+                                            <div key={i} className="w-8 h-8 rounded-full border-2 border-white bg-slate-200 overflow-hidden">
+                                                <Image src={`https://i.pravatar.cc/100?u=${i}`} alt="User" width={32} height={32} />
+                                            </div>
+                                        ))}
+                                    </div>
+                                    <div className="text-sm font-bold text-slate-text">
+                                        <div className="flex items-center gap-1 text-yellow-500">
+                                            {[1, 2, 3, 4, 5].map(s => <Check key={s} size={12} className="fill-current" />)}
+                                        </div>
+                                        10,000+ usahawan Malaysia
+                                    </div>
+                                </div>
                             </div>
-                            <h1 className="text-2xl md:text-6xl font-black text-gray-900 mb-2 md:mb-4 leading-[1.1] tracking-tight">
-                                {t('hero_title')} <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#25D366] to-[#128C7E]">{t('hero_shop_highlight')}</span>
-                            </h1>
-                            <p className="text-xs md:text-lg text-gray-500 mb-4 md:mb-8 max-w-2xl mx-auto font-medium">
-                                {t('hero_desc')}
-                            </p>
-                            <div className="flex flex-col sm:flex-row items-center justify-center gap-2 md:gap-4">
-                                <Link href="/onboarding" className="w-full sm:w-auto bg-gradient-to-r from-[#25D366] to-[#128C7E] text-white px-6 md:px-10 h-12 md:h-16 flex items-center justify-center rounded-2xl text-sm md:text-lg font-black hover:opacity-90 transition-all shadow-2xl shadow-green-200 active:scale-95 gap-2">
-                                    {t('start_free')}
-                                    <ArrowRight size={18} />
-                                </Link>
-                                {/* <a href="#discover" onClick={(e) => scrollToSection(e, 'discover')} className="w-full sm:w-auto bg-white border-2 border-gray-100 text-gray-900 px-6 md:px-10 h-12 md:h-16 flex items-center justify-center rounded-2xl text-sm md:text-lg font-black hover:bg-gray-50 transition-all active:scale-95 gap-2">
-                                    <ShoppingBag size={18} />
-                                    {t('discover_shops')}
-                                </a> */}
-                                <a href="#how-it-works" onClick={(e) => scrollToSection(e, 'how-it-works')} className="w-full sm:w-auto bg-white border-2 border-gray-100 text-gray-900 px-6 md:px-10 h-12 md:h-16 flex items-center justify-center rounded-2xl text-sm md:text-lg font-black hover:bg-gray-50 transition-all active:scale-95 gap-2">
-                                    <Play size={18} fill="currentColor" />
-                                    {t('how_it_works')}
-                                </a>
-                            </div>
-                            <div className="mt-4 md:mt-8 relative max-w-2xl mx-auto px-4">
-                                <div className="relative rounded-[20px] md:rounded-[40px] overflow-visible group">
-                                    <div className="absolute inset-0 bg-green-100/50 blur-3xl -z-10 rounded-[100px] scale-90" />
-                                    <div className="relative w-full aspect-[4/3] max-h-[35vh] md:max-h-[40vh]">
-                                        <Image
-                                            src="/hero_illustration.png"
-                                            alt="KedaiChat Interface"
-                                            fill
-                                            className="mx-auto drop-shadow-2xl rounded-[16px] md:rounded-[32px] object-contain"
-                                            priority
-                                        />
+
+                            {/* Right Content - Visual Mockup */}
+                            <div className="relative group perspective-1000 lg:scale-110">
+                                {/* Floating Glow Blobs */}
+                                <div className="absolute -inset-4 bg-green-300/20 blur-[60px] rounded-[100px] -z-10 group-hover:bg-green-300/30 transition-all duration-700" />
+
+                                {/* iPhone Frame */}
+                                <div className="relative w-[280px] md:w-[320px] mx-auto z-10 md:transform lg:rotate-[-4deg] transition-all duration-700 group-hover:rotate-0">
+                                    <div className="bg-navy-dark p-3 rounded-[3rem] shadow-2xl overflow-hidden aspect-[9/19.5]">
+                                        <div className="relative w-full h-full bg-white rounded-[2.2rem] overflow-hidden">
+                                            {/* WhatsApp Content Mockup */}
+                                            <div className="bg-[#075E54] p-4 text-white flex items-center gap-2">
+                                                <div className="w-8 h-8 rounded-full bg-white/20" />
+                                                <div className="flex-1">
+                                                    <div className="w-20 h-2 bg-white/30 rounded-full" />
+                                                </div>
+                                                <div className="w-4 h-4 rounded-full bg-white/20" />
+                                            </div>
+                                            <div className="p-4 space-y-4">
+                                                <div className="bg-gray-100 p-3 rounded-2xl rounded-tl-none w-[80%]">
+                                                    <div className="w-full h-2 bg-gray-200 rounded-full mb-2" />
+                                                    <div className="w-2/3 h-2 bg-gray-200 rounded-full" />
+                                                </div>
+                                                <div className="bg-green-100 p-3 rounded-2xl rounded-tr-none w-[80%] ml-auto">
+                                                    <div className="w-full h-2 bg-green-200 rounded-full mb-2" />
+                                                    <div className="w-2/3 h-2 bg-green-200 rounded-full" />
+                                                </div>
+                                                <div className="premium-card p-3 shadow-md border-none rounded-2xl scale-95">
+                                                    <div className="flex gap-2">
+                                                        <div className="w-10 h-10 bg-gray-50 rounded-lg flex-shrink-0" />
+                                                        <div className="space-y-1 py-1 flex-1">
+                                                            <div className="w-full h-2 bg-gray-100 rounded-full" />
+                                                            <div className="w-16 h-2 bg-gray-100 rounded-full" />
+                                                        </div>
+                                                        <div className="w-6 h-6 bg-green-500 rounded-full self-center" />
+                                                    </div>
+                                                </div>
+                                                <div className="bg-green-500 text-white py-3 rounded-xl text-center font-bold text-xs">
+                                                    Proceed Order (WhatsApp)
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {/* Floating Cards around the Phone */}
+                                    <div className="absolute top-10 -right-16 md:-right-24 premium-card !p-4 !rounded-2xl shadow-xl w-36 md:w-44 animate-float -z-10 group-hover:translate-y--4 transition-transform duration-700">
+                                        <div className="flex items-center gap-2 mb-2">
+                                            <div className="w-6 h-6 bg-green-100 rounded-lg flex items-center justify-center text-green-600">
+                                                <BarChart3 size={14} />
+                                            </div>
+                                            <span className="text-[10px] font-bold text-slate-text">Sales Growth</span>
+                                        </div>
+                                        <div className="text-xl font-black text-navy-dark">+500%</div>
+                                        <div className="w-full h-1 bg-gray-100 rounded-full mt-2 overflow-hidden">
+                                            <div className="w-[80%] h-full bg-green-500" />
+                                        </div>
+                                    </div>
+
+                                    <div className="absolute bottom-20 -left-16 md:-left-24 premium-card !p-4 !rounded-2xl shadow-xl w-40 md:w-48 animate-float-delayed -z-10 group-hover:translate-y-4 transition-transform duration-700">
+                                        <div className="flex items-center gap-3 mb-2">
+                                            <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center overflow-hidden">
+                                                <Users size={16} className="text-blue-600" />
+                                            </div>
+                                            <div>
+                                                <div className="text-[10px] font-bold text-slate-text">Repeat Customers</div>
+                                                <div className="text-sm font-black">68% Returning</div>
+                                            </div>
+                                        </div>
+                                        <div className="flex gap-1">
+                                            {[1, 2, 3, 4, 5].map(i => <div key={i} className={`h-1 flex-1 rounded-full ${i < 5 ? 'bg-blue-500' : 'bg-gray-100'}`} />)}
+                                        </div>
+                                    </div>
+
+                                    <div className="absolute -bottom-8 right-0 md:right-4 premium-card !p-4 !rounded-2xl shadow-lg border-green-100/50 animate-float w-32 md:w-40 -z-10">
+                                        <div className="text-[10px] font-bold text-slate-text uppercase mb-1 tracking-wider">Total Orders</div>
+                                        <div className="text-xl font-black text-[#22C55E]">4,782</div>
                                     </div>
                                 </div>
                             </div>
@@ -294,12 +376,6 @@ export default function LandingPageClient() {
                     </section>
                 </div>
 
-                {/* Discover Shops Section (Marketplace Hub) - Hidden for now */}
-                {/* 
-                <div id="wrapper-discover" className="relative md:h-screen h-auto z-[45] md:snap-start">
-                    ...
-                </div>
-                */}
 
                 <div id="wrapper-how-it-works" className="relative md:h-[200vh] md:-mt-[100vh] h-auto z-[40] md:snap-start">
                     <section id="how-it-works" className="md:sticky md:top-0 md:h-screen relative h-auto bg-gray-50 flex flex-col justify-center px-6 py-24 md:py-24 overflow-hidden md:shadow-[0_-20px_40px_rgba(0,0,0,0.05)] border-t border-gray-100 md:border-none">
@@ -354,33 +430,31 @@ export default function LandingPageClient() {
                     </section>
                 </div>
 
-                <div id="wrapper-features" className="relative md:h-[200vh] md:-mt-[100vh] h-auto z-[20] md:snap-start">
-                    <section id="features" className="md:sticky md:top-0 md:h-screen relative h-auto bg-gray-50 flex flex-col justify-center px-6 py-24 md:py-24 overflow-hidden md:shadow-[0_-20px_40px_rgba(0,0,0,0.08)] border-t border-gray-100 md:border-none">
-                        <div className="max-w-7xl mx-auto w-full text-center">
-                            <div className="mb-12 md:mb-20">
-                                <h2 className="text-[10px] md:text-xs font-black text-[#25D366] uppercase tracking-[0.4em] mb-4">{t('features')}</h2>
-                                <h3 className="text-3xl md:text-5xl font-black leading-tight">{t('human_speed_title')}</h3>
-                            </div>
-                            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-12 text-left">
-                                {[
-                                    { icon: <ShoppingBag />, title: t('feature_1_title'), desc: t('feature_1_desc') },
-                                    { icon: <ClipboardList />, title: t('feature_2_title'), desc: t('feature_2_desc') },
-                                    { icon: <BarChart3 />, title: t('analytics'), desc: t('feature_3_desc') },
-                                    { icon: <Bell />, title: t('feature_4_title'), desc: t('feature_4_desc') },
-                                    { icon: <Users />, title: t('feature_5_title'), desc: t('feature_5_desc') },
-                                    { icon: <Zap fill="currentColor" />, title: t('feature_6_title'), desc: t('feature_6_desc') }
-                                ].map((feat, idx) => (
-                                    <div key={idx} className="flex gap-4 md:gap-6 bg-white p-6 md:p-8 rounded-[32px] shadow-sm border border-gray-100 hover:shadow-md transition-all duration-500">
-                                        <div className="bg-gray-900 text-white w-12 h-12 md:w-14 md:h-14 rounded-2xl flex-shrink-0 flex items-center justify-center shadow-lg">
-                                            {feat.icon}
-                                        </div>
-                                        <div>
-                                            <h4 className="text-lg md:text-xl font-black mb-2">{feat.title}</h4>
-                                            <p className="text-gray-500 font-medium leading-relaxed text-xs md:text-sm">{feat.desc}</p>
-                                        </div>
+                {/* 2. Features Section */}
+                <div id="wrapper-features" className="relative min-h-screen z-[20] flex items-center justify-center bg-gray-50/50 py-24 md:py-32 overflow-hidden">
+                    <section id="features" className="max-w-7xl mx-auto px-4 md:px-8 w-full relative z-10">
+                        <div className="text-center mb-16 md:mb-24">
+                            <h2 className="text-xs font-bold text-[#22C55E] uppercase tracking-[0.3em] mb-4">{t('features')}</h2>
+                            <h3 className="text-3xl md:text-5xl font-black text-navy-dark leading-tight">{t('human_speed_title')}</h3>
+                        </div>
+
+                        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+                            {[
+                                { icon: <ShoppingBag />, title: t('feature_1_title'), desc: t('feature_1_desc') },
+                                { icon: <ClipboardList />, title: t('feature_2_title'), desc: t('feature_2_desc') },
+                                { icon: <BarChart3 />, title: t('analytics'), desc: t('feature_3_desc') },
+                                { icon: <Bell />, title: t('feature_4_title'), desc: t('feature_4_desc') },
+                                { icon: <Users />, title: t('feature_5_title'), desc: t('feature_5_desc') },
+                                { icon: <Zap />, title: t('feature_6_title'), desc: t('feature_6_desc') }
+                            ].map((feat, idx) => (
+                                <div key={idx} className="group premium-card !p-8 hover:bg-white transition-all duration-500 hover:shadow-2xl hover:-translate-y-2 border-none">
+                                    <div className="w-14 h-14 rounded-2xl bg-slate-50 flex items-center justify-center mb-6 text-navy-dark group-hover:bg-[#22C55E] group-hover:text-white transition-all duration-300 shadow-sm">
+                                        {React.cloneElement(feat.icon as React.ReactElement, { size: 24, className: "group-hover:scale-110 transition-transform" })}
                                     </div>
-                                ))}
-                            </div>
+                                    <h4 className="text-xl font-bold text-navy-dark mb-3 tracking-tight">{feat.title}</h4>
+                                    <p className="text-slate-text font-medium leading-relaxed text-sm">{feat.desc}</p>
+                                </div>
+                            ))}
                         </div>
                     </section>
                 </div>
