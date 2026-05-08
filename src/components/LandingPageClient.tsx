@@ -301,13 +301,13 @@ export default function LandingPageClient() {
                                 <div className="flex items-center gap-4 pt-4 justify-center lg:justify-start">
                                     <div className="flex -space-x-3">
                                         {[
-                                            "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80&w=100&h=100", // Diverse SEA Woman
-                                            "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=100&h=100", // Man
-                                            "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=100&h=100", // Woman
-                                            "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=100&h=100"  // Man
+                                            "/avatars/malay-woman.png",
+                                            "/avatars/chinese-man.png",
+                                            "/avatars/indian-woman.png",
+                                            "/avatars/malay-man.png"
                                         ].map((src, i) => (
                                             <div key={i} className="w-10 h-10 rounded-full border-4 border-white bg-slate-200 overflow-hidden shadow-sm ring-1 ring-gray-100">
-                                                <Image src={src} alt="Malaysian User" width={40} height={40} />
+                                                <Image src={src} alt="Malaysian User" width={40} height={40} className="object-cover w-full h-full" />
                                             </div>
                                         ))}
                                     </div>
