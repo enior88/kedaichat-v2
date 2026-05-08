@@ -240,7 +240,7 @@ export default function LandingPageClient() {
             <main className="relative">
 
                 {/* 1. Hero Section */}
-                <div id="hero" className="relative min-h-screen md:snap-start z-[50] flex items-center justify-center pt-24 pb-20 md:py-0 overflow-hidden bg-white">
+                <div id="hero" className="relative h-screen md:min-h-0 md:snap-start z-[50] flex items-center justify-center pt-20 pb-12 md:py-0 overflow-hidden bg-white">
                     {/* Background Visuals */}
                     <div className="absolute inset-0 z-0 h-full w-full pointer-events-none overflow-hidden">
                         <div className="absolute top-[20%] right-[10%] w-[40rem] h-[40rem] bg-green-200/30 blur-[120px] rounded-full animate-pulse" />
@@ -251,14 +251,14 @@ export default function LandingPageClient() {
                     <section className="max-w-7xl mx-auto px-4 md:px-8 w-full relative z-10">
                         <div className="grid lg:grid-cols-2 gap-16 lg:gap-8 items-center lg:text-left text-center">
                             {/* Left Content */}
-                            <div className="flex flex-col gap-6 md:gap-10 max-w-2xl mx-auto lg:mx-0">
+                            <div className="flex flex-col gap-4 md:gap-6 max-w-2xl mx-auto lg:mx-0 order-2 lg:order-1">
                                 <div className="inline-flex items-center gap-2 bg-green-50 text-[#22C55E] px-4 py-2 rounded-full w-fit mx-auto lg:mx-0 border border-green-100/50 shadow-sm animate-fade-in-up">
                                     <Zap size={14} className="fill-current" />
                                     <span className="text-[10px] font-black tracking-widest uppercase">{t('built_for_smes')}</span>
                                 </div>
 
-                                <div className="space-y-6">
-                                    <h1 className="text-4xl md:text-5xl lg:text-7xl font-black text-navy-dark leading-[1.1] tracking-tight">
+                                <div className="space-y-4">
+                                    <h1 className="text-4xl md:text-5xl lg:text-6xl font-black text-navy-dark leading-[1.1] tracking-tight">
                                         {t('hero_title_1')} <br className="hidden md:block" />
                                         & <span className="text-[#22C55E]">{t('hero_title_highlight')}</span> <br />
                                         {t('hero_title_2')}
@@ -298,11 +298,16 @@ export default function LandingPageClient() {
                                 </div>
 
                                 {/* Social Proof Badge */}
-                                <div className="flex items-center gap-4 pt-10 justify-center lg:justify-start">
+                                <div className="flex items-center gap-4 pt-4 justify-center lg:justify-start">
                                     <div className="flex -space-x-3">
-                                        {[1, 2, 3, 4].map(i => (
+                                        {[
+                                            "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80&w=100&h=100", // Diverse SEA Woman
+                                            "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=100&h=100", // Man
+                                            "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=100&h=100", // Woman
+                                            "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=100&h=100"  // Man
+                                        ].map((src, i) => (
                                             <div key={i} className="w-10 h-10 rounded-full border-4 border-white bg-slate-200 overflow-hidden shadow-sm ring-1 ring-gray-100">
-                                                <Image src={`https://i.pravatar.cc/100?u=user${i}`} alt="User" width={40} height={40} />
+                                                <Image src={src} alt="Malaysian User" width={40} height={40} />
                                             </div>
                                         ))}
                                     </div>
