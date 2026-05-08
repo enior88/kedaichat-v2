@@ -240,7 +240,7 @@ export default function LandingPageClient() {
             <main className="relative">
 
                 {/* 1. Hero Section */}
-                <div id="hero" className="relative h-screen md:min-h-0 md:snap-start z-[50] flex items-center justify-center pt-20 pb-12 md:py-0 overflow-hidden bg-white">
+                <div id="hero" className="relative h-screen md:min-h-0 md:snap-start z-[50] flex items-center justify-center pt-20 pb-12 md:pt-32 md:pb-16 overflow-hidden bg-white">
                     {/* Background Visuals */}
                     <div className="absolute inset-0 z-0 h-full w-full pointer-events-none overflow-hidden">
                         <div className="absolute top-[20%] right-[10%] w-[40rem] h-[40rem] bg-green-200/30 blur-[120px] rounded-full animate-pulse" />
