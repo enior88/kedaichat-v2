@@ -113,12 +113,12 @@ export default function LandingPageClient() {
 
         if (containerElem) {
             let targetScroll = 0;
-            if (id === 'discover') targetScroll = window.innerHeight * 1;
-            else if (id === 'how-it-works') targetScroll = window.innerHeight * 2;
-            else if (id === 'problem') targetScroll = window.innerHeight * 3;
-            else if (id === 'features') targetScroll = window.innerHeight * 4;
-            else if (id === 'testimonials') targetScroll = window.innerHeight * 5;
-            else if (id === 'pricing') targetScroll = window.innerHeight * 6;
+            if (id === 'discover' || id === 'how-it-works') targetScroll = window.innerHeight * 1;
+            else if (id === 'problem') targetScroll = window.innerHeight * 2;
+            else if (id === 'features') targetScroll = window.innerHeight * 3;
+            else if (id === 'testimonials') targetScroll = window.innerHeight * 4;
+            else if (id === 'pricing') targetScroll = window.innerHeight * 5;
+            else if (id === 'faq-section') targetScroll = window.innerHeight * 6;
 
             const startY = containerElem.scrollTop;
             const distance = targetScroll - startY;
@@ -168,11 +168,11 @@ export default function LandingPageClient() {
                         <span className="text-xl font-black tracking-tighter text-navy-dark">KedaiChat</span>
                     </div>
 
-                    <div className="hidden lg:flex items-center gap-10">
-                        <a href="#how-it-works" onClick={(e) => scrollToSection(e, 'how-it-works')} className="text-sm font-bold text-slate-text hover:text-navy-dark transition-all duration-300">Cara ia berfungsi</a>
-                        <a href="#problem" onClick={(e) => scrollToSection(e, 'problem')} className="text-sm font-bold text-slate-text hover:text-navy-dark transition-all duration-300">Masalah</a>
-                        <a href="#features" onClick={(e) => scrollToSection(e, 'features')} className="text-sm font-bold text-slate-text hover:text-navy-dark transition-all duration-300">Ciri-ciri</a>
-                        <a href="#pricing" onClick={(e) => scrollToSection(e, 'pricing')} className="text-sm font-bold text-slate-text hover:text-navy-dark transition-all duration-300">Harga</a>
+                    <div className="hidden lg:flex items-center gap-10 text-[10px] uppercase font-black tracking-widest">
+                        <a href="#how-it-works" onClick={(e) => scrollToSection(e, 'how-it-works')} className="text-slate-text hover:text-navy-dark transition-all duration-300">{t('how_it_works')}</a>
+                        <a href="#problem" onClick={(e) => scrollToSection(e, 'problem')} className="text-slate-text hover:text-navy-dark transition-all duration-300">{t('problem_title')}</a>
+                        <a href="#features" onClick={(e) => scrollToSection(e, 'features')} className="text-slate-text hover:text-navy-dark transition-all duration-300">{t('features')}</a>
+                        <a href="#pricing" onClick={(e) => scrollToSection(e, 'pricing')} className="text-slate-text hover:text-navy-dark transition-all duration-300">{t('pricing_title')}</a>
                     </div>
 
                     <div className="flex items-center gap-2 md:gap-6">
@@ -180,12 +180,12 @@ export default function LandingPageClient() {
                             <LanguageToggle />
                         </div>
                         <div className="hidden lg:flex items-center gap-6 border-l-2 border-gray-100 pl-6">
-                            <Link href="/login" className="text-sm font-black text-navy-dark hover:text-[#22C55E] transition-all">
-                                Login
+                            <Link href="/login" className="text-[10px] font-black uppercase tracking-widest text-navy-dark hover:text-[#22C55E] transition-all">
+                                {t('login')}
                             </Link>
-                            <Link href="/onboarding" className="bg-navy-dark text-white px-8 py-3.5 rounded-full text-sm font-black hover:bg-gray-800 transition-all shadow-lg active:scale-95 flex items-center gap-2">
-                                Mula Percuma
-                                <ArrowRight size={16} />
+                            <Link href="/onboarding" className="bg-navy-dark text-white px-8 py-3.5 rounded-full text-[10px] font-black uppercase tracking-widest hover:bg-gray-800 transition-all shadow-lg active:scale-95 flex items-center gap-2">
+                                {t('start_free')}
+                                <ArrowRight size={14} />
                             </Link>
                         </div>
                         <button
@@ -624,7 +624,7 @@ export default function LandingPageClient() {
                 </div>
 
                 {/* ─── Pricing ─── */}
-                <section id="pricing" className="relative bg-gray-900 py-24 md:py-32 overflow-hidden border-t border-gray-800">
+                <section id="pricing" className="relative bg-gray-900 py-24 md:py-32 overflow-hidden border-t border-gray-800 md:snap-start">
                     <div className="max-w-7xl mx-auto px-6 md:px-8 w-full text-center">
                         <div className="mb-12 md:mb-20 text-white">
                             <h2 className="text-[10px] md:text-xs font-black text-[#25D366] uppercase tracking-[0.4em] mb-4">{t('pricing_title')}</h2>
