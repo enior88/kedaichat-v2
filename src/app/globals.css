@@ -13,6 +13,11 @@
     --premium-green: #22C55E;
   }
 
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 80px;
+  }
+
   body {
     background-color: #FFFFFF;
     color: var(--navy-dark);

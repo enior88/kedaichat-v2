@@ -96,80 +96,12 @@ export default function LandingPageClient() {
     const scrollToSection = (e: React.MouseEvent | null, id: string) => {
         if (e) e.preventDefault();
         const element = document.getElementById(id);
-        const containerElem = document.getElementById('main-scroll-container');
-
         if (!element) return;
 
-        // Mobile (window scrolling)
-        if (window.innerWidth < 768) {
-            const yOffset = -64; // Offset for navbar
-            const y = element.getBoundingClientRect().top + window.scrollY + yOffset;
-            window.scrollTo({ top: y, behavior: 'smooth' });
-            return;
-        }
-
-        // Desktop (container scrolling with snap)
-        if (containerElem) {
-            const sections = ['hero', 'how-it-works', 'problem', 'features', 'testimonials', 'pricing', 'ready-to-grow'];
-            const index = sections.indexOf(id);
-            if (index === -1) return;
-
-            const targetScroll = window.innerHeight * index;
-            const startY = containerElem.scrollTop;
-            const distance = targetScroll - startY;
-            const startTime = performance.now();
-
-            containerElem.style.scrollSnapType = 'none';
-
-            const duration = 500; // Snappy 500ms glide
-
-            const step = (currentTime: number) => {
-                const elapsed = currentTime - startTime;
-                const progress = Math.min(elapsed / duration, 1);
-                const easing = 1 - Math.pow(1 - progress, 3);
-                containerElem.scrollTo(0, startY + (distance * easing));
-
-                if (elapsed < duration) {
-                    window.requestAnimationFrame(step);
-                } else {
-                    containerElem.style.scrollSnapType = 'y mandatory';
-                }
-            };
-            window.requestAnimationFrame(step);
-        }
+        const yOffset = -80; // Standard offset to clear the navbar
+        const y = element.getBoundingClientRect().top + window.scrollY + yOffset;
+        window.scrollTo({ top: y, behavior: 'smooth' });
     };
-
-    // Wheel Hijacking for Immediate Snapping
-    useEffect(() => {
-        const container = document.getElementById('main-scroll-container');
-        if (!container || window.innerWidth < 768) return;
-
-        const sections = ['hero', 'how-it-works', 'problem', 'features', 'testimonials', 'pricing', 'ready-to-grow'];
-        let isThrottled = false;
-
-        const handleWheel = (e: WheelEvent) => {
-            if (isThrottled) return;
-
-            const currentScroll = container.scrollTop;
-            const currentIndex = Math.round(currentScroll / window.innerHeight);
-
-            if (e.deltaY > 20 && currentIndex < sections.length - 1) {
-                // Scroll Down
-                isThrottled = true;
-                scrollToSection(null, sections[currentIndex + 1]);
-                setTimeout(() => { isThrottled = false; }, 800);
-            } else if (e.deltaY < -20 && currentIndex > 0) {
-                // Scroll Up
-                isThrottled = true;
-                scrollToSection(null, sections[currentIndex - 1]);
-                setTimeout(() => { isThrottled = false; }, 800);
-            }
-        };
-
-        container.addEventListener('wheel', handleWheel, { passive: false });
-        return () => container.removeEventListener('wheel', handleWheel);
-    }, []);
-
     if (showOnboarding) {
         return <OnboardingCarousel />;
     }
@@ -179,7 +111,7 @@ export default function LandingPageClient() {
     }
 
     return (
-        <div id="main-scroll-container" className="bg-white font-inter text-gray-900 overflow-x-hidden md:h-screen md:overflow-y-auto md:snap-y md:snap-mandatory scroll-smooth" style={{ scrollBehavior: 'smooth' }}>
+        <div className="bg-white font-inter text-gray-900 overflow-x-hidden min-h-screen">
             <script
                 type="application/ld+json"
                 dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
@@ -523,13 +455,14 @@ export default function LandingPageClient() {
                 </section>
 
                 {/* 3. Problem Section */}
-                <section id="problem" className="relative h-screen snap-start flex flex-col justify-center px-6 overflow-hidden border-t border-gray-100 bg-white pt-20 pb-12 md:pt-32 md:pb-16">
+                <section id="problem" className="relative flex flex-col justify-center px-6 overflow-hidden border-t border-gray-100 bg-white py-24 md:py-32">
                     <div className="max-w-7xl mx-auto w-full text-center">
-                        <div className="mb-8 md:mb-12">
+                        <div className="mb-12 md:mb-16">
                             <h2 className="text-[10px] md:text-xs font-black text-[#25D366] uppercase tracking-[0.4em] mb-4">{t('problem_title')}</h2>
                             <h3 className="text-3xl md:text-5xl font-black leading-tight">{t('problem_subtitle')}</h3>
-                            <p className="text-gray-500 mt-4 text-base md:text-lg font-medium">{t('problem_desc')}</p>
+                            <p className="text-gray-500 mt-4 text-base md:text-lg font-medium max-w-2xl mx-auto">{t('problem_desc')}</p>
                         </div>
+
                         <div className="grid md:grid-cols-3 gap-6 md:gap-8 text-left">
                             {[
                                 { icon: <AlertCircle size={24} className="text-red-500" />, title: t('problem_1_title'), desc: t('problem_1_desc'), bgColor: "bg-red-50" },
@@ -549,9 +482,9 @@ export default function LandingPageClient() {
                 </section>
 
                 {/* 4. Features Section */}
-                <section id="features" className="relative h-screen snap-start flex flex-col justify-center px-6 overflow-hidden border-t border-gray-100 bg-gray-50/50 pt-20 pb-12 md:pt-32 md:pb-16">
+                <section id="features" className="relative flex flex-col justify-center px-6 overflow-hidden border-t border-gray-100 bg-gray-50/50 py-24 md:py-32">
                     <div className="max-w-7xl mx-auto w-full relative z-10">
-                        <div className="text-center mb-10 md:mb-16">
+                        <div className="text-center mb-12 md:mb-16">
                             <h2 className="text-xs font-bold text-[#22C55E] uppercase tracking-[0.3em] mb-4">{t('features')}</h2>
                             <h3 className="text-3xl md:text-5xl font-black text-navy-dark leading-tight">{t('human_speed_title')}</h3>
                         </div>
@@ -578,12 +511,12 @@ export default function LandingPageClient() {
                 </section>
 
                 {/* 5. Testimonials Section */}
-                <section id="testimonials" className="relative h-screen snap-start flex flex-col justify-center px-6 overflow-hidden border-t border-gray-100 bg-white pt-20 pb-12 md:pt-32 md:pb-16">
+                <section id="testimonials" className="relative flex flex-col justify-center px-6 overflow-hidden border-t border-gray-100 bg-white py-24 md:py-32">
                     <div className="max-w-7xl mx-auto w-full text-center">
-                        <div className="mb-8 md:mb-12">
+                        <div className="mb-12 md:mb-16">
                             <h2 className="text-[10px] md:text-xs font-black text-[#25D366] uppercase tracking-[0.4em] mb-4">{t('testimonials_title')}</h2>
                             <h3 className="text-3xl md:text-5xl font-black leading-tight">{t('testimonials_subtitle')}</h3>
-                            <div className="flex items-center justify-center gap-1 mt-4 md:mt-6">
+                            <div className="flex items-center justify-center gap-1 mt-6">
                                 {[1, 2, 3, 4, 5].map(s => (
                                     <svg key={s} className="w-4 h-4 md:w-5 md:h-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
                                         <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
@@ -642,8 +575,8 @@ export default function LandingPageClient() {
                 </section>
 
                 {/* ─── Pricing ─── */}
-                <section id="pricing" className="relative bg-gray-900 py-24 md:py-32 overflow-hidden border-t border-gray-800 md:snap-start">
-                    <div className="max-w-7xl mx-auto px-6 md:px-8 w-full text-center">
+                <section id="pricing" className="relative flex flex-col justify-center bg-gray-900 px-6 py-24 md:py-32 overflow-hidden border-t border-gray-800">
+                    <div className="max-w-7xl mx-auto w-full text-center">
                         <div className="mb-12 md:mb-20 text-white">
                             <h2 className="text-[10px] md:text-xs font-black text-[#25D366] uppercase tracking-[0.4em] mb-4">{t('pricing_title')}</h2>
                             <h3 className="text-3xl md:text-5xl font-black leading-tight">{t('pricing_subtitle')}</h3>
@@ -698,8 +631,8 @@ export default function LandingPageClient() {
                 </section>
 
                 {/* 7. Call To Action / Ready to Grow Section & Footer */}
-                <div id="ready-to-grow" className="relative h-screen snap-start flex flex-col justify-between bg-white overflow-hidden border-t border-gray-100 pt-20 md:pt-32">
-                    <section className="flex-1 flex flex-col justify-center px-6">
+                <div id="ready-to-grow" className="relative flex flex-col justify-between bg-white overflow-hidden border-t border-gray-100">
+                    <section className="flex-1 flex flex-col justify-center px-6 py-24 md:py-32">
                         <div className="max-w-4xl mx-auto w-full bg-gradient-to-br from-[#25D366] to-[#128C7E] rounded-[40px] md:rounded-[60px] p-8 md:p-16 text-center text-white relative overflow-hidden shadow-2xl shadow-green-900/20">
                             <div className="absolute top-0 right-0 p-12 opacity-10 rotate-12 pointer-events-none">
                                 <MessageSquare size={160} fill="currentColor" />
