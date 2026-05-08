@@ -257,48 +257,48 @@ export default function LandingPageClient() {
                                     <span className="text-[10px] font-black tracking-widest uppercase">{t('built_for_smes')}</span>
                                 </div>
 
-                                <div className="space-y-4">
-                                    <h1 className="text-4xl md:text-5xl lg:text-6xl font-black text-navy-dark leading-[1.1] tracking-tight">
+                                <div className="space-y-3">
+                                    <h1 className="text-4xl md:text-5xl lg:text-[2.75rem] font-black text-navy-dark leading-[1.1] tracking-tight">
                                         {t('hero_title_1')} <br className="hidden md:block" />
                                         & <span className="text-[#22C55E]">{t('hero_title_highlight')}</span> <br />
                                         {t('hero_title_2')}
                                     </h1>
 
-                                    <p className="text-base md:text-lg text-slate-text font-medium leading-relaxed max-w-lg mx-auto lg:mx-0 opacity-80">
+                                    <p className="text-base text-slate-text font-medium leading-relaxed max-w-lg mx-auto lg:mx-0 opacity-80">
                                         {t('hero_desc')}
                                     </p>
                                 </div>
 
-                                <div className="flex flex-col sm:flex-row items-center gap-4 pt-2">
-                                    <Link href="/onboarding" className="w-full sm:w-auto bg-[#22C55E] text-white px-10 py-5 rounded-2xl text-xl font-black hover:bg-[#1fb855] transition-all shadow-xl shadow-green-100 active:scale-95 flex items-center justify-center gap-3">
-                                        Mula Percuma
-                                        <ArrowRight size={24} />
+                                <div className="flex flex-col sm:flex-row items-center gap-4 pt-1">
+                                    <Link href="/onboarding" className="w-full sm:w-auto bg-[#22C55E] text-white px-8 py-4 rounded-2xl text-lg font-black hover:bg-[#1fb855] transition-all shadow-xl shadow-green-100 active:scale-95 flex items-center justify-center gap-3">
+                                        {t('start_free')}
+                                        <ArrowRight size={20} />
                                     </Link>
-                                    <a href="#how-it-works" onClick={(e) => scrollToSection(e, 'how-it-works')} className="w-full sm:w-auto bg-white text-navy-dark border-2 border-gray-100 px-10 py-5 rounded-2xl text-xl font-black hover:bg-gray-50 transition-all active:scale-95 flex items-center justify-center gap-3">
-                                        <Play size={20} className="fill-navy-dark" />
-                                        Cara ia berfungsi
+                                    <a href="#how-it-works" onClick={(e) => scrollToSection(e, 'how-it-works')} className="w-full sm:w-auto bg-white text-navy-dark border-2 border-gray-100 px-8 py-4 rounded-2xl text-lg font-black hover:bg-gray-50 transition-all active:scale-95 flex items-center justify-center gap-3">
+                                        <Play size={18} className="fill-navy-dark" />
+                                        {t('how_it_works')}
                                     </a>
                                 </div>
 
                                 {/* Integration Icons Row */}
-                                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8 pt-4">
+                                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 pt-2">
                                     {[
-                                        { icon: <MessageSquare size={32} />, label: "WhatsApp Integration" },
-                                        { icon: <ClipboardList size={32} />, label: "Smart Order Management" },
-                                        { icon: <Users size={32} />, label: "Customer Engagement" },
-                                        { icon: <BarChart3 size={32} />, label: "Sales Analytics" }
+                                        { icon: <MessageSquare size={24} />, label: "WhatsApp Integration" },
+                                        { icon: <ClipboardList size={24} />, label: "Smart Order Management" },
+                                        { icon: <Users size={24} />, label: "Customer Engagement" },
+                                        { icon: <BarChart3 size={24} />, label: "Sales Analytics" }
                                     ].map((item, idx) => (
-                                        <div key={idx} className="flex flex-col items-center lg:items-start gap-2">
-                                            <div className="w-16 h-16 bg-gray-50 rounded-2xl flex items-center justify-center text-gray-400 group hover:bg-green-50 hover:text-green-500 transition-colors">
+                                        <div key={idx} className="flex flex-col items-center lg:items-start gap-1.5">
+                                            <div className="w-12 h-12 bg-gray-50 rounded-xl flex items-center justify-center text-gray-400 group hover:bg-green-50 hover:text-green-500 transition-colors">
                                                 {React.cloneElement(item.icon, { className: "transition-transform group-hover:scale-110" })}
                                             </div>
-                                            <span className="text-[10px] font-bold text-gray-400 text-center lg:text-left leading-tight uppercase tracking-wider">{item.label}</span>
+                                            <span className="text-[9px] font-bold text-gray-400 text-center lg:text-left leading-tight uppercase tracking-wider">{item.label}</span>
                                         </div>
                                     ))}
                                 </div>
 
                                 {/* Social Proof Badge */}
-                                <div className="flex items-center gap-4 pt-4 justify-center lg:justify-start">
+                                <div className="flex items-center gap-4 pt-2 justify-center lg:justify-start">
                                     <div className="flex -space-x-3">
                                         {[
                                             "/avatars/malay-woman.png",
@@ -327,7 +327,7 @@ export default function LandingPageClient() {
                             </div>
 
                             {/* Right Content - Visual Mockup */}
-                            <div className="relative lg:scale-95 xl:scale-100">
+                            <div className="relative lg:scale-[0.82] xl:scale-95 origin-center lg:origin-right">
                                 {/* Large Background Circular Element */}
                                 <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] bg-green-50/40 rounded-full blur-3xl -z-10" />
 
