@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import Link from 'next/link';
 import {
     MessageSquare,
@@ -93,10 +93,10 @@ export default function LandingPageClient() {
         ]
     };
 
-    const scrollToSection = (e: React.MouseEvent<HTMLAnchorElement>, id: string) => {
-        e.preventDefault();
+    const scrollToSection = (e: React.MouseEvent | null, id: string) => {
+        if (e) e.preventDefault();
         const element = document.getElementById(id);
-        const container = document.getElementById('main-scroll-container');
+        const containerElem = document.getElementById('main-scroll-container');
 
         if (!element) return;
 
@@ -109,17 +109,12 @@ export default function LandingPageClient() {
         }
 
         // Desktop (container scrolling with snap)
-        const containerElem = document.getElementById('main-scroll-container');
-
         if (containerElem) {
-            let targetScroll = 0;
-            if (id === 'discover' || id === 'how-it-works') targetScroll = window.innerHeight * 1;
-            else if (id === 'problem') targetScroll = window.innerHeight * 2;
-            else if (id === 'features') targetScroll = window.innerHeight * 3;
-            else if (id === 'testimonials') targetScroll = window.innerHeight * 4;
-            else if (id === 'pricing') targetScroll = window.innerHeight * 5;
-            else if (id === 'faq-section') targetScroll = window.innerHeight * 6;
+            const sections = ['hero', 'how-it-works', 'problem', 'features', 'testimonials', 'pricing', 'ready-to-grow'];
+            const index = sections.indexOf(id);
+            if (index === -1) return;
 
+            const targetScroll = window.innerHeight * index;
             const startY = containerElem.scrollTop;
             const distance = targetScroll - startY;
             const startTime = performance.now();
@@ -143,6 +138,37 @@ export default function LandingPageClient() {
             window.requestAnimationFrame(step);
         }
     };
+
+    // Wheel Hijacking for Immediate Snapping
+    useEffect(() => {
+        const container = document.getElementById('main-scroll-container');
+        if (!container || window.innerWidth < 768) return;
+
+        const sections = ['hero', 'how-it-works', 'problem', 'features', 'testimonials', 'pricing', 'ready-to-grow'];
+        let isThrottled = false;
+
+        const handleWheel = (e: WheelEvent) => {
+            if (isThrottled) return;
+
+            const currentScroll = container.scrollTop;
+            const currentIndex = Math.round(currentScroll / window.innerHeight);
+
+            if (e.deltaY > 20 && currentIndex < sections.length - 1) {
+                // Scroll Down
+                isThrottled = true;
+                scrollToSection(null, sections[currentIndex + 1]);
+                setTimeout(() => { isThrottled = false; }, 800);
+            } else if (e.deltaY < -20 && currentIndex > 0) {
+                // Scroll Up
+                isThrottled = true;
+                scrollToSection(null, sections[currentIndex - 1]);
+                setTimeout(() => { isThrottled = false; }, 800);
+            }
+        };
+
+        container.addEventListener('wheel', handleWheel, { passive: false });
+        return () => container.removeEventListener('wheel', handleWheel);
+    }, []);
 
     if (showOnboarding) {
         return <OnboardingCarousel />;
@@ -472,156 +498,148 @@ export default function LandingPageClient() {
 
 
                 {/* 2. How It Works Section */}
-                <div className="relative md:h-[200vh] bg-gray-50 md:snap-start">
-                    <section id="how-it-works" className="sticky top-0 h-screen flex flex-col justify-center px-6 overflow-hidden border-t border-gray-100">
-                        <div className="max-w-7xl mx-auto w-full text-center">
-                            <div className="mb-12 md:mb-20">
-                                <h2 className="text-[10px] md:text-xs font-black text-[#25D366] uppercase tracking-[0.4em] mb-4">{t('how_it_works')}</h2>
-                                <h3 className="text-3xl md:text-5xl font-black leading-tight">{t('three_steps_title')}</h3>
-                            </div>
-                            <div className="grid md:grid-cols-3 gap-6 md:gap-12 relative text-left">
-                                {[
-                                    { title: t('how_step_1_title'), desc: t('how_step_1_desc'), icon: <Store size={24} className="md:w-8 md:h-8" /> },
-                                    { title: t('how_step_2_title'), desc: t('how_step_2_desc'), icon: <Package size={24} className="md:w-8 md:h-8" /> },
-                                    { title: t('how_step_3_title'), desc: t('how_step_3_desc'), icon: <ArrowRight size={24} className="md:w-8 md:h-8" /> }
-                                ].map((item, idx) => (
-                                    <div key={idx} className="bg-white p-8 md:p-10 rounded-[32px] border border-gray-100 shadow-xl relative z-10 transition-all duration-500 hover:shadow-2xl">
-                                        <div className="w-12 h-12 md:w-16 md:h-16 bg-[#25D366] text-white rounded-2xl flex items-center justify-center mb-6 shadow-lg shadow-green-200/50">
-                                            {item.icon}
-                                        </div>
-                                        <h4 className="text-xl md:text-2xl font-black mb-4">{item.title}</h4>
-                                        <p className="text-gray-500 font-medium leading-relaxed text-sm md:text-base">{item.desc}</p>
-                                    </div>
-                                ))}
-                            </div>
+                <section id="how-it-works" className="relative h-screen snap-start flex flex-col justify-center px-6 overflow-hidden border-t border-gray-100 bg-gray-50 pt-20 pb-12 md:pt-32 md:pb-16">
+                    <div className="max-w-7xl mx-auto w-full text-center">
+                        <div className="mb-8 md:mb-12">
+                            <h2 className="text-[10px] md:text-xs font-black text-[#25D366] uppercase tracking-[0.4em] mb-4">{t('how_it_works')}</h2>
+                            <h3 className="text-3xl md:text-5xl font-black leading-tight">{t('three_steps_title')}</h3>
                         </div>
-                    </section>
-                </div>
+                        <div className="grid md:grid-cols-3 gap-6 md:gap-12 relative text-left">
+                            {[
+                                { title: t('how_step_1_title'), desc: t('how_step_1_desc'), icon: <Store size={24} className="md:w-8 md:h-8" /> },
+                                { title: t('how_step_2_title'), desc: t('how_step_2_desc'), icon: <Package size={24} className="md:w-8 md:h-8" /> },
+                                { title: t('how_step_3_title'), desc: t('how_step_3_desc'), icon: <ArrowRight size={24} className="md:w-8 md:h-8" /> }
+                            ].map((item, idx) => (
+                                <div key={idx} className="bg-white p-6 md:p-10 rounded-[32px] border border-gray-100 shadow-xl relative z-10 transition-all duration-500 hover:shadow-2xl">
+                                    <div className="w-12 h-12 md:w-16 md:h-16 bg-[#25D366] text-white rounded-2xl flex items-center justify-center mb-6 shadow-lg shadow-green-200/50">
+                                        {item.icon}
+                                    </div>
+                                    <h4 className="text-xl md:text-2xl font-black mb-4">{item.title}</h4>
+                                    <p className="text-gray-500 font-medium leading-relaxed text-sm md:text-base">{item.desc}</p>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </section>
 
                 {/* 3. Problem Section */}
-                <div className="relative md:h-[200vh] bg-white md:snap-start">
-                    <section id="problem" className="sticky top-0 h-screen flex flex-col justify-center px-6 overflow-hidden border-t border-gray-100">
-                        <div className="max-w-7xl mx-auto w-full text-center">
-                            <div className="mb-12 md:mb-20">
-                                <h2 className="text-[10px] md:text-xs font-black text-[#25D366] uppercase tracking-[0.4em] mb-4">{t('problem_title')}</h2>
-                                <h3 className="text-3xl md:text-5xl font-black leading-tight">{t('problem_subtitle')}</h3>
-                                <p className="text-gray-500 mt-4 text-base md:text-lg font-medium">{t('problem_desc')}</p>
-                            </div>
-                            <div className="grid md:grid-cols-3 gap-6 md:gap-8 text-left">
-                                {[
-                                    { icon: <AlertCircle size={24} className="text-red-500" />, title: t('problem_1_title'), desc: t('problem_1_desc'), bgColor: "bg-red-50" },
-                                    { icon: <Clock size={24} className="text-orange-500" />, title: t('problem_2_title'), desc: t('problem_2_desc'), bgColor: "bg-orange-50" },
-                                    { icon: <ClipboardList size={24} className="text-blue-500" />, title: t('problem_3_title'), desc: t('problem_3_desc'), bgColor: "bg-blue-50" }
-                                ].map((item, idx) => (
-                                    <div key={idx} className="bg-white p-8 md:p-10 rounded-[32px] shadow-xl border border-gray-50 transition-all duration-500 hover:shadow-2xl">
-                                        <div className={`${item.bgColor} w-14 h-14 md:w-20 md:h-20 rounded-[20px] md:rounded-[28px] flex items-center justify-center mb-6 md:mb-8`}>
-                                            {item.icon}
-                                        </div>
-                                        <h4 className="text-xl md:text-2xl font-black mb-4">{item.title}</h4>
-                                        <p className="text-gray-500 leading-relaxed font-medium text-sm md:text-base">{item.desc}</p>
-                                    </div>
-                                ))}
-                            </div>
+                <section id="problem" className="relative h-screen snap-start flex flex-col justify-center px-6 overflow-hidden border-t border-gray-100 bg-white pt-20 pb-12 md:pt-32 md:pb-16">
+                    <div className="max-w-7xl mx-auto w-full text-center">
+                        <div className="mb-8 md:mb-12">
+                            <h2 className="text-[10px] md:text-xs font-black text-[#25D366] uppercase tracking-[0.4em] mb-4">{t('problem_title')}</h2>
+                            <h3 className="text-3xl md:text-5xl font-black leading-tight">{t('problem_subtitle')}</h3>
+                            <p className="text-gray-500 mt-4 text-base md:text-lg font-medium">{t('problem_desc')}</p>
                         </div>
-                    </section>
-                </div>
+                        <div className="grid md:grid-cols-3 gap-6 md:gap-8 text-left">
+                            {[
+                                { icon: <AlertCircle size={24} className="text-red-500" />, title: t('problem_1_title'), desc: t('problem_1_desc'), bgColor: "bg-red-50" },
+                                { icon: <Clock size={24} className="text-orange-500" />, title: t('problem_2_title'), desc: t('problem_2_desc'), bgColor: "bg-orange-50" },
+                                { icon: <ClipboardList size={24} className="text-blue-500" />, title: t('problem_3_title'), desc: t('problem_3_desc'), bgColor: "bg-blue-50" }
+                            ].map((item, idx) => (
+                                <div key={idx} className="bg-white p-6 md:p-10 rounded-[32px] shadow-xl border border-gray-50 transition-all duration-500 hover:shadow-2xl">
+                                    <div className={`${item.bgColor} w-14 h-14 md:w-20 md:h-20 rounded-[20px] md:rounded-[28px] flex items-center justify-center mb-6 md:mb-8`}>
+                                        {item.icon}
+                                    </div>
+                                    <h4 className="text-xl md:text-2xl font-black mb-4">{item.title}</h4>
+                                    <p className="text-gray-500 leading-relaxed font-medium text-sm md:text-base">{item.desc}</p>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </section>
 
                 {/* 4. Features Section */}
-                <div className="relative md:h-[200vh] bg-gray-50/50 md:snap-start">
-                    <section id="features" className="sticky top-0 h-screen flex flex-col justify-center py-24 overflow-hidden border-t border-gray-100">
-                        <div className="max-w-7xl mx-auto px-6 md:px-8 w-full relative z-10">
-                            <div className="text-center mb-16 md:mb-24">
-                                <h2 className="text-xs font-bold text-[#22C55E] uppercase tracking-[0.3em] mb-4">{t('features')}</h2>
-                                <h3 className="text-3xl md:text-5xl font-black text-navy-dark leading-tight">{t('human_speed_title')}</h3>
-                            </div>
-
-                            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
-                                {[
-                                    { icon: <ShoppingBag />, title: t('feature_1_title'), desc: t('feature_1_desc') },
-                                    { icon: <ClipboardList />, title: t('feature_2_title'), desc: t('feature_2_desc') },
-                                    { icon: <BarChart3 />, title: t('analytics'), desc: t('feature_3_desc') },
-                                    { icon: <Bell />, title: t('feature_4_title'), desc: t('feature_4_desc') },
-                                    { icon: <Users />, title: t('feature_5_title'), desc: t('feature_5_desc') },
-                                    { icon: <Zap />, title: t('feature_6_title'), desc: t('feature_6_desc') }
-                                ].map((feat, idx) => (
-                                    <div key={idx} className="group bg-white p-8 rounded-[32px] border border-gray-100 shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-2">
-                                        <div className="w-14 h-14 rounded-2xl bg-slate-50 flex items-center justify-center mb-6 text-navy-dark group-hover:bg-[#22C55E] group-hover:text-white transition-all duration-300">
-                                            {React.cloneElement(feat.icon as React.ReactElement, { size: 24, className: "group-hover:scale-110 transition-transform" })}
-                                        </div>
-                                        <h4 className="text-xl font-bold text-navy-dark mb-4 tracking-tight">{feat.title}</h4>
-                                        <p className="text-slate-text font-medium leading-relaxed text-sm md:text-base">{feat.desc}</p>
-                                    </div>
-                                ))}
-                            </div>
+                <section id="features" className="relative h-screen snap-start flex flex-col justify-center px-6 overflow-hidden border-t border-gray-100 bg-gray-50/50 pt-20 pb-12 md:pt-32 md:pb-16">
+                    <div className="max-w-7xl mx-auto w-full relative z-10">
+                        <div className="text-center mb-10 md:mb-16">
+                            <h2 className="text-xs font-bold text-[#22C55E] uppercase tracking-[0.3em] mb-4">{t('features')}</h2>
+                            <h3 className="text-3xl md:text-5xl font-black text-navy-dark leading-tight">{t('human_speed_title')}</h3>
                         </div>
-                    </section>
-                </div>
+
+                        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+                            {[
+                                { icon: <ShoppingBag />, title: t('feature_1_title'), desc: t('feature_1_desc') },
+                                { icon: <ClipboardList />, title: t('feature_2_title'), desc: t('feature_2_desc') },
+                                { icon: <BarChart3 />, title: t('analytics'), desc: t('feature_3_desc') },
+                                { icon: <Bell />, title: t('feature_4_title'), desc: t('feature_4_desc') },
+                                { icon: <Users />, title: t('feature_5_title'), desc: t('feature_5_desc') },
+                                { icon: <Zap />, title: t('feature_6_title'), desc: t('feature_6_desc') }
+                            ].map((feat, idx) => (
+                                <div key={idx} className="group bg-white p-6 rounded-[24px] md:rounded-[32px] border border-gray-100 shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-1">
+                                    <div className="w-10 h-10 md:w-14 md:h-14 rounded-2xl bg-slate-50 flex items-center justify-center mb-4 md:mb-6 text-navy-dark group-hover:bg-[#22C55E] group-hover:text-white transition-all duration-300">
+                                        {React.cloneElement(feat.icon as React.ReactElement, { size: 20, className: "group-hover:scale-110 md:w-6 md:h-6 transition-transform" })}
+                                    </div>
+                                    <h4 className="text-lg md:text-xl font-bold text-navy-dark mb-2 md:mb-4 tracking-tight">{feat.title}</h4>
+                                    <p className="text-slate-text font-medium leading-relaxed text-xs md:text-sm">{feat.desc}</p>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </section>
 
                 {/* 5. Testimonials Section */}
-                <div className="relative md:h-[200vh] bg-white md:snap-start">
-                    <section id="testimonials" className="sticky top-0 h-screen flex flex-col justify-center py-24 overflow-hidden border-t border-gray-100">
-                        <div className="max-w-7xl mx-auto px-6 md:px-8 w-full text-center">
-                            <div className="mb-12 md:mb-20">
-                                <h2 className="text-[10px] md:text-xs font-black text-[#25D366] uppercase tracking-[0.4em] mb-4">{t('testimonials_title')}</h2>
-                                <h3 className="text-3xl md:text-5xl font-black leading-tight">{t('testimonials_subtitle')}</h3>
-                                <div className="flex items-center justify-center gap-1 mt-6">
-                                    {[1, 2, 3, 4, 5].map(s => (
-                                        <svg key={s} className="w-5 h-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
-                                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                                        </svg>
-                                    ))}
-                                    <span className="ml-2 text-sm font-black text-gray-500">4.8 / 5 &bull; 2,000+ peniaga</span>
-                                </div>
-                            </div>
-                            <div className="grid md:grid-cols-3 gap-6 md:gap-8 text-left">
-                                {[
-                                    {
-                                        quote: t('testimonial_1_quote'),
-                                        name: t('testimonial_1_name'),
-                                        biz: t('testimonial_1_biz'),
-                                        initials: 'KR',
-                                        color: 'bg-orange-500',
-                                        stars: 5
-                                    },
-                                    {
-                                        quote: t('testimonial_2_quote'),
-                                        name: t('testimonial_2_name'),
-                                        biz: t('testimonial_2_biz'),
-                                        initials: 'HZ',
-                                        color: 'bg-blue-500',
-                                        stars: 5
-                                    },
-                                    {
-                                        quote: t('testimonial_3_quote'),
-                                        name: t('testimonial_3_name'),
-                                        biz: t('testimonial_3_biz'),
-                                        initials: 'SA',
-                                        color: 'bg-[#25D366]',
-                                        stars: 5
-                                    }
-                                ].map((item, idx) => (
-                                    <div key={idx} className="bg-gray-50 border border-gray-100 rounded-[32px] p-8 md:p-10 flex flex-col gap-6 hover:shadow-xl transition-all duration-500">
-                                        <div className="flex gap-1">
-                                            {[...Array(item.stars)].map((_, i) => (
-                                                <svg key={i} className="w-4 h-4 text-yellow-500" fill="currentColor" viewBox="0 0 20 20">
-                                                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                                                </svg>
-                                            ))}
-                                        </div>
-                                        <p className="text-gray-700 italic leading-relaxed text-sm md:text-base font-medium">&ldquo;{item.quote}&rdquo;</p>
-                                        <div className="flex items-center gap-4 pt-4 border-t border-gray-200">
-                                            <div className={`w-12 h-12 rounded-full ${item.color} flex items-center justify-center text-white font-black text-sm`}>{item.initials}</div>
-                                            <div>
-                                                <p className="font-black text-navy-dark text-sm md:text-base">{item.name}</p>
-                                                <p className="text-xs font-bold text-gray-500">{item.biz}</p>
-                                            </div>
-                                        </div>
-                                    </div>
+                <section id="testimonials" className="relative h-screen snap-start flex flex-col justify-center px-6 overflow-hidden border-t border-gray-100 bg-white pt-20 pb-12 md:pt-32 md:pb-16">
+                    <div className="max-w-7xl mx-auto w-full text-center">
+                        <div className="mb-8 md:mb-12">
+                            <h2 className="text-[10px] md:text-xs font-black text-[#25D366] uppercase tracking-[0.4em] mb-4">{t('testimonials_title')}</h2>
+                            <h3 className="text-3xl md:text-5xl font-black leading-tight">{t('testimonials_subtitle')}</h3>
+                            <div className="flex items-center justify-center gap-1 mt-4 md:mt-6">
+                                {[1, 2, 3, 4, 5].map(s => (
+                                    <svg key={s} className="w-4 h-4 md:w-5 md:h-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
+                                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                                    </svg>
                                 ))}
+                                <span className="ml-2 text-xs md:text-sm font-black text-gray-500">4.8 / 5 &bull; 2,000+ peniaga</span>
                             </div>
                         </div>
-                    </section>
-                </div>
+                        <div className="grid md:grid-cols-3 gap-6 md:gap-8 text-left">
+                            {[
+                                {
+                                    quote: t('testimonial_1_quote'),
+                                    name: t('testimonial_1_name'),
+                                    biz: t('testimonial_1_biz'),
+                                    initials: 'KR',
+                                    color: 'bg-orange-500',
+                                    stars: 5
+                                },
+                                {
+                                    quote: t('testimonial_2_quote'),
+                                    name: t('testimonial_2_name'),
+                                    biz: t('testimonial_2_biz'),
+                                    initials: 'HZ',
+                                    color: 'bg-blue-500',
+                                    stars: 5
+                                },
+                                {
+                                    quote: t('testimonial_3_quote'),
+                                    name: t('testimonial_3_name'),
+                                    biz: t('testimonial_3_biz'),
+                                    initials: 'SA',
+                                    color: 'bg-[#25D366]',
+                                    stars: 5
+                                }
+                            ].map((item, idx) => (
+                                <div key={idx} className="bg-gray-50 border border-gray-100 rounded-[32px] p-6 md:p-8 flex flex-col gap-4 md:gap-6 hover:shadow-xl transition-all duration-500">
+                                    <div className="flex gap-1">
+                                        {[...Array(item.stars)].map((_, i) => (
+                                            <svg key={i} className="w-3 h-3 md:w-4 md:h-4 text-yellow-500" fill="currentColor" viewBox="0 0 20 20">
+                                                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                                            </svg>
+                                        ))}
+                                    </div>
+                                    <p className="text-gray-700 italic leading-relaxed text-xs md:text-sm font-medium">&ldquo;{item.quote}&rdquo;</p>
+                                    <div className="flex items-center gap-3 md:gap-4 pt-4 border-t border-gray-200 mt-auto">
+                                        <div className={`w-10 h-10 md:w-12 md:h-12 rounded-full ${item.color} flex items-center justify-center text-white font-black text-xs md:text-sm`}>{item.initials}</div>
+                                        <div>
+                                            <p className="font-black text-navy-dark text-xs md:text-sm">{item.name}</p>
+                                            <p className="text-[10px] md:text-xs font-bold text-gray-500">{item.biz}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </section>
 
                 {/* ─── Pricing ─── */}
                 <section id="pricing" className="relative bg-gray-900 py-24 md:py-32 overflow-hidden border-t border-gray-800 md:snap-start">
@@ -679,14 +697,15 @@ export default function LandingPageClient() {
                     </div>
                 </section>
 
-                <div className="relative z-[0] bg-white md:snap-start">
-                    <section className="py-24 md:py-32 px-6">
-                        <div className="max-w-4xl mx-auto bg-gradient-to-br from-[#25D366] to-[#128C7E] rounded-[40px] md:rounded-[60px] p-10 md:p-24 text-center text-white relative overflow-hidden shadow-2xl shadow-green-900/20">
-                            <div className="absolute top-0 right-0 p-12 opacity-10 rotate-12">
-                                <MessageSquare size={200} fill="currentColor" />
+                {/* 7. Call To Action / Ready to Grow Section & Footer */}
+                <div id="ready-to-grow" className="relative h-screen snap-start flex flex-col justify-between bg-white overflow-hidden border-t border-gray-100 pt-20 md:pt-32">
+                    <section className="flex-1 flex flex-col justify-center px-6">
+                        <div className="max-w-4xl mx-auto w-full bg-gradient-to-br from-[#25D366] to-[#128C7E] rounded-[40px] md:rounded-[60px] p-8 md:p-16 text-center text-white relative overflow-hidden shadow-2xl shadow-green-900/20">
+                            <div className="absolute top-0 right-0 p-12 opacity-10 rotate-12 pointer-events-none">
+                                <MessageSquare size={160} fill="currentColor" />
                             </div>
-                            <h3 className="text-3xl md:text-5xl leading-tight font-black mb-8 relative z-10">{t('ready_to_grow')}</h3>
-                            <p className="text-lg md:text-2xl font-bold mb-10 md:mb-12 opacity-90 relative z-10">{t('join_sellers')}</p>
+                            <h3 className="text-3xl md:text-5xl leading-tight font-black mb-6 relative z-10">{t('ready_to_grow')}</h3>
+                            <p className="text-lg md:text-2xl font-bold mb-8 md:mb-12 opacity-90 relative z-10">{t('join_sellers')}</p>
                             <Link href="/onboarding" className="inline-flex items-center justify-center w-full sm:w-auto gap-3 bg-white text-[#25D366] px-8 md:px-12 h-16 md:h-20 rounded-2xl md:rounded-3xl text-lg md:text-xl font-black hover:bg-gray-50 transition-all shadow-2xl active:scale-95 relative z-10">
                                 {t('create_store_now')}
                                 <ArrowRight size={24} />
@@ -694,8 +713,8 @@ export default function LandingPageClient() {
                         </div>
                     </section>
 
-                    <footer className="py-12 border-t border-gray-100 px-6">
-                        <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-8">
+                    <footer className="py-8 md:py-12 border-t border-gray-100 px-6 bg-gray-50">
+                        <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6 md:gap-8">
                             <div className="flex flex-col items-center md:items-start gap-4">
                                 <div className="flex items-center gap-2">
                                     <div className="w-8 h-8 rounded-lg overflow-hidden">
@@ -704,18 +723,18 @@ export default function LandingPageClient() {
                                     <span className="text-lg font-black tracking-tighter">KedaiChat</span>
                                 </div>
                                 <div className="flex items-center gap-4">
-                                    <a href="https://facebook.com/kedaichat" target="_blank" rel="noopener noreferrer" className="w-10 h-10 bg-gray-50 text-gray-400 hover:text-[#1877F2] hover:bg-blue-50 rounded-xl flex items-center justify-center transition-all duration-300">
-                                        <Facebook size={20} />
+                                    <a href="https://facebook.com/kedaichat" target="_blank" rel="noopener noreferrer" className="w-8 h-8 md:w-10 md:h-10 bg-white text-gray-400 hover:text-[#1877F2] hover:bg-blue-50 rounded-xl flex items-center justify-center transition-all shadow-sm">
+                                        <Facebook size={18} />
                                     </a>
-                                    <a href="https://instagram.com/kedaichat" target="_blank" rel="noopener noreferrer" className="w-10 h-10 bg-gray-50 text-gray-400 hover:text-[#E4405F] hover:bg-red-50 rounded-xl flex items-center justify-center transition-all duration-300">
-                                        <Instagram size={20} />
+                                    <a href="https://instagram.com/kedaichat" target="_blank" rel="noopener noreferrer" className="w-8 h-8 md:w-10 md:h-10 bg-white text-gray-400 hover:text-[#E4405F] hover:bg-red-50 rounded-xl flex items-center justify-center transition-all shadow-sm">
+                                        <Instagram size={18} />
                                     </a>
-                                    <a href="mailto:kedaichat@gmail.com" className="w-10 h-10 bg-gray-50 text-gray-400 hover:text-[#EA4335] hover:bg-red-50 rounded-xl flex items-center justify-center transition-all duration-300">
-                                        <Mail size={20} />
+                                    <a href="mailto:kedaichat@gmail.com" className="w-8 h-8 md:w-10 md:h-10 bg-white text-gray-400 hover:text-[#EA4335] hover:bg-red-50 rounded-xl flex items-center justify-center transition-all shadow-sm">
+                                        <Mail size={18} />
                                     </a>
                                 </div>
                             </div>
-                            <div className="flex flex-col md:flex-row items-center gap-6 md:gap-8 text-sm font-bold text-gray-400">
+                            <div className="flex flex-col md:flex-row items-center gap-4 md:gap-8 text-xs md:text-sm font-bold text-gray-400">
                                 <Link href="/privacy" className="hover:text-[#25D366] transition-colors">{t('privacy')}</Link>
                                 <Link href="/terms" className="hover:text-[#25D366] transition-colors">{t('terms')}</Link>
                                 <div className="hidden md:flex items-center gap-2">
@@ -726,7 +745,7 @@ export default function LandingPageClient() {
                                     </a>
                                 </div>
                             </div>
-                            <p className="text-sm font-bold text-gray-400">© 2026 KedaiChat. {t('all_rights_reserved')}</p>
+                            <p className="text-[10px] md:text-sm font-bold text-gray-400">© 2026 KedaiChat. {t('all_rights_reserved')}</p>
                         </div>
                     </footer>
                 </div>
