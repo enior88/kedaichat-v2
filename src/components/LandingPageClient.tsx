@@ -257,7 +257,7 @@ export default function LandingPageClient() {
                                         "/avatars/hafiz.png",
                                         "/avatars/farhan.png"
                                     ].map((src, i) => (
-                                        <div key={i} className="w-10 h-10 rounded-full border-[3px] border-[#F8FAFC] bg-slate-200 overflow-hidden shadow-sm">
+                                        <div key={i} className="w-12 h-12 md:w-14 md:h-14 rounded-full border-[3.5px] border-[#F8FAFC] bg-slate-200 overflow-hidden shadow-md transition-transform hover:scale-110 hover:z-20 cursor-pointer">
                                             <img src={src} alt="Malaysian User" className="object-cover w-full h-full" />
                                         </div>
                                     ))}
@@ -712,7 +712,7 @@ export default function LandingPageClient() {
                                     </svg>
                                     <p className="text-[#0F172A] font-medium leading-relaxed text-[16px] relative z-10 mb-8 pt-4">&ldquo;{item.quote}&rdquo;</p>
                                     <div className="flex items-center gap-4 mt-auto relative z-10">
-                                        <div className="w-12 h-12 rounded-full overflow-hidden bg-slate-200 border-2 border-white shadow-sm shrink-0">
+                                        <div className="w-12 h-12 md:w-14 md:h-14 rounded-full overflow-hidden bg-slate-200 border-2 border-white shadow-md shrink-0">
                                             <img src={item.img} alt={item.name} className="w-full h-full object-cover" />
                                         </div>
                                         <div>
