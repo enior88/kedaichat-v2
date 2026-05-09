@@ -520,9 +520,11 @@ export default function StoreCatalog({ slug, initialStoreData }: { slug?: string
                             <div className="absolute inset-0 bg-gradient-to-r from-[#22C55E]/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
 
                             <div className="flex items-center gap-4 relative z-10">
-                                <div className="w-14 h-14 bg-gradient-to-br from-[#22C55E] to-[#14B8A6] rounded-[28px] overflow-hidden flex items-center justify-center shadow-[inset_0_2px_10px_rgba(255,255,255,0.2)] relative border border-white/10">
-                                    <ShoppingCart size={22} className="fill-white" strokeWidth={2.5} />
-                                    <div className="absolute -top-1 -right-1 bg-[#EF4444] text-white text-[11px] font-black min-w-[24px] h-[24px] px-1.5 flex items-center justify-center rounded-full border-2 border-slate-900 shadow-sm">
+                                <div className="relative">
+                                    <div className="w-14 h-14 bg-gradient-to-br from-[#22C55E] to-[#14B8A6] rounded-[28px] overflow-hidden flex items-center justify-center shadow-[inset_0_2px_10px_rgba(255,255,255,0.2)] relative border border-white/10">
+                                        <ShoppingCart size={22} className="fill-white" strokeWidth={2.5} />
+                                    </div>
+                                    <div className="absolute -top-1 -right-1 bg-[#EF4444] text-white text-[11px] font-black min-w-[24px] h-[24px] px-1.5 flex items-center justify-center rounded-full border-2 border-slate-900 shadow-sm z-20">
                                         {cartCount}
                                     </div>
                                 </div>
