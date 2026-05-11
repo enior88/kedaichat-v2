@@ -61,8 +61,8 @@ export default function Onboarding() {
     return (
         <div className="min-h-screen bg-gradient-to-br from-[#F8F9FA] via-[#F8F9FA] to-[#E9ECEF] flex flex-col items-center p-6 font-inter pt-14 pb-32">
             <div className="w-full max-w-md flex items-center justify-between mb-8 animate-in fade-in duration-700">
-                <div className="w-[42px] h-[42px] rounded-xl overflow-hidden shadow-sm border border-gray-100 bg-white">
-                    <img src="/logo.png" alt="KedaiChat Logo" className="w-full h-full object-cover" />
+                <div className="w-[42px] h-[42px] rounded-xl overflow-hidden shadow-sm flex items-center justify-center bg-gradient-to-br from-[#22C55E] to-[#14B8A6]">
+                    <div className="text-white font-black text-xl leading-none">K</div>
                 </div>
                 <LanguageToggle />
             </div>

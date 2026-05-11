@@ -85,8 +85,8 @@ export default function Login() {
             <div className="w-full max-w-md flex flex-col items-center">
                 {/* Header */}
                 <div className="text-center mt-12 mb-12 flex flex-col items-center">
-                    <div className="w-16 h-16 rounded-2xl overflow-hidden mb-4 shadow-lg shadow-green-100">
-                        <img src="/logo.png" alt="KedaiChat Logo" className="w-full h-full object-cover" />
+                    <div className="w-16 h-16 rounded-2xl overflow-hidden mb-4 shadow-lg shadow-green-100 flex items-center justify-center bg-gradient-to-br from-[#22C55E] to-[#14B8A6]">
+                        <div className="text-white font-black text-3xl leading-none">K</div>
                     </div>
                     <h1 className="text-3xl font-black text-gray-900 mb-2">KedaiChat</h1>
                     <p className="text-gray-400 font-bold text-xs uppercase tracking-[2px]">Login to manage your store</p>

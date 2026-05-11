@@ -52,8 +52,8 @@ export default function OnboardingCarousel() {
                 {/* Header */}
                 <div className="flex justify-between items-center mb-8 px-2">
                     <div className="flex items-center gap-2.5">
-                        <div className="w-9 h-9 flex items-center justify-center">
-                            <Image src="/logo.png" alt="Logo" width={24} height={24} className="w-6 h-6 object-contain contrast-125" priority />
+                        <div className="w-9 h-9 flex items-center justify-center bg-gradient-to-br from-[#22C55E] to-[#14B8A6] rounded-[10px] shadow-sm">
+                            <div className="text-white font-black text-lg leading-none">K</div>
                         </div>
                         <span className="text-xl font-bold tracking-tight text-[#1A1A1A]">KedaiChat</span>
                     </div>
@@ -76,8 +76,8 @@ export default function OnboardingCarousel() {
                         <div className={`absolute inset-0 flex items-center justify-center transition-all duration-700 transform ${step === 0 ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-8 scale-95 pointer-events-none'}`}>
                             <div className="w-60 h-72 bg-white rounded-[32px] shadow-[0_32px_64px_-16px_rgba(0,0,0,0.06)] border border-gray-100/50 flex flex-col p-6 space-y-4 overflow-hidden relative">
                                 <div className="flex items-center gap-3">
-                                    <div className="w-9 h-9 rounded-full bg-[#335F4B] flex items-center justify-center overflow-hidden">
-                                        <Image src="/logo.png" alt="" width={20} height={20} className="w-5 h-5 object-contain invert" priority />
+                                    <div className="w-9 h-9 rounded-full bg-[#22C55E] flex items-center justify-center overflow-hidden">
+                                        <div className="text-white font-black text-sm leading-none">K</div>
                                     </div>
                                     <div className="h-2 w-20 bg-gray-100 rounded-full" />
                                 </div>

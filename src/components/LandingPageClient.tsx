@@ -869,8 +869,8 @@ export default function LandingPageClient() {
                         <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-8 md:gap-8">
                             <div className="flex flex-col items-center md:items-start gap-5">
                                 <div className="flex items-center gap-2">
-                                    <div className="w-8 h-8 rounded-lg overflow-hidden bg-white p-0.5">
-                                        <Image src="/logo.png" alt="KedaiChat Logo" width={32} height={32} className="w-full h-full object-cover rounded-md" />
+                                    <div className="w-8 h-8 rounded-lg overflow-hidden flex items-center justify-center bg-gradient-to-br from-[#22C55E] to-[#14B8A6] shadow-sm">
+                                        <div className="text-white font-black text-sm leading-none">K</div>
                                     </div>
                                     <span className="text-[20px] font-extrabold tracking-tight text-white">KedaiChat</span>
                                 </div>

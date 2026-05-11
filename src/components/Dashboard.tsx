@@ -320,8 +320,8 @@ export default function Dashboard() {
                                 Install Now
                             </button>
                         </div>
-                        <div className="absolute right-[-20px] bottom-[-20px] opacity-10 rotate-12">
-                            <Image src="/logo.png" alt="" width={128} height={128} className="w-32 h-32 object-contain" />
+                        <div className="absolute right-[-20px] bottom-[-20px] opacity-10 rotate-12 bg-white/20 w-32 h-32 rounded-[40px] flex items-center justify-center">
+                            <span className="text-6xl font-black text-white">K</span>
                         </div>
                     </div>
                 )}

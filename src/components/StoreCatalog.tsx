@@ -641,8 +641,8 @@ export default function StoreCatalog({ slug, initialStoreData }: { slug?: string
             {/* Footer Branding */}
             <div className="pt-8 pb-32 flex flex-col items-center gap-2 opacity-50 grayscale hover:opacity-100 hover:grayscale-0 transition-all mix-blend-multiply">
                 <div className="flex items-center gap-2">
-                    <div className="w-6 h-6 rounded-[8px] overflow-hidden relative border border-[#0F172A]/10 shadow-sm bg-white">
-                        <Image src="/logo.png" alt="KedaiChat" fill className="object-cover p-0.5" />
+                    <div className="w-6 h-6 rounded-[8px] overflow-hidden flex items-center justify-center bg-gradient-to-br from-[#22C55E] to-[#14B8A6] shadow-sm">
+                        <div className="text-white font-black text-[10px] leading-none">K</div>
                     </div>
                     <span className="text-[13px] font-black tracking-tight text-[#0F172A]">KedaiChat</span>
                 </div>
