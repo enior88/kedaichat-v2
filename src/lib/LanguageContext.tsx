@@ -204,6 +204,9 @@ const translations: Record<Language, Record<string, string>> = {
         verifying_payment: 'Verifying Payment...',
         order_prepared: 'Your order is being prepared. You will receive an update via WhatsApp shortly.',
         checking_txn: 'We are checking your transaction. This usually takes less than a minute.',
+        order_placed: 'Order Placed!',
+        awaiting_verification: 'Awaiting Verification',
+        pending_desc: 'Your order has been received. Please wait while the seller verifies your payment proof.',
         track_order: 'Track My Order',
 
         // Wallet
@@ -405,6 +408,9 @@ const translations: Record<Language, Record<string, string>> = {
         verifying_payment: 'Mengesahkan Pembayaran...',
         order_prepared: 'Pesanan anda sedang disediakan. Anda akan menerima kemas kini melalui WhatsApp sebentar lagi.',
         checking_txn: 'Kami sedang menyemak transaksi anda. Ini biasanya mengambil masa kurang dari seminit.',
+        order_placed: 'Pesanan Diterima!',
+        awaiting_verification: 'Menunggu Pengesahan',
+        pending_desc: 'Pesanan anda telah diterima. Sila tunggu sementara penjual mengesahkan bukti pembayaran anda.',
         track_order: 'Jejak Pesanan Saya',
 
         // Wallet

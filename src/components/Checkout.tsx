@@ -67,7 +67,7 @@ export default function Checkout({ params }: { params: { name: string } }) {
                 text += `- ${item.quantity}x ${item.name} (RM ${(item.price * item.quantity).toFixed(2)})\n`;
             });
             if (notes) text += `\n*Notes:*\n${notes}\n`;
-            text += `\n_Please verify my payment attached._`;
+            text += `\n_Please verify my payment proof attached for this order._`;
 
             const encodedText = encodeURIComponent(text);
             const phone = cartState?.whatsappNumber?.replace(/\D/g, '') || '';
@@ -106,7 +106,7 @@ export default function Checkout({ params }: { params: { name: string } }) {
                 localStorage.removeItem('kd_ref');
 
                 setStep(3);
-                setIsPaid(true);
+                setIsPaid(false); // Initially UNPAID until verified by seller
 
                 setTimeout(() => {
                     window.open(link, '_blank');
@@ -143,7 +143,7 @@ export default function Checkout({ params }: { params: { name: string } }) {
                 text += `- ${item.quantity}x ${item.name} (RM ${(item.price * item.quantity).toFixed(2)})\n`;
             });
             if (notes) text += `\n*Notes:*\n${notes}\n`;
-            text += `\n_I would like to pay via WhatsApp. Please verify._`;
+            text += `\n_I would like to place an order and pay via WhatsApp. Please verify._`;
 
             const encodedText = encodeURIComponent(text);
             const phone = cartState?.whatsappNumber?.replace(/\D/g, '') || '';
@@ -181,7 +181,7 @@ export default function Checkout({ params }: { params: { name: string } }) {
                 localStorage.removeItem('kd_cart');
 
                 setStep(3);
-                setIsPaid(true);
+                setIsPaid(false);
                 window.open(link, '_blank');
             } else {
                 const errorData = await res.json();
@@ -502,17 +502,17 @@ export default function Checkout({ params }: { params: { name: string } }) {
                 ) : (
                     /* Step 3: Success */
                     <div className="animate-in zoom-in-95 fade-in duration-700 flex flex-col items-center justify-center pt-20">
-                        <div className={`w-24 h-24 rounded-full flex items-center justify-center mb-8 transition-all duration-1000 ${isPaid ? 'bg-[#25D366] text-white scale-110 shadow-2xl shadow-green-200' : 'bg-gray-100 text-gray-300 animate-pulse'}`}>
+                        <div className={`w-24 h-24 rounded-full flex items-center justify-center mb-8 transition-all duration-1000 ${orderCreated ? 'bg-orange-100 text-orange-500 scale-110 shadow-2xl shadow-orange-50' : 'bg-gray-100 text-gray-300 animate-pulse'}`}>
                             <CheckCircle2 size={48} />
                         </div>
-                        <h2 className="text-3xl font-black text-gray-900 mb-4">
-                            {isPaid ? t('payment_confirmed') : t('verifying_payment')}
+                        <h2 className="text-3xl font-black text-gray-900 mb-4 text-center">
+                            {orderCreated ? t('order_placed') : t('verifying_payment')}
                         </h2>
-                        <p className="text-gray-400 text-sm leading-relaxed max-w-[240px] mb-12 mx-auto">
-                            {isPaid ? t('order_prepared') : t('checking_txn')}
+                        <p className="text-gray-400 text-sm leading-relaxed max-w-[280px] mb-12 mx-auto text-center font-medium">
+                            {orderCreated ? t('pending_desc') : t('checking_txn')}
                         </p>
 
-                        {isPaid && (
+                        {orderCreated && (
                             <div className="w-full max-w-xs space-y-3 mx-auto">
                                 {waLink && (
                                     <a

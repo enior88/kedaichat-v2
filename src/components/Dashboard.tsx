@@ -70,7 +70,8 @@ export default function Dashboard() {
                 const success = await subscribeToPush();
                 if (success) {
                     setShowPushPrompt(false);
-                    // Show a toast or feedback
+                    setShowToast(true);
+                    setTimeout(() => setShowToast(false), 3000);
                 }
             }
         } catch (err) {
@@ -378,7 +379,7 @@ export default function Dashboard() {
                                 <span className="bg-white/20 text-[10px] font-black px-2 py-1 rounded-full uppercase tracking-widest">New Feature</span>
                             </div>
                             <h3 className="text-lg font-black mb-1">Never miss an order!</h3>
-                            <p className="text-[10px] text-white/80 font-bold uppercase mb-6 leading-tight">Get instant alerts even when the app is closed.</p>
+                            <p className="text-[10px] text-white/80 font-bold uppercase mb-6 leading-tight">Get instant alerts even when the app is closed. For best results, install the app!</p>
                             <div className="flex gap-2">
                                 <button
                                     onClick={handleEnablePush}
@@ -428,7 +429,7 @@ export default function Dashboard() {
                 {showToast && (
                     <div className="fixed bottom-24 left-1/2 -translate-x-1/2 bg-gray-900/90 backdrop-blur-md text-white px-8 py-4 rounded-[20px] text-xs font-bold animate-in fade-in slide-in-from-bottom-4 z-[9999] shadow-2xl flex items-center gap-2 border border-white/10">
                         <Check size={16} className="text-[#25D366]" strokeWidth={3} />
-                        Link ready to share! 🚀
+                        {pushStatus === 'granted' ? 'Notifications enabled! 🔔' : 'Link ready to share! 🚀'}
                     </div>
                 )}
 

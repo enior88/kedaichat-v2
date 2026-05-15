@@ -9,7 +9,12 @@ export const AppEvents = {
 };
 
 // Singleton EventBus
-class EventBus extends EventEmitter { }
+class EventBus extends EventEmitter {
+    async emitAsync(event: string, ...args: any[]) {
+        const listeners = this.listeners(event);
+        await Promise.all(listeners.map(l => l(...args)));
+    }
+}
 
 export const eventBus = new EventBus();
 

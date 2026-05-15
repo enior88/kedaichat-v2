@@ -65,7 +65,7 @@ export async function POST(req: Request) {
                 orderNumber,
                 storeId,
                 total: parseFloat(total),
-                paymentStatus: 'PAID',
+                paymentStatus: 'UNPAID',
                 customerName: customerName || 'Walk-in Customer',
                 customerPhone: customerPhone || null,
                 notes: notes || null,
@@ -102,7 +102,7 @@ export async function POST(req: Request) {
 
 
         // Emit event for background handlers (Decoupled architecture)
-        eventBus.emit(AppEvents.ORDER_CREATED, {
+        await eventBus.emitAsync(AppEvents.ORDER_CREATED, {
             orderId: newOrder.id,
             storeId: newOrder.storeId,
             total: newOrder.total,

@@ -17,6 +17,7 @@ export default function OrdersManagement() {
     const stats = {
         preparing: orders.filter(o => o.paymentStatus === 'PREPARING').length,
         delivering: orders.filter(o => o.paymentStatus === 'DELIVERING').length,
+        unpaid: orders.filter(o => o.paymentStatus === 'UNPAID').length,
         pending: orders.filter(o => o.paymentStatus === 'PAID').length
     };
 
@@ -43,6 +44,7 @@ export default function OrdersManagement() {
 
         if (isAllService) {
             return {
+                UNPAID: { label: 'Unpaid', next: 'Paid' },
                 PAID: { label: 'Confirmed', next: 'In Progress' },
                 PREPARING: { label: 'In Progress', next: 'Heading Over' },
                 DELIVERING: { label: 'Heading Over', next: 'Done' },
@@ -50,6 +52,7 @@ export default function OrdersManagement() {
             };
         }
         return {
+            UNPAID: { label: 'Unpaid', next: 'Paid' },
             PAID: { label: 'Paid', next: 'Preparing' },
             PREPARING: { label: 'Preparing', next: 'Delivering' },
             DELIVERING: { label: 'Delivering', next: 'Completed' },
@@ -59,7 +62,8 @@ export default function OrdersManagement() {
 
     const handleUpdateStatus = async (id: string, currentStatus: string, order?: any) => {
         let newStatus = 'COMPLETED';
-        if (currentStatus === 'PAID') newStatus = 'PREPARING';
+        if (currentStatus === 'UNPAID') newStatus = 'PAID';
+        else if (currentStatus === 'PAID') newStatus = 'PREPARING';
         else if (currentStatus === 'PREPARING') newStatus = 'DELIVERING';
         else if (currentStatus === 'DELIVERING') newStatus = 'COMPLETED';
 
@@ -107,7 +111,7 @@ export default function OrdersManagement() {
     };
 
     const filteredOrders = orders.filter(o => {
-        const matchesTab = (activeTab === 'Active' && ['PAID', 'PREPARING', 'DELIVERING'].includes(o.paymentStatus)) ||
+        const matchesTab = (activeTab === 'Active' && ['UNPAID', 'PAID', 'PREPARING', 'DELIVERING'].includes(o.paymentStatus)) ||
             (activeTab === 'Completed' && o.paymentStatus === 'COMPLETED') ||
             (activeTab === 'Canceled' && o.paymentStatus === 'CANCELED');
 
@@ -128,9 +132,14 @@ export default function OrdersManagement() {
                 <div className="flex justify-between items-center mb-6">
                     <h1 className="text-2xl font-bold text-gray-900">Orders</h1>
                     <div className="flex gap-2">
-                        {stats.pending > 0 && (
+                        {stats.unpaid > 0 && (
                             <div className="bg-orange-50 text-orange-500 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest flex items-center gap-1.5 animate-pulse border border-orange-100">
-                                <Clock size={12} /> {stats.pending} New
+                                <Clock size={12} /> {stats.unpaid} Unverified
+                            </div>
+                        )}
+                        {stats.pending > 0 && (
+                            <div className="bg-blue-50 text-blue-500 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest flex items-center gap-1.5 border border-blue-100">
+                                <Clock size={12} /> {stats.pending} New Paid
                             </div>
                         )}
                     </div>
@@ -259,12 +268,13 @@ export default function OrdersManagement() {
                                     ></div>
 
                                     {[
-                                        { status: 'PAID', icon: Clock, label: getFlowConfig(order)['PAID'].label },
+                                        { status: 'UNPAID', icon: Clock, label: getFlowConfig(order)['UNPAID'].label },
+                                        { status: 'PAID', icon: CheckCircle2, label: getFlowConfig(order)['PAID'].label },
                                         { status: 'PREPARING', icon: PackageCheck, label: getFlowConfig(order)['PREPARING'].label },
                                         { status: 'DELIVERING', icon: Truck, label: getFlowConfig(order)['DELIVERING'].label },
                                         { status: 'COMPLETED', icon: CheckCircle2, label: getFlowConfig(order)['COMPLETED'].label }
                                     ].map((step, idx) => {
-                                        const isPast = ['PAID', 'PREPARING', 'DELIVERING', 'COMPLETED'].indexOf(order.paymentStatus) >= idx;
+                                        const isPast = ['UNPAID', 'PAID', 'PREPARING', 'DELIVERING', 'COMPLETED'].indexOf(order.paymentStatus) >= idx;
 
                                         return (
                                             <div key={step.status} className="relative z-10 flex flex-col items-center">
