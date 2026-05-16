@@ -11,8 +11,8 @@ const OnboardingCarousel = dynamic(() => import('@/components/OnboardingCarousel
 });
 
 export const metadata: Metadata = {
-    title: "KedaiChat - WhatsApp Business Shop & Order Management",
-    description: "WhatsApp-first Business OS. Manage orders, resellers, and group orders via WhatsApp.",
+    title: "KedaiChat - Sistem Pengurusan WhatsApp No. 1 Malaysia",
+    description: "Urus pesanan, jualan, dan pengikut WhatsApp dengan mudah. Dibina khas untuk usahawan SME Malaysia. Bina identiti bisnes anda harini.",
 };
 
 export default function LandingPage({

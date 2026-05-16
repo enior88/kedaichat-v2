@@ -202,7 +202,7 @@ export default function LandingPageClient() {
                                 className="inline-flex items-center gap-2 bg-white/80 backdrop-blur-md border border-[#0F172A]/5 text-[#0F172A] px-4 py-1.5 rounded-full w-fit mx-auto lg:mx-0 shadow-sm"
                             >
                                 <span className="w-2 h-2 rounded-full bg-[#22C55E] animate-pulse"></span>
-                                <span className="text-[12px] font-bold tracking-wide">Business OS for WhatsApp</span>
+                                <span className="text-[12px] font-bold tracking-wide">{t('local_brand_badge')}</span>
                             </motion.div>
 
                             <div className="space-y-4">
@@ -725,6 +725,53 @@ export default function LandingPageClient() {
                         </div>
                     </div>
                 </section>
+                {/* About Us Section */}
+                <section id="about" className="relative flex flex-col justify-center px-4 md:px-6 overflow-hidden bg-[#F8FAFC] py-24 md:py-32">
+                    <div className="max-w-7xl mx-auto w-full relative z-10 text-center">
+                        <motion.div
+                            initial={{ opacity: 0, scale: 0.95 }}
+                            whileInView={{ opacity: 1, scale: 1 }}
+                            viewport={{ once: true }}
+                            className="bg-white rounded-[40px] border border-[#0F172A]/5 p-10 md:p-16 shadow-xl relative overflow-hidden"
+                        >
+                            <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-[#22C55E]/5 to-transparent rounded-bl-full pointer-events-none" />
+                            <div className="absolute bottom-0 left-0 w-64 h-64 bg-gradient-to-tr from-[#14B8A6]/5 to-transparent rounded-tr-full pointer-events-none" />
+
+                            <div className="relative z-10 max-w-3xl mx-auto">
+                                <motion.div
+                                    initial={{ opacity: 0, y: 10 }}
+                                    whileInView={{ opacity: 1, y: 0 }}
+                                    viewport={{ once: true }}
+                                    className="inline-flex items-center gap-2 bg-[#22C55E]/10 text-[#22C55E] px-4 py-1.5 rounded-full mb-6"
+                                >
+                                    <ShieldCheck size={14} />
+                                    <span className="text-[11px] font-bold uppercase tracking-widest">{t('made_in_malaysia')}</span>
+                                </motion.div>
+
+                                <h3 className="text-3xl md:text-[42px] font-extrabold text-[#0F172A] mb-6 tracking-tight">
+                                    {t('about_us_title')}
+                                </h3>
+                                <p className="text-lg md:text-xl text-[#64748B] font-medium leading-relaxed mb-8">
+                                    {t('about_us_desc')}
+                                </p>
+
+                                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-8 border-t border-[#0F172A]/5">
+                                    {[
+                                        { label: 'Syarikat', val: 'Tempatan' },
+                                        { label: 'Fokus', val: 'PKS' },
+                                        { label: 'Teknologi', val: 'WhatsApp' },
+                                        { label: 'Misi', val: 'Digitalisasi' }
+                                    ].map((stat, i) => (
+                                        <div key={i} className="text-center">
+                                            <p className="text-[10px] font-bold text-[#64748B] uppercase tracking-wider mb-1">{stat.label}</p>
+                                            <p className="text-[14px] font-extrabold text-[#0F172A]">{stat.val}</p>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        </motion.div>
+                    </div>
+                </section>
 
                 {/* 6. Pricing Section */}
                 <section id="pricing" className="relative flex flex-col justify-center bg-[#071226] px-4 md:px-6 py-24 md:py-32 overflow-hidden">
@@ -874,6 +921,9 @@ export default function LandingPageClient() {
                                     </div>
                                     <span className="text-[20px] font-extrabold tracking-tight text-white">KedaiChat</span>
                                 </div>
+                                <p className="text-[13px] font-medium text-[#64748B] max-w-xs">
+                                    {t('trust_footer_desc')}
+                                </p>
                                 <div className="flex items-center gap-3">
                                     <a href="https://facebook.com/kedaichat" target="_blank" rel="noopener noreferrer" className="w-10 h-10 bg-white/5 border border-white/10 text-white/60 hover:text-white hover:bg-white/10 hover:border-white/20 rounded-xl flex items-center justify-center transition-all">
                                         <Facebook size={18} />
@@ -897,11 +947,17 @@ export default function LandingPageClient() {
                                     </a>
                                 </div>
                             </div>
-                            <p className="text-[12px] font-medium text-[#64748B] text-center md:text-left">© 2026 KedaiChat. {t('all_rights_reserved')}</p>
+                            <div className="flex flex-col items-center md:items-end gap-3 text-[14px]">
+                                <p className="text-[12px] font-medium text-[#64748B] text-center md:text-left">© 2026 KedaiChat. {t('all_rights_reserved')}</p>
+                                <div className="flex items-center gap-2 bg-white/5 border border-white/10 px-3 py-1 rounded-lg">
+                                    <ShieldCheck size={12} className="text-[#22C55E]" />
+                                    <span className="text-[10px] font-bold text-white uppercase tracking-wider">{t('made_in_malaysia')}</span>
+                                </div>
+                            </div>
                         </div>
                     </footer>
                 </div>
             </main>
-        </div>
+        </div >
     );
 }

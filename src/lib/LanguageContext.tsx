@@ -98,6 +98,11 @@ const translations: Record<Language, Record<string, string>> = {
         privacy: 'Privacy',
         terms: 'Terms',
         contact: 'Contact',
+        about_us_title: 'About KedaiChat',
+        about_us_desc: 'KedaiChat is a WhatsApp order management solution built specifically for Malaysian entrepreneurs. Our mission is to empower local sellers with simple, powerful digital tools.',
+        local_brand_badge: 'Malaysian Local Brand',
+        trust_footer_desc: 'KedaiChat helps 2,000+ Malaysian entrepreneurs manage their business professionally.',
+        made_in_malaysia: 'Buatan Malaysia',
 
         // Pricing value props
         pricing_value_badge: 'Save ~10 hrs/week',
@@ -259,6 +264,11 @@ const translations: Record<Language, Record<string, string>> = {
         privacy: 'Privasi',
         terms: 'Terma',
         contact: 'Hubungi',
+        about_us_title: 'Tentang KedaiChat',
+        about_us_desc: 'KedaiChat adalah solusi pengurusan pesanan WhatsApp yang dibina khas untuk usahawan Malaysia. Misi kami adalah untuk memperkasakan peniaga tempatan dengan alatan digital yang mudah dan berkesan.',
+        local_brand_badge: 'Jenama Tempatan Malaysia',
+        trust_footer_desc: 'KedaiChat membantu lebih 2,000 usahawan Malaysia menguruskan bisnes mereka dengan lebih profesional.',
+        made_in_malaysia: 'Buatan Malaysia',
 
         // Pricing value props
         pricing_value_badge: 'Jimat ~10 jam/minggu',
