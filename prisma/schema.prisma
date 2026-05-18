@@ -51,8 +51,9 @@ model Store {
   orders         Order[]
   products       Product[]
   resellers      Reseller[]
-  owner          User          @relation(fields: [ownerId], references: [id])
+  lastNudgeAt   DateTime?
   subscription   Subscription?
+  owner          User          @relation(fields: [ownerId], references: [id])
 }
 
 enum ProductType {
