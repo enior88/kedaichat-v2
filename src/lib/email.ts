@@ -18,13 +18,13 @@ export async function sendNudgeEmail(email: string, businessName: string, storeS
                         The best way to start is to upload your first product and share your link with your customers on WhatsApp!
                     </p>
                     <div style="text-align: center; margin: 30px 0;">
-                        <a href="https://kedaichat.com/dashboard" style="background-color: #000; color: #fff; padding: 12px 24px; border-radius: 5px; text-decoration: none; font-weight: bold;">
-                            Upload Your First Product
+                        <a href="https://kedaichat.online/dashboard" style="background-color: #000; color: #fff; padding: 12px 24px; border-radius: 5px; text-decoration: none; font-weight: bold;">
+                            Go to Dashboard
                         </a>
                     </div>
-                    <p style="font-size: 14px; color: #888;">
-                        Your store link: <a href="https://kedaichat.com/s/${storeSlug}" style="color: #007bff;">kedaichat.com/s/${storeSlug}</a>
-                    </p>
+                    <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #eee; font-size: 14px; color: #666;">
+                        Your store link: <a href="https://kedaichat.online/s/${storeSlug}" style="color: #007bff;">kedaichat.online/s/${storeSlug}</a>
+                    </div>
                     <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;" />
                     <p style="font-size: 12px; color: #aaa; text-align: center;">
                         © 2026 KedaiChat. All rights reserved.

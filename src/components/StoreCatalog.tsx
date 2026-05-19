@@ -23,6 +23,7 @@ export default function StoreCatalog({ slug, initialStoreData }: { slug?: string
     const [searchTerm, setSearchTerm] = useState('');
     const [isGroupModalOpen, setIsGroupModalOpen] = useState(false);
     const [isCartModalOpen, setIsCartModalOpen] = useState(false);
+    const [displayLimit, setDisplayLimit] = useState(20);
     const [groupTitle, setGroupTitle] = useState('');
     const [groupDeadline, setGroupDeadline] = useState('');
     const [isCreatingGroup, setIsCreatingGroup] = useState(false);
@@ -429,17 +430,18 @@ export default function StoreCatalog({ slug, initialStoreData }: { slug?: string
                                     return (selectedCategory === 'All' || pCats.includes(selectedCategory) || p.description === selectedCategory) &&
                                         (searchTerm === '' || p.name.toLowerCase().includes(searchTerm.toLowerCase()));
                                 })
+                                .slice(0, displayLimit)
                                 .map((p: any, idx: number) => {
                                     const cartItem = cartItems.find(item => item.id === p.id);
 
                                     return (
                                         <motion.div
                                             key={p.id}
-                                            layout
-                                            initial={{ opacity: 0, y: 20 }}
+                                            layout={false} // Disable layout animations to improve performance
+                                            initial={{ opacity: 0, y: 10 }}
                                             animate={{ opacity: 1, y: 0 }}
-                                            exit={{ opacity: 0, scale: 0.95 }}
-                                            transition={{ duration: 0.4, delay: (idx % 10) * 0.05 }}
+                                            exit={{ opacity: 0 }}
+                                            transition={{ duration: 0.3 }}
                                             onClick={() => !cartItem && addToCart(p)}
                                             className={cn(
                                                 "group bg-white/80 backdrop-blur-lg border rounded-[28px] overflow-hidden flex flex-row p-4 transition-all duration-300 relative shadow-[0_10px_30px_-15px_rgba(15,23,42,0.06)] hover:-translate-y-1 hover:shadow-[0_20px_40px_-15px_rgba(15,23,42,0.12)] cursor-pointer",
@@ -499,6 +501,24 @@ export default function StoreCatalog({ slug, initialStoreData }: { slug?: string
                                     );
                                 })}
                         </AnimatePresence>
+
+                        {/* Load More Button */}
+                        {(store?.products || [])
+                            .filter((p: any) => {
+                                const pCats = p.category ? p.category.split(',').filter(Boolean) : [];
+                                return (selectedCategory === 'All' || pCats.includes(selectedCategory) || p.description === selectedCategory) &&
+                                    (searchTerm === '' || p.name.toLowerCase().includes(searchTerm.toLowerCase()));
+                            }).length > displayLimit && (
+                                <div className="col-span-1 md:col-span-2 flex justify-center pt-8 pb-12">
+                                    <button
+                                        onClick={() => setDisplayLimit(prev => prev + 20)}
+                                        className="px-8 py-4 bg-white border border-[#0F172A]/5 rounded-2xl font-black text-[#0F172A] shadow-sm hover:shadow-md hover:-translate-y-0.5 active:scale-95 transition-all flex items-center gap-2"
+                                    >
+                                        Load More Products
+                                        <ChevronRight size={18} strokeWidth={3} className="rotate-90" />
+                                    </button>
+                                </div>
+                            )}
                         {(!store?.products || store.products.length === 0) && (
                             <div className="col-span-1 md:col-span-2 text-center py-20 px-6 bg-white/40 backdrop-blur-xl rounded-[32px] border border-[#0F172A]/5 mt-4 shadow-sm">
                                 <div className="w-24 h-24 bg-white rounded-[32px] flex items-center justify-center mx-auto mb-6 text-emerald-200 shadow-[0_10px_30px_-10px_rgba(0,0,0,0.05)] border border-[#0F172A]/5">

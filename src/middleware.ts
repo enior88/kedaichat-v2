@@ -49,15 +49,26 @@ export async function middleware(request: NextRequest) {
     // Subdomain routing (Tenant)
     const isIP = /^(?:[0-9]{1,3}\.){3}[0-9]{1,3}(?::\d+)?$/.test(hostname);
     const isVercelApp = hostname.endsWith('.vercel.app');
+
+    // Improved subdomain detection:
+    // 1. Must contain dots
+    // 2. Must not be an IP or Vercel preview URL
+    // 3. Must not be localhost or www
+    // 4. For kedaichat.online, it must have at least 3 parts (e.g. store.kedaichat.online)
+    const hostParts = hostname.split('.');
+    const isMainDomain = hostname === 'kedaichat.online' || hostname === 'www.kedaichat.online';
+
     const isSubdomain = hostname.includes('.') &&
         !isIP &&
         !isVercelApp &&
         !hostname.startsWith('localhost') &&
         !hostname.startsWith('127.0.0.1') &&
-        !hostname.startsWith('www');
+        !hostname.startsWith('www') &&
+        !isMainDomain &&
+        hostParts.length >= 3;
 
     if (isSubdomain) {
-        const subdomain = hostname.split('.')[0];
+        const subdomain = hostParts[0];
         if (subdomain !== 'app' && subdomain !== 'admin') {
             const rewriteUrl = new URL(`/shop/${subdomain}${path}`, request.url);
             return NextResponse.rewrite(rewriteUrl);
