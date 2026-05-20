@@ -7,8 +7,9 @@ import BottomNav from './BottomNav';
 
 export default function Analytics() {
     const router = useRouter();
-    const [storeInfo, setStoreInfo] = useState<{ plan?: string; isAdmin?: boolean } | null>(null);
+    const [storeInfo, setStoreInfo] = useState<{ plan?: string; isAdmin?: boolean; weeklyRevenue?: any[] } | null>(null);
     const [isLoading, setIsLoading] = useState(true);
+    const [isExporting, setIsExporting] = useState(false);
 
     useEffect(() => {
         fetch('/api/dashboard')
@@ -20,6 +21,27 @@ export default function Analytics() {
             .catch(() => setIsLoading(false));
     }, []);
 
+    const handleExport = async () => {
+        setIsExporting(true);
+        try {
+            const response = await fetch('/api/analytics/export');
+            if (response.ok) {
+                const blob = await response.blob();
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `sales_report_${new Date().toISOString().split('T')[0]}.csv`;
+                document.body.appendChild(a);
+                a.click();
+                a.remove();
+            }
+        } catch (error) {
+            console.error('Export failed:', error);
+        } finally {
+            setIsExporting(false);
+        }
+    };
+
     if (isLoading) {
         return (
             <div className="min-h-screen bg-[#F8F9FA] flex items-center justify-center">
@@ -30,19 +52,33 @@ export default function Analytics() {
 
     const plan = storeInfo?.plan?.toUpperCase() || 'FREE';
     const isPro = plan === 'PRO' || plan === 'BUSINESS' || storeInfo?.isAdmin;
+    const weeklyData = storeInfo?.weeklyRevenue || [];
+    const maxRevenue = Math.max(...weeklyData.map(d => d.total), 1);
 
     return (
         <div className="min-h-screen bg-[#F8F9FA] pb-24 font-inter relative">
             {/* Header */}
             <div className="bg-white p-6 pt-12 pb-8 rounded-b-[40px] shadow-sm">
-                <div className="flex items-center gap-4 mb-8">
-                    <button
-                        onClick={() => router.back()}
-                        className="w-10 h-10 bg-gray-50 rounded-2xl flex items-center justify-center text-gray-400 active:scale-90 transition-all"
-                    >
-                        <ArrowLeft size={20} />
-                    </button>
-                    <h1 className="text-2xl font-black text-gray-900 tracking-tight">Analytics</h1>
+                <div className="flex items-center justify-between mb-8">
+                    <div className="flex items-center gap-4">
+                        <button
+                            onClick={() => router.back()}
+                            className="w-10 h-10 bg-gray-50 rounded-2xl flex items-center justify-center text-gray-400 active:scale-90 transition-all"
+                        >
+                            <ArrowLeft size={20} />
+                        </button>
+                        <h1 className="text-2xl font-black text-gray-900 tracking-tight">Analytics</h1>
+                    </div>
+                    {isPro && (
+                        <button
+                            onClick={handleExport}
+                            disabled={isExporting}
+                            className="bg-[#25D366] text-white px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-wider shadow-lg shadow-green-100 flex items-center gap-2 active:scale-95 transition-all disabled:opacity-50"
+                        >
+                            {isExporting ? <Loader2 size={12} className="animate-spin" /> : <ShoppingBag size={12} />}
+                            Export CSV
+                        </button>
+                    )}
                 </div>
 
                 <div className="grid grid-cols-2 gap-4">
@@ -76,27 +112,33 @@ export default function Analytics() {
             )}
 
             <div className={`p-6 space-y-6 ${!isPro ? 'opacity-20 pointer-events-none' : ''}`}>
-                {/* Performance Chart Placeholder */}
+                {/* Performance Chart */}
                 <div className="bg-white p-6 rounded-[32px] shadow-sm border border-gray-50">
                     <div className="flex justify-between items-center mb-6">
-                        <h3 className="font-bold text-gray-900">Weekly Sales</h3>
+                        <h3 className="font-bold text-gray-900">Weekly Revenue</h3>
                         <div className="bg-green-50 text-[#25D366] px-3 py-1 rounded-full text-[10px] font-bold">
                             +12.5%
                         </div>
                     </div>
                     <div className="h-40 flex items-end gap-2 px-2">
-                        {[40, 70, 45, 90, 65, 80, 55].map((h, i) => (
+                        {weeklyData.map((day, i) => (
                             <div key={i} className="flex-1 bg-gray-50 rounded-t-lg relative group">
                                 <div
                                     className="absolute bottom-0 left-0 right-0 bg-[#25D366] rounded-t-lg transition-all duration-500 group-hover:bg-[#128C7E]"
-                                    style={{ height: `${h}%` }}
-                                ></div>
+                                    style={{ height: `${(day.total / maxRevenue) * 100}%` }}
+                                >
+                                    <div className="absolute -top-10 left-1/2 -translate-x-1/2 bg-gray-900 text-white text-[8px] px-1.5 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-20">
+                                        RM {day.total.toFixed(2)}
+                                    </div>
+                                </div>
                             </div>
                         ))}
                     </div>
                     <div className="flex justify-between mt-4 px-1">
-                        {['M', 'T', 'W', 'T', 'F', 'S', 'S'].map(d => (
-                            <span key={d} className="text-[10px] font-bold text-gray-300">{d}</span>
+                        {weeklyData.map((day, i) => (
+                            <span key={i} className="text-[10px] font-bold text-gray-300">
+                                {new Date(day.date).toLocaleDateString([], { weekday: 'short' })[0]}
+                            </span>
                         ))}
                     </div>
                 </div>

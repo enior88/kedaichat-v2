@@ -64,6 +64,32 @@ export async function GET(req: Request) {
         const revenueToday = todayOrders.reduce((sum: number, order: any) => sum + (order.total || 0), 0);
         const plan = store.subscription?.status === 'ACTIVE' ? store.subscription.plan : 'FREE';
 
+        // Calculate revenue for the last 7 days including today
+        const weeklyRevenue = [];
+        for (let i = 6; i >= 0; i--) {
+            const startOfPastDayUTC = new Date(startOfTodayUTC.getTime() - i * 24 * 3600000);
+            const endOfPastDayUTC = new Date(startOfPastDayUTC.getTime() + 24 * 3600000);
+
+            const dayOrders = await prisma.order.findMany({
+                where: {
+                    storeId: store.id,
+                    paymentStatus: {
+                        in: ['PAID', 'PREPARING', 'DELIVERING', 'COMPLETED']
+                    },
+                    createdAt: {
+                        gte: startOfPastDayUTC,
+                        lt: endOfPastDayUTC
+                    }
+                },
+                select: { total: true }
+            });
+            const total = dayOrders.reduce((sum, o) => sum + (o.total || 0), 0);
+            weeklyRevenue.push({
+                date: startOfPastDayUTC.toISOString(),
+                total
+            });
+        }
+
         return NextResponse.json({
             businessName: store.name,
             slug: store.slug,
@@ -76,6 +102,7 @@ export async function GET(req: Request) {
             totalProducts: store._count.products,
             totalOrders: store._count.orders,
             revenueToday,
+            weeklyRevenue, // New field
             plan,
             isDeliveryEnabled: store.isDeliveryEnabled,
             deliveryFee: store.deliveryFee,
