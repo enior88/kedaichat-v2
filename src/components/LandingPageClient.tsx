@@ -566,7 +566,7 @@ export default function LandingPageClient() {
                                         2x Milo Ais
                                     </div>
                                     <div className="bg-white p-3 rounded-2xl ml-auto mr-4 w-4/5 shadow-sm text-[10px] text-[#0F172A] font-medium leading-relaxed border border-[#0F172A]/5">
-                                        Total RM 35.00.<br />Link bayaran: kda.ai/pay
+                                        Total RM 35.00.<br />Link bayaran: QR Pay
                                     </div>
                                 </div>
                             </motion.div>
