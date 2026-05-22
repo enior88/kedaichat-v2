@@ -8,7 +8,22 @@ async function main() {
         await prisma.$executeRawUnsafe(`ALTER TABLE "Store" ADD COLUMN IF NOT EXISTS "deliveryFee" DOUBLE PRECISION NOT NULL DEFAULT 0;`);
         console.log("Added deliveryFee");
         await prisma.$executeRawUnsafe(`ALTER TABLE "Store" ADD COLUMN IF NOT EXISTS "lastNudgeAt" TIMESTAMP WITH TIME ZONE;`);
-        console.log("Added lastNudgeAt");
+        console.log("Added lastNudgeAt to Store");
+
+        // MarketingPost
+        await prisma.$executeRawUnsafe(`ALTER TABLE "MarketingPost" ADD COLUMN IF NOT EXISTS "status" TEXT NOT NULL DEFAULT 'PENDING';`);
+        await prisma.$executeRawUnsafe(`ALTER TABLE "MarketingPost" ADD COLUMN IF NOT EXISTS "errorMessage" TEXT;`);
+        console.log("Updated MarketingPost schema");
+
+        // PlatformArticle
+        await prisma.$executeRawUnsafe(`ALTER TABLE "PlatformArticle" ADD COLUMN IF NOT EXISTS "category" TEXT NOT NULL DEFAULT 'Marketing';`);
+        await prisma.$executeRawUnsafe(`ALTER TABLE "PlatformArticle" ADD COLUMN IF NOT EXISTS "status" TEXT NOT NULL DEFAULT 'DRAFT';`);
+        await prisma.$executeRawUnsafe(`ALTER TABLE "PlatformArticle" ADD COLUMN IF NOT EXISTS "metaStatus" TEXT NOT NULL DEFAULT 'PENDING';`);
+        await prisma.$executeRawUnsafe(`ALTER TABLE "PlatformArticle" ADD COLUMN IF NOT EXISTS "metaError" TEXT;`);
+        await prisma.$executeRawUnsafe(`ALTER TABLE "PlatformArticle" ADD COLUMN IF NOT EXISTS "fbPostId" TEXT;`);
+        await prisma.$executeRawUnsafe(`ALTER TABLE "PlatformArticle" ADD COLUMN IF NOT EXISTS "igPostId" TEXT;`);
+        console.log("Updated PlatformArticle schema");
+
     } catch (e) {
         console.error(e);
     } finally {
