@@ -7,6 +7,8 @@ async function main() {
         console.log("Added isDeliveryEnabled");
         await prisma.$executeRawUnsafe(`ALTER TABLE "Store" ADD COLUMN IF NOT EXISTS "deliveryFee" DOUBLE PRECISION NOT NULL DEFAULT 0;`);
         console.log("Added deliveryFee");
+        await prisma.$executeRawUnsafe(`ALTER TABLE "Store" ADD COLUMN IF NOT EXISTS "lastNudgeAt" TIMESTAMP WITH TIME ZONE;`);
+        console.log("Added lastNudgeAt");
     } catch (e) {
         console.error(e);
     } finally {
