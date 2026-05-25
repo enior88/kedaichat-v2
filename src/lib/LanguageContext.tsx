@@ -140,6 +140,16 @@ const translations: Record<Language, Record<string, string>> = {
         paid: 'Paid',
         cancel_order: 'Cancel Order',
 
+        // Getting Started Guide
+        guide_title: 'Getting Started',
+        guide_subtitle: '3 steps to go live',
+        guide_step1_label: 'Upload your first product',
+        guide_step1_desc: 'Products → Add Product',
+        guide_step2_label: 'Add your bank / QR Pay',
+        guide_step2_desc: 'Settings → Payment QR',
+        guide_step3_label: 'View incoming orders',
+        guide_step3_desc: 'Check the Orders page',
+
         // Onboarding
         ob_store_name_title: "What's your store name?",
         ob_store_name_desc: "We'll use this for your link",
@@ -348,6 +358,16 @@ const translations: Record<Language, Record<string, string>> = {
         recent_orders: 'Pesanan Terkini',
         paid: 'Dibayar',
         cancel_order: 'Batalkan Pesanan',
+
+        // Getting Started Guide
+        guide_title: 'Mula Sekarang',
+        guide_subtitle: '3 langkah untuk go live',
+        guide_step1_label: 'Muat naik produk pertama anda',
+        guide_step1_desc: 'Produk → Tambah Produk',
+        guide_step2_label: 'Tambah bank / QR Pay anda',
+        guide_step2_desc: 'Tetapan → QR Pembayaran',
+        guide_step3_label: 'Lihat pesanan masuk',
+        guide_step3_desc: 'Semak halaman Pesanan',
 
         // Onboarding
         ob_store_name_title: 'Apakah nama kedai anda?',

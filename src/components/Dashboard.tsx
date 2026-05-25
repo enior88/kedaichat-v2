@@ -37,6 +37,12 @@ export default function Dashboard() {
     const [installable, setInstallable] = useState(false);
     const [pushStatus, setPushStatus] = useState<'default' | 'granted' | 'denied' | 'unsupported'>('default');
     const [showPushPrompt, setShowPushPrompt] = useState(false);
+    const [guideVisible, setGuideVisible] = useState(() => {
+        if (typeof window !== 'undefined') {
+            return localStorage.getItem('kd_guide_dismissed') !== '1';
+        }
+        return true;
+    });
 
     useEffect(() => {
         // Check if already installable from global
@@ -399,6 +405,68 @@ export default function Dashboard() {
                     </div>
                 )}
             </div>
+
+            {/* ── Getting Started Guide (shown only when no products yet) ── */}
+            {stats.totalProducts === 0 && guideVisible && (
+                <div className="mx-6 mt-6 bg-white rounded-[32px] p-6 border-2 border-dashed border-[#25D366]/30 shadow-sm animate-in fade-in slide-in-from-top-4 duration-500">
+                    <div className="flex items-start justify-between mb-4">
+                        <div>
+                            <h3 className="text-sm font-black text-gray-900 flex items-center gap-2">
+                                🚀 {t('guide_title')}
+                            </h3>
+                            <p className="text-[10px] text-gray-400 font-bold uppercase tracking-wider mt-0.5">
+                                {t('guide_subtitle')}
+                            </p>
+                        </div>
+                        <button
+                            onClick={() => {
+                                setGuideVisible(false);
+                                localStorage.setItem('kd_guide_dismissed', '1');
+                            }}
+                            className="text-gray-300 hover:text-gray-500 transition-colors text-xs font-bold px-2 py-1 rounded-lg hover:bg-gray-50"
+                            title="Dismiss"
+                        >
+                            ✕
+                        </button>
+                    </div>
+
+                    <div className="space-y-2.5">
+                        {[
+                            {
+                                icon: '📦',
+                                label: t('guide_step1_label'),
+                                desc: t('guide_step1_desc'),
+                                action: () => router.push('/products?action=add'),
+                            },
+                            {
+                                icon: '💳',
+                                label: t('guide_step2_label'),
+                                desc: t('guide_step2_desc'),
+                                action: () => router.push('/settings'),
+                            },
+                            {
+                                icon: '📋',
+                                label: t('guide_step3_label'),
+                                desc: t('guide_step3_desc'),
+                                action: () => router.push('/orders'),
+                            },
+                        ].map((step, i) => (
+                            <button
+                                key={i}
+                                onClick={step.action}
+                                className="w-full flex items-center gap-3 p-3.5 bg-gray-50 rounded-2xl hover:bg-green-50 active:scale-[0.98] transition-all text-left group"
+                            >
+                                <span className="text-xl shrink-0">{step.icon}</span>
+                                <div className="flex-1 min-w-0">
+                                    <p className="text-xs font-black text-gray-800">{step.label}</p>
+                                    <p className="text-[10px] text-gray-400 font-medium truncate">{step.desc}</p>
+                                </div>
+                                <ChevronRight size={14} className="text-gray-300 group-hover:text-[#25D366] group-hover:translate-x-1 transition-all shrink-0" />
+                            </button>
+                        ))}
+                    </div>
+                </div>
+            )}
 
             <div className="p-6 space-y-6">
                 {/* Quick Actions */}
