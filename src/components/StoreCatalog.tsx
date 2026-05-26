@@ -290,7 +290,7 @@ export default function StoreCatalog({ slug, initialStoreData }: { slug?: string
                                 <div className="relative shrink-0">
                                     {store?.logoUrl ? (
                                         <div className="w-[88px] h-[88px] rounded-[24px] overflow-hidden shadow-[0_8px_16px_-6px_rgba(0,0,0,0.1)] bg-white border border-[#0F172A]/5">
-                                            <Image src={store.logoUrl} alt={storeName} fill className="object-cover transition-transform duration-700 group-hover:scale-110" priority />
+                                            <Image src={store.logoUrl} alt={storeName} fill className="object-cover transition-transform duration-700 group-hover:scale-110" priority sizes="90px" />
                                         </div>
                                     ) : (
                                         <div className="w-[88px] h-[88px] bg-gradient-to-br from-[#0F172A] to-slate-800 rounded-[24px] overflow-hidden flex items-center justify-center shadow-[0_8px_16px_-6px_rgba(0,0,0,0.1)] border border-[#0F172A]/5">
@@ -362,7 +362,7 @@ export default function StoreCatalog({ slug, initialStoreData }: { slug?: string
                             <div className="relative shrink-0">
                                 {store?.logoUrl ? (
                                     <div className="w-[80px] h-[80px] rounded-[24px] overflow-hidden shadow-[0_8px_16px_-6px_rgba(0,0,0,0.1)] bg-white border border-[#0F172A]/5">
-                                        <Image src={store.logoUrl} alt={storeName} fill className="object-cover transition-transform duration-700 group-hover:scale-110" priority />
+                                        <Image src={store.logoUrl} alt={storeName} fill className="object-cover transition-transform duration-700 group-hover:scale-110" priority sizes="90px" />
                                     </div>
                                 ) : (
                                     <div className="w-[80px] h-[80px] bg-gradient-to-br from-[#0F172A] to-slate-800 rounded-[24px] overflow-hidden flex items-center justify-center shadow-[0_8px_16px_-6px_rgba(0,0,0,0.1)] border border-[#0F172A]/5">

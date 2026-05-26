@@ -9,6 +9,9 @@ type Props = {
 
 import { cache } from 'react';
 
+// Cache this page for 60 seconds to drastically reduce database reads
+export const revalidate = 60;
+
 const getStore = cache(async (slug: string) => {
     return await prisma.store.findUnique({
         where: { slug },
