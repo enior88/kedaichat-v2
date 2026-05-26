@@ -3,11 +3,10 @@ import { prisma } from '@/lib/prisma';
 import { sendNudgeEmail } from '@/lib/email';
 
 export async function GET(req: Request) {
-    const { searchParams } = new URL(req.url);
-    const secret = searchParams.get('secret');
+    const authHeader = req.headers.get('authorization');
 
-    // Basic security using a secret key
-    if (secret !== process.env.CRON_SECRET) {
+    // Secure via Vercel Cron Secret Header
+    if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
         return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
