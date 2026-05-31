@@ -800,9 +800,9 @@ export default function LandingPageClient() {
 
                         <div className="grid md:grid-cols-3 gap-6 md:gap-8 text-left items-end max-w-6xl mx-auto">
                             {[
-                                { name: t('pricing_free_title'), price: "0", features: [t('price_free_feature_1'), t('price_free_feature_2'), t('price_free_feature_3')], cta: t('start_free'), popular: false },
-                                { name: t('pricing_basic_title'), price: "29", features: [t('price_basic_feature_1'), t('price_basic_feature_2'), t('price_basic_feature_3'), t('price_basic_feature_4')], cta: t('cta_choose_basic'), popular: true, valueBadge: t('pricing_value_badge'), roiBadge: t('pricing_roi_badge') },
-                                { name: t('pricing_pro_title'), price: "49", features: [t('price_pro_feature_1'), t('price_pro_feature_2'), t('price_pro_feature_3'), t('price_pro_feature_4'), "Advanced APIs & Sync"], cta: t('cta_go_pro'), popular: false }
+                                { name: t('pricing_free_title'), price: "0", features: [t('price_free_feature_1'), t('price_free_feature_2'), t('price_free_feature_3'), t('price_free_feature_4')], cta: t('start_free'), popular: false },
+                                { name: t('pricing_basic_title'), price: "29", features: [t('price_basic_feature_1'), t('price_basic_feature_2'), t('price_basic_feature_3'), t('price_basic_feature_4'), t('price_basic_feature_5')], cta: t('cta_choose_basic'), popular: true, valueBadge: t('pricing_value_badge'), roiBadge: t('pricing_roi_badge') },
+                                { name: t('pricing_pro_title'), price: "49", features: [t('price_pro_feature_1'), t('price_pro_feature_2'), t('price_pro_feature_3'), t('price_pro_feature_4'), t('price_pro_feature_5'), "Advanced APIs & Sync"], cta: t('cta_go_pro'), popular: false }
                             ].map((plan, idx) => (
                                 <motion.div
                                     key={idx}
