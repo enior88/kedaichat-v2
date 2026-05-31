@@ -8,6 +8,7 @@ import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
+import AdSenseContainer from './AdSenseContainer';
 
 export function cn(...inputs: ClassValue[]) {
     return twMerge(clsx(inputs));
@@ -348,6 +349,11 @@ export default function StoreCatalog({ slug, initialStoreData }: { slug?: string
                             ))}
                         </div>
                     </div>
+
+                    {/* Ad Placement 1: Below Store Header (Desktop) */}
+                    <div className="hidden lg:block w-full">
+                        <AdSenseContainer plan={store?.subscription?.plan} slot="desktop_sidebar" variant="desktop" />
+                    </div>
                 </div>
 
                 {/* 
@@ -404,6 +410,11 @@ export default function StoreCatalog({ slug, initialStoreData }: { slug?: string
                             </button>
                         </div>
                     </motion.div>
+                </div>
+
+                {/* Ad Placement 1: Below Store Header (Mobile) */}
+                <div className="lg:hidden w-full">
+                    <AdSenseContainer plan={store?.subscription?.plan} slot="mobile_top" variant="mobile" />
                 </div>
 
                 {/* RIGHT PANE (Product Catalog) */}
@@ -657,6 +668,11 @@ export default function StoreCatalog({ slug, initialStoreData }: { slug?: string
                     </motion.div>
                 )}
             </AnimatePresence>
+
+            {/* Ad Placement 2: Above Footer Branding */}
+            <div className="max-w-4xl mx-auto px-4 w-full">
+                <AdSenseContainer plan={store?.subscription?.plan} slot="footer_main" variant="footer" />
+            </div>
 
             {/* Footer Branding */}
             <div className="pt-8 pb-32 flex flex-col items-center gap-2 opacity-50 grayscale hover:opacity-100 hover:grayscale-0 transition-all mix-blend-multiply">
