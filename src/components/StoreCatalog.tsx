@@ -675,15 +675,28 @@ export default function StoreCatalog({ slug, initialStoreData }: { slug?: string
             </div>
 
             {/* Footer Branding */}
-            <div className="pt-8 pb-32 flex flex-col items-center gap-2 opacity-50 grayscale hover:opacity-100 hover:grayscale-0 transition-all mix-blend-multiply">
-                <div className="flex items-center gap-2">
-                    <div className="w-6 h-6 rounded-[8px] overflow-hidden flex items-center justify-center bg-gradient-to-br from-[#22C55E] to-[#14B8A6] shadow-sm">
-                        <div className="text-white font-black text-[10px] leading-none">K</div>
-                    </div>
-                    <span className="text-[13px] font-black tracking-tight text-[#0F172A]">KedaiChat</span>
+            {!store?.subscription || store.subscription.plan !== 'premium' ? (
+                <div className="pt-8 pb-32 flex flex-col items-center gap-3">
+                    <a href="https://kedaichat.online/auth/login" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 bg-white px-5 py-3 rounded-full shadow-[0_8px_20px_-10px_rgba(34,197,94,0.3)] border border-[#22C55E]/20 hover:-translate-y-1 hover:shadow-[0_12px_25px_-10px_rgba(34,197,94,0.4)] transition-all active:scale-95 group">
+                        <div className="w-6 h-6 rounded-[8px] overflow-hidden flex items-center justify-center bg-gradient-to-br from-[#22C55E] to-[#14B8A6] shadow-sm">
+                            <div className="text-white font-black text-[10px] leading-none">K</div>
+                        </div>
+                        <span className="text-[13px] font-black tracking-tight text-[#0F172A] group-hover:text-[#22C55E] transition-colors">
+                            Create your free store with KedaiChat ⚡
+                        </span>
+                    </a>
                 </div>
-                <p className="text-[10px] font-bold text-[#64748B] uppercase tracking-widest">Premium Store</p>
-            </div>
+            ) : (
+                <div className="pt-8 pb-32 flex flex-col items-center gap-2 opacity-50 grayscale hover:opacity-100 hover:grayscale-0 transition-all mix-blend-multiply">
+                    <div className="flex items-center gap-2">
+                        <div className="w-6 h-6 rounded-[8px] overflow-hidden flex items-center justify-center bg-gradient-to-br from-[#22C55E] to-[#14B8A6] shadow-sm">
+                            <div className="text-white font-black text-[10px] leading-none">K</div>
+                        </div>
+                        <span className="text-[13px] font-black tracking-tight text-[#0F172A]">KedaiChat</span>
+                    </div>
+                    <p className="text-[10px] font-bold text-[#64748B] uppercase tracking-widest">Premium Store</p>
+                </div>
+            )}
 
             {/* Toast Notification */}
             <AnimatePresence>

@@ -3,7 +3,6 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { LanguageProvider } from "@/lib/LanguageContext";
 import LayoutWrapper from "@/components/LayoutWrapper";
-import Script from "next/script";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -81,14 +80,11 @@ export default function RootLayout({
 }>) {
     return (
         <html lang="ms">
+            <head>
+                {/* Google AdSense - Monetize Free Plan stores (Placed in head for guaranteed crawler verification) */}
+                <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7574089831743846" crossOrigin="anonymous"></script>
+            </head>
             <body className={inter.className}>
-                {/* Google AdSense - Monetize Free Plan stores */}
-                <Script
-                    async
-                    src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7574089831743846"
-                    crossOrigin="anonymous"
-                    strategy="afterInteractive"
-                />
                 <LanguageProvider>
                     <LayoutWrapper>
                         {children}

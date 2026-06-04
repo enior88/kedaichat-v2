@@ -517,6 +517,7 @@ export default function AdminPanel() {
                                                                 <div>
                                                                     <p className="font-bold text-gray-900">{s.name}</p>
                                                                     <p className="text-[11px] text-gray-400">/shop/{s.slug}</p>
+                                                                    <p className="text-[11px] text-gray-400 font-medium">📱 {s.whatsappNumber}</p>
                                                                 </div>
                                                             </div>
                                                         </td>
