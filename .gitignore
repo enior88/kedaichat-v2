@@ -27,10 +27,13 @@ yarn-error.log*
 .idea
 .vscode
 
+
 .vercel
 .env*.local
 
 # Sensitive files
 v.json
 *.txt
+!robots.txt
+!ads.txt
 gemini_test.json

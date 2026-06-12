@@ -231,7 +231,20 @@ const translations: Record<Language, Record<string, string>> = {
         your_orders: 'Your Orders',
         delivered: 'Delivered',
         repeat_order: 'Repeat Order',
-        order_again: 'Order Again'
+        order_again: 'Order Again',
+
+        // FAQ
+        faq_title: 'Frequently Asked Questions',
+        faq_1_q: 'How does KedaiChat help my business?',
+        faq_1_a: 'KedaiChat transforms your messy WhatsApp chats into a structured order management system. It reduces human error and saves you hours by automating order forms and tracking.',
+        faq_2_q: 'Is KedaiChat free to use?',
+        faq_2_a: 'Yes, we offer a Free Plan for small sellers. For larger businesses, our Basic and Pro plans offer unlimited orders and advanced reseller tools.',
+        faq_3_q: 'Do customers need an app to order?',
+        faq_3_a: 'No, customers order directly through your store link in their browser. No downloads required.',
+        faq_4_q: 'Is my data safe?',
+        faq_4_a: 'Yes, we use industry-standard encryption and secure databases to ensure your transactions and customer data are protected.',
+        faq_5_q: 'How do I receive payments?',
+        faq_5_a: 'You can set up Scan & Pay with your own bank QR or integrate with payment gateways for automatic verification.'
     },
     ms: {
         // Common
@@ -453,7 +466,20 @@ const translations: Record<Language, Record<string, string>> = {
         your_orders: 'Pesanan Anda',
         delivered: 'Dihantar',
         repeat_order: 'Ulang Pesanan',
-        order_again: 'Pesan Lagi'
+        order_again: 'Pesan Lagi',
+
+        // FAQ
+        faq_title: 'Soalan Lazim (FAQ)',
+        faq_1_q: 'Bagaimana KedaiChat membantu perniagaan saya?',
+        faq_1_a: 'KedaiChat menukarkan sembang WhatsApp yang berselerak kepada sistem pengurusan pesanan yang teratur. Ia mengurangkan kesilapan manusia dan menjimatkan masa dengan borang pesanan automatik.',
+        faq_2_q: 'Adakah KedaiChat percuma?',
+        faq_2_a: 'Ya, kami menawarkan Pelan Percuma untuk peniaga kecil. Untuk perniagaan yang lebih besar, pelan Basic dan Pro menawarkan pesanan tanpa had dan alatan ejen yang maju.',
+        faq_3_q: 'Adakah pelanggan perlukan aplikasi untuk memesan?',
+        faq_3_a: 'Tidak, pelanggan pesan terus melalui pautan kedai anda dalam pelayar web. Tiada muat turun diperlukan.',
+        faq_4_q: 'Adakah data saya selamat?',
+        faq_4_a: 'Ya, kami menggunakan enkripsi standard industri dan pangkalan data yang selamat untuk memastikan transaksi dan data pelanggan anda dilindungi.',
+        faq_5_q: 'Bagaimana saya menerima pembayaran?',
+        faq_5_a: 'Anda boleh menyediakan Imbas & Bayar dengan QR bank anda sendiri atau integrasi dengan gerbang pembayaran untuk pengesahan automatik.'
     }
 };
 

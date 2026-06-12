@@ -25,7 +25,8 @@ import {
     Facebook,
     Instagram,
     TrendingUp,
-    ShieldCheck
+    ShieldCheck,
+    HelpCircle
 } from 'lucide-react';
 import { useLanguage } from '@/lib/LanguageContext';
 import LanguageToggle from '@/components/LanguageToggle';
@@ -876,6 +877,43 @@ export default function LandingPageClient() {
                                 {t('pricing_guarantee')}
                             </p>
                         </motion.div>
+                    </div>
+                </section>
+
+                {/* 6.5 FAQ Section */}
+                <section className="py-24 md:py-32 bg-[#F8FAFC]">
+                    <div className="max-w-4xl mx-auto px-4 md:px-6">
+                        <div className="text-center mb-16">
+                            <h2 className="text-3xl md:text-5xl font-extrabold text-[#0F172A] mb-4">{t('faq_title')}</h2>
+                            <div className="w-20 h-1.5 bg-[#22C55E] mx-auto rounded-full" />
+                        </div>
+
+                        <div className="space-y-6">
+                            {[1, 2, 3, 4, 5].map((i) => (
+                                <motion.div
+                                    key={i}
+                                    initial={{ opacity: 0, y: 20 }}
+                                    whileInView={{ opacity: 1, y: 0 }}
+                                    viewport={{ once: true }}
+                                    transition={{ delay: i * 0.1 }}
+                                    className="bg-white rounded-2xl p-6 md:p-8 shadow-sm border border-slate-100 hover:shadow-md transition-shadow"
+                                >
+                                    <div className="flex gap-4">
+                                        <div className="mt-1">
+                                            <HelpCircle className="text-[#22C55E]" size={24} />
+                                        </div>
+                                        <div>
+                                            <h4 className="text-lg md:text-xl font-bold text-[#0F172A] mb-3">
+                                                {t(`faq_${i}_q`)}
+                                            </h4>
+                                            <p className="text-slate-600 leading-relaxed">
+                                                {t(`faq_${i}_a`)}
+                                            </p>
+                                        </div>
+                                    </div>
+                                </motion.div>
+                            ))}
+                        </div>
                     </div>
                 </section>
 
