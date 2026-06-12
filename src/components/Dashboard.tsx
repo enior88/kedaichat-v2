@@ -57,8 +57,23 @@ export default function Dashboard() {
         if ('Notification' in window) {
             setPushStatus(Notification.permission);
             if (Notification.permission === 'default') {
-                // Show prompt after a short delay if not yet granted
-                setTimeout(() => setShowPushPrompt(true), 3000);
+                // Persistent dismissal check (7 days)
+                const dismissedAt = localStorage.getItem('kd_push_dismissed');
+                const now = Date.now();
+                const sevenDays = 7 * 24 * 60 * 60 * 1000;
+
+                let shouldShow = true;
+                if (dismissedAt) {
+                    const timestamp = parseInt(dismissedAt);
+                    if (!isNaN(timestamp) && (now - timestamp) < sevenDays) {
+                        shouldShow = false;
+                    }
+                }
+
+                if (shouldShow) {
+                    // Show prompt after a short delay if not yet granted and not dismissed
+                    setTimeout(() => setShowPushPrompt(true), 3000);
+                }
             }
         } else {
             setPushStatus('unsupported');
@@ -76,9 +91,12 @@ export default function Dashboard() {
                 const success = await subscribeToPush();
                 if (success) {
                     setShowPushPrompt(false);
+                    localStorage.removeItem('kd_push_dismissed'); // Clear if enabled
                     setShowToast(true);
                     setTimeout(() => setShowToast(false), 3000);
                 }
+            } else if (permission === 'denied') {
+                setShowPushPrompt(false);
             }
         } catch (err) {
             console.error('Push enablement failed', err);
@@ -394,7 +412,10 @@ export default function Dashboard() {
                                     Enable Notifications
                                 </button>
                                 <button
-                                    onClick={() => setShowPushPrompt(false)}
+                                    onClick={() => {
+                                        setShowPushPrompt(false);
+                                        localStorage.setItem('kd_push_dismissed', Date.now().toString());
+                                    }}
                                     className="bg-transparent text-white/50 px-4 py-3 rounded-2xl text-[10px] font-bold uppercase tracking-widest hover:text-white transition-colors"
                                 >
                                     Later
