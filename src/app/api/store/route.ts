@@ -62,11 +62,43 @@ export async function DELETE(req: Request) {
         const store = await prisma.store.findFirst({ where: { ownerId: session.userId } });
         if (!store) return NextResponse.json({ error: 'Store not found' }, { status: 404 });
 
-        // Hard delete the store and its relations (cascades should be handled by schema or manually)
-        // For now, we perform a simple delete. Relations like Products, Orders, etc. should be deleted.
-        // Prisma schema doesn't have explicit cascades yet, so we'll do a simple delete.
-        // NOTE: If there are foreign key constraints, this might fail unless cascades are in place.
-        await prisma.store.delete({ where: { id: store.id } });
+        // Cascade delete all related records in the correct order before deleting the store.
+        await prisma.$transaction(async (tx) => {
+            const storeId = store.id;
+
+            // 1. Get product IDs and group order IDs to delete their children first
+            const products = await tx.product.findMany({ where: { storeId }, select: { id: true } });
+            const productIds = products.map((p) => p.id);
+
+            const groupOrders = await tx.groupOrder.findMany({ where: { storeId }, select: { id: true } });
+            const groupOrderIds = groupOrders.map((g) => g.id);
+
+            const resellers = await tx.reseller.findMany({ where: { storeId }, select: { id: true } });
+            const resellerIds = resellers.map((r) => r.id);
+
+            // 2. Delete leaf-level records
+            if (productIds.length > 0) {
+                await tx.groupOrderItem.deleteMany({ where: { productId: { in: productIds } } });
+                await tx.orderItem.deleteMany({ where: { productId: { in: productIds } } });
+            }
+            if (groupOrderIds.length > 0) {
+                await tx.groupOrderItem.deleteMany({ where: { groupOrderId: { in: groupOrderIds } } });
+            }
+            if (resellerIds.length > 0) {
+                await tx.commission.deleteMany({ where: { resellerId: { in: resellerIds } } });
+            }
+
+            // 3. Delete store-level relations
+            await tx.reseller.deleteMany({ where: { storeId } });
+            await tx.groupOrder.deleteMany({ where: { storeId } });
+            await tx.order.deleteMany({ where: { storeId } });
+            await tx.product.deleteMany({ where: { storeId } });
+            await tx.marketingPost.deleteMany({ where: { storeId } });
+            await tx.subscription.deleteMany({ where: { storeId } });
+
+            // 4. Finally delete the store itself
+            await tx.store.delete({ where: { id: storeId } });
+        });
 
         return NextResponse.json({ success: true });
 

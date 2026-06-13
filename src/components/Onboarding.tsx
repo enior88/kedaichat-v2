@@ -108,7 +108,8 @@ export default function Onboarding() {
                                 { id: 'Food', label: t('cat_food') },
                                 { id: 'Fashion', label: t('cat_fashion') },
                                 { id: 'Grocery', label: t('cat_grocery') },
-                                { id: 'Services', label: t('cat_services') }
+                                { id: 'Services', label: t('cat_services') },
+                                { id: 'Craft', label: t('cat_craft') }
                             ].map((cat) => (
                                 <button
                                     key={cat.id}

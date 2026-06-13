@@ -16,6 +16,7 @@ export default function Checkout({ params }: { params: { name: string } }) {
     const [isDownloading, setIsDownloading] = useState(false);
     const [readyImage, setReadyImage] = useState<string | null>(null);
     const [debugError, setDebugError] = useState<string | null>(null);
+    const [qrSize, setQrSize] = useState(100); // percentage: 50–200
 
     // Customer Info
     const [customerName, setCustomerName] = useState('');
@@ -429,24 +430,63 @@ export default function Checkout({ params }: { params: { name: string } }) {
                                 </div>
                             ) : (
                                 <>
-                                    <div className="aspect-square bg-white rounded-[40px] border border-gray-100 shadow-sm flex flex-col items-center justify-center p-4 mb-4 relative overflow-hidden">
+                                    {/* QR display with adjustable size */}
+                                    <div className="flex flex-col items-center bg-white rounded-[40px] border border-gray-100 shadow-sm p-4 mb-3 overflow-hidden">
                                         {isDownloading ? (
-                                            <div className="flex flex-col items-center gap-4">
+                                            <div className="flex flex-col items-center gap-4 py-10">
                                                 <div className="w-12 h-12 border-4 border-[#25D366] border-t-transparent rounded-full animate-spin" />
-                                                <div className="space-y-1">
+                                                <div className="space-y-1 text-center">
                                                     <p className="text-sm font-bold text-gray-900 uppercase">Generating Branded QR</p>
                                                     <p className="text-[10px] text-gray-400 font-medium tracking-tight">Optimizing for your phone gallery...</p>
                                                 </div>
                                             </div>
                                         ) : cartState?.paymentQrUrl ? (
-                                            <img src={cartState.paymentQrUrl} alt="Store Payment QR" className="w-full h-full object-contain" />
+                                            <img
+                                                src={cartState.paymentQrUrl}
+                                                alt="Store Payment QR"
+                                                style={{ width: `${qrSize}%`, transition: 'width 0.2s ease' }}
+                                                className="object-contain rounded-2xl"
+                                            />
                                         ) : (
-                                            <div className="flex flex-col items-center gap-2">
+                                            <div className="flex flex-col items-center gap-2 py-10">
                                                 <QrCode size={48} className="text-gray-200" />
                                                 <p className="text-[10px] font-bold text-gray-400 tracking-wider">NO QR UPLOADED</p>
                                             </div>
                                         )}
                                     </div>
+
+                                    {/* QR Size Adjuster */}
+                                    {cartState?.paymentQrUrl && !isDownloading && (
+                                        <div className="mb-4 bg-gray-50 rounded-2xl px-4 py-3 border border-gray-100">
+                                            <div className="flex items-center justify-between mb-2">
+                                                <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest">QR Size</p>
+                                                <p className="text-[10px] font-black text-[#25D366]">{qrSize}%</p>
+                                            </div>
+                                            <input
+                                                type="range"
+                                                min={40}
+                                                max={150}
+                                                step={5}
+                                                value={qrSize}
+                                                onChange={(e) => setQrSize(Number(e.target.value))}
+                                                className="w-full accent-[#25D366] h-1.5 rounded-full cursor-pointer"
+                                            />
+                                            <div className="flex justify-between mt-2 gap-1">
+                                                {[50, 75, 100, 125, 150].map((s) => (
+                                                    <button
+                                                        key={s}
+                                                        onClick={() => setQrSize(s)}
+                                                        className={`flex-1 h-7 rounded-xl text-[10px] font-black uppercase tracking-wide transition-all ${qrSize === s
+                                                                ? 'bg-[#25D366] text-white shadow-sm'
+                                                                : 'bg-white text-gray-400 border border-gray-200 hover:border-[#25D366]'
+                                                            }`}
+                                                    >
+                                                        {s === 50 ? 'XS' : s === 75 ? 'S' : s === 100 ? 'M' : s === 125 ? 'L' : 'XL'}
+                                                    </button>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    )}
 
                                     {debugError && (
                                         <div className="flex items-center justify-center gap-2 text-red-500 mb-4 bg-red-50 py-2 rounded-xl text-[10px] font-bold">
