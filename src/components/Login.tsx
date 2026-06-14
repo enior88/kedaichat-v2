@@ -109,6 +109,7 @@ export default function Login() {
                                     <Mail className="absolute left-6 top-1/2 -translate-y-1/2 text-gray-300" size={20} />
                                     <input
                                         type="text"
+                                        autoComplete="username"
                                         placeholder="e.g. 0123456789"
                                         value={formData.identifier}
                                         onChange={(e) => setFormData({ ...formData, identifier: e.target.value })}
@@ -123,6 +124,7 @@ export default function Login() {
                                     <Lock className="absolute left-6 top-1/2 -translate-y-1/2 text-gray-300" size={20} />
                                     <input
                                         type={showPassword ? 'text' : 'password'}
+                                        autoComplete="current-password"
                                         placeholder="••••••••"
                                         value={formData.password}
                                         onChange={(e) => setFormData({ ...formData, password: e.target.value })}

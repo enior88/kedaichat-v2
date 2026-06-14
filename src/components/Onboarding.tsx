@@ -157,6 +157,7 @@ export default function Onboarding() {
                         <div className="relative">
                             <input
                                 type="email"
+                                autoComplete="username"
                                 placeholder={t('ob_email_placeholder')}
                                 className="premium-input px-5 text-[15px] bg-white/60 focus:bg-white shadow-inner h-14 rounded-2xl w-full border-2 border-transparent focus:border-[#25D366] transition-all outline-none text-gray-900 font-bold placeholder:font-medium placeholder:text-gray-300"
                                 value={formData.email}
@@ -174,6 +175,7 @@ export default function Onboarding() {
                         <div className="relative">
                             <input
                                 type="password"
+                                autoComplete="new-password"
                                 placeholder="••••••••"
                                 className="premium-input px-5 text-[16px] tracking-widest bg-white/60 focus:bg-white shadow-inner h-14 rounded-2xl w-full border-2 border-transparent focus:border-[#25D366] transition-all outline-none text-gray-900 font-bold placeholder:font-medium placeholder:text-gray-300"
                                 value={formData.password}

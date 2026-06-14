@@ -463,6 +463,7 @@ export default function Settings() {
                                 <MessageSquare className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-300" size={18} />
                                 <input
                                     type="text"
+                                    autoComplete="username"
                                     value={loginPhone}
                                     onChange={(e) => setLoginPhone(e.target.value)}
                                     className="w-full h-14 bg-gray-50 rounded-2xl pl-12 pr-4 text-sm font-bold focus:ring-2 focus:ring-blue-200 transition-all outline-none border-transparent"
@@ -503,6 +504,7 @@ export default function Settings() {
                                 <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-300" size={18} />
                                 <input
                                     type="password"
+                                    autoComplete="current-password"
                                     value={passFormData.currentPassword}
                                     onChange={(e) => setPassFormData({ ...passFormData, currentPassword: e.target.value })}
                                     className="w-full h-14 bg-gray-50 rounded-2xl pl-12 pr-4 text-sm font-bold focus:ring-2 focus:ring-orange-200 transition-all outline-none border-transparent"
@@ -517,6 +519,7 @@ export default function Settings() {
                                 <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-300" size={18} />
                                 <input
                                     type="password"
+                                    autoComplete="new-password"
                                     value={passFormData.newPassword}
                                     onChange={(e) => setPassFormData({ ...passFormData, newPassword: e.target.value })}
                                     className="w-full h-14 bg-gray-50 rounded-2xl pl-12 pr-4 text-sm font-bold focus:ring-2 focus:ring-[#25D366] transition-all outline-none border-transparent"
@@ -531,6 +534,7 @@ export default function Settings() {
                                 <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-300" size={18} />
                                 <input
                                     type="password"
+                                    autoComplete="new-password"
                                     value={passFormData.confirmPassword}
                                     onChange={(e) => setPassFormData({ ...passFormData, confirmPassword: e.target.value })}
                                     className="w-full h-14 bg-gray-50 rounded-2xl pl-12 pr-4 text-sm font-bold focus:ring-2 focus:ring-[#25D366] transition-all outline-none border-transparent"
