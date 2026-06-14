@@ -11,8 +11,17 @@ export async function POST(req: Request) {
             return NextResponse.json({ success: false, error: 'WhatsApp number is required' }, { status: 400 });
         }
 
+        const identStr = (whatsappNumber?.toString() || '').trim();
+        const digitsOnly = identStr.replace(/\D/g, '');
+        const last9 = digitsOnly.slice(-9);
+
         const user = await prisma.user.findFirst({
-            where: { whatsappNumber }
+            where: {
+                OR: [
+                    { whatsappNumber: identStr },
+                    ...(last9.length >= 8 ? [{ whatsappNumber: { contains: last9 } }] : []),
+                ]
+            }
         });
 
         if (!user) {
