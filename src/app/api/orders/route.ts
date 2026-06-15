@@ -40,19 +40,44 @@ export async function POST(req: Request) {
 
         const plan = subscription?.status === 'ACTIVE' ? subscription.plan : 'FREE';
 
-        // Check if owner is an administrator (full access)
+        // Check if owner is an administrator (full access) and get store creation date for billing cycle
         const ownerStore = await prisma.store.findUnique({
             where: { id: storeId },
-            select: { owner: { select: { role: true } } }
+            select: {
+                createdAt: true,
+                owner: { select: { role: true } }
+            }
         });
 
         const isAdmin = ownerStore?.owner?.role === 'ADMIN';
 
         if (plan === 'FREE' && !isAdmin) {
-            const storeOrders = await prisma.order.findMany({ where: { storeId } });
-            if (storeOrders.length >= 30) {
+            // Determine the start of the current monthly cycle based on store creation date
+            const storeCreatedAt = ownerStore?.createdAt || new Date();
+            const now = new Date();
+
+            let cycleStart = new Date(storeCreatedAt);
+            cycleStart.setFullYear(now.getFullYear());
+            cycleStart.setMonth(now.getMonth());
+
+            // If the anniversary day hasn't passed this month, the cycle started last month
+            if (now < cycleStart) {
+                cycleStart.setMonth(cycleStart.getMonth() - 1);
+            }
+
+            // Count orders created since the start of the current billing cycle
+            const currentMonthOrderCount = await prisma.order.count({
+                where: {
+                    storeId,
+                    createdAt: {
+                        gte: cycleStart
+                    }
+                }
+            });
+
+            if (currentMonthOrderCount >= 30) {
                 return NextResponse.json(
-                    { error: 'Order limit reached for Free plan. Please ask the seller to upgrade.' },
+                    { error: 'Monthly order limit reached for Free plan. Please ask the seller to upgrade.' },
                     { status: 403 }
                 );
             }
